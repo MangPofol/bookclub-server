@@ -1,13 +1,13 @@
-package mangpo.server.domain;
+package mangpo.server.entity;
 
 import lombok.Getter;
+import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Comment {
+public class Comment extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "comment_id")
@@ -24,6 +24,4 @@ public class Comment {
     @Column(name = "comment_content")
     private String content;
 
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
 }

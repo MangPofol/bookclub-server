@@ -1,13 +1,13 @@
-package mangpo.server.domain;
+package mangpo.server.entity;
 
 import lombok.Getter;
+import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Post {
+public class Post extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "post_id")
@@ -35,9 +35,5 @@ public class Post {
 
     @Column(name = "post_content")
     private String content;
-
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
-
 
 }

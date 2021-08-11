@@ -1,4 +1,4 @@
-package mangpo.server.domain;
+package mangpo.server.entity;
 
 import lombok.Getter;
 

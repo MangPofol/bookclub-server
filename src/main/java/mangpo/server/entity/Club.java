@@ -1,13 +1,13 @@
-package mangpo.server.domain;
+package mangpo.server.entity;
 
 import lombok.Getter;
+import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Club {
+public class Club extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
@@ -25,6 +25,4 @@ public class Club {
     @Column(name = "club_president")
     private Long presidentId;
 
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
 }

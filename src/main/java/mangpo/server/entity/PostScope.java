@@ -1,4 +1,4 @@
-package mangpo.server.domain;
+package mangpo.server.entity;
 
 //게시물 공개범위
 public enum PostScope {
