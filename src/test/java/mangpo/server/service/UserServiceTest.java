@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -116,7 +117,7 @@ public class UserServiceTest {
         em.flush();
         em.clear();
 
-        User findUser = userService.findUser(userId1);
+        User user = userService.findUser(userId1);
 
         UserRequestDto userRequestDto = UserRequestDto.builder()
                 .userPassword("4321")
@@ -124,7 +125,7 @@ public class UserServiceTest {
                 .build();
 
         //when
-        userService.updateUser(findUser.getId(), userRequestDto);
+        userService.updateUser(user.getId(), userRequestDto);
 
         em.flush();
         em.clear();
