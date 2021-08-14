@@ -39,16 +39,15 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long id, UserRequestDto userRequestDto){
+    public void updateUser(Long id, User userRequest){
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("이미 사용중인 이메일입니다."));
 
-        User userRequestEntity = userRequestDto.toEntity();
-        validateDuplicateUser(userRequestEntity);
+        validateDuplicateUser(userRequest);
 
-        if(userRequestDto.getEmail() != null)
-            user.changeEmail(userRequestDto.getEmail());
-        if(userRequestDto.getUserPassword() != null)
-            user.changeUserPassword(userRequestDto.getUserPassword());
+        if(userRequest.getEmail() != null)
+            user.changeEmail(userRequest.getEmail());
+        if(userRequest.getUserPassword() != null)
+            user.changeUserPassword(userRequest.getUserPassword());
     }
 
     @Transactional

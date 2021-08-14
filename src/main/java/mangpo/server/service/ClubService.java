@@ -40,20 +40,19 @@ public class ClubService {
 
     //TODO 문제 발생 가능성 높음: 나중에 잘 살펴보기
     @Transactional
-    public void updateClub(Long id, ClubRequestDto clubRequestDto){
+    public void updateClub(Long id, Club clubRequest){
         Club club = clubRepository.findById(id).orElseThrow(() ->   new NotExistClubException("존재하지 않는 클럽입니다."));
-        Club clubRequestEntity = clubRequestDto.toEntity();
 
-        validateDuplicateClubName(clubRequestEntity);
+        validateDuplicateClubName(clubRequest);
 
-        if(clubRequestDto.getName() != null)
-            club.changeName(clubRequestDto.getName());
-        if(clubRequestDto.getColorSet() != null)
-            club.changeColorSet(clubRequestDto.getColorSet());
-        if(clubRequestDto.getLevel() != null)
-            club.changeLevel(clubRequestDto.getLevel());
-        if(clubRequestDto.getPresidentId() != null)
-            club.changePresident(clubRequestDto.getPresidentId());
+        if(clubRequest.getName() != null)
+            club.changeName(clubRequest.getName());
+        if(clubRequest.getColorSet() != null)
+            club.changeColorSet(clubRequest.getColorSet());
+        if(clubRequest.getLevel() != null)
+            club.changeLevel(clubRequest.getLevel());
+        if(clubRequest.getPresidentId() != null)
+            club.changePresident(clubRequest.getPresidentId());
     }
 
     @Transactional

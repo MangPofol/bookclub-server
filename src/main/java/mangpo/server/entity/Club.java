@@ -26,7 +26,7 @@ public class Club extends BaseTimeEntity {
     private ColorSet colorSet;
 
     @Column(name = "club_level")
-    private int level;
+    private Integer level;
 
     @Column(name = "club_president")
     private Long presidentId;

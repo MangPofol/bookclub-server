@@ -119,13 +119,13 @@ public class UserServiceTest {
 
         User user = userService.findUser(userId1);
 
-        UserRequestDto userRequestDto = UserRequestDto.builder()
+        User userRequest = User.builder()
                 .userPassword("4321")
                 .email("email@naver.com")
                 .build();
 
         //when
-        userService.updateUser(user.getId(), userRequestDto);
+        userService.updateUser(user.getId(), userRequest);
 
         em.flush();
         em.clear();

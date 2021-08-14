@@ -135,7 +135,7 @@ class ClubServiceTest {
 
         Club result = clubService.findClub(clubId1);
 
-        ClubRequestDto clubRequestDto = ClubRequestDto.builder()
+        Club clubRequest = Club.builder()
 //              .name("hello club")
                 .colorSet(ColorSet.B)
                 .presidentId(2L)
@@ -143,7 +143,7 @@ class ClubServiceTest {
                 .build();
 
         //when
-        clubService.updateClub(result.getId(), clubRequestDto);
+        clubService.updateClub(result.getId(), clubRequest);
 
         em.flush();
         em.clear();

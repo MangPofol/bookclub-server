@@ -1,5 +1,6 @@
 package mangpo.server.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import mangpo.server.entity.User;
