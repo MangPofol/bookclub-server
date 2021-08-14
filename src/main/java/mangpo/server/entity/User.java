@@ -22,11 +22,12 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
+    @Column(name = "user_email")
+    private String email;
+
     @Column(name = "user_pw")
     private String userPassword;
 
-    @Column(name = "user_email")
-    private String email;
 
 
     public void changeUserPassword(String userPassword){
