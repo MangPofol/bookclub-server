@@ -107,4 +107,36 @@ class BookServiceTest {
                 .hasMessageContaining("존재하지 않는 책입니다.");
     }
 
+    @Test
+    void 책_조회_카테고리() {
+        //given
+        Book book1 = Book.builder()
+                .name("죽은 시인의 사회")
+                .category(BookCategory.NOW)
+                .isbn("1")
+                .build();
+
+        Book book2 = Book.builder()
+                .name("죽은 시인의 수학")
+                .category(BookCategory.NOW)
+                .isbn("2")
+                .build();
+
+        Book book3 = Book.builder()
+                .name("죽은 시인의 과학")
+                .category(BookCategory.AFTER)
+                .isbn("3")
+                .build();
+
+        Long bookId1 = bookService.createBook(book1);
+        Long bookId2 = bookService.createBook(book2);
+        Long bookId3 = bookService.createBook(book3);
+
+        //when
+        List<Book> byBookCategory = bookService.findByBookCategory(BookCategory.NOW);
+
+        //then
+        assertThat(byBookCategory.size()).isEqualTo(2);
+        assertThat(byBookCategory).contains(book1,book2);
+    }
 }

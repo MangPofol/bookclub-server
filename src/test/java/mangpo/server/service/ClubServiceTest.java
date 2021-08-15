@@ -1,6 +1,5 @@
 package mangpo.server.service;
 
-import mangpo.server.dto.ClubRequestDto;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ColorSet;
 import mangpo.server.exeption.NotExistClubException;

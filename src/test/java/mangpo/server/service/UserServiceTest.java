@@ -1,6 +1,5 @@
 package mangpo.server.service;
 
-import mangpo.server.dto.UserRequestDto;
 import mangpo.server.entity.User;
 import mangpo.server.exeption.NotExistUserException;
 import mangpo.server.repository.UserRepository;
