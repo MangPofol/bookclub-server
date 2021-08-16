@@ -3,11 +3,9 @@ package mangpo.server.service;
 import mangpo.server.entity.User;
 import mangpo.server.exeption.NotExistUserException;
 import mangpo.server.repository.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -28,7 +26,7 @@ public class UserServiceTest {
      void 회원가입_정상() {
         //given
         User user = User.builder()
-                .userPassword("1234")
+                .password("1234")
                 .email("email@gmail.com")
                 .build();
 
@@ -43,12 +41,12 @@ public class UserServiceTest {
     void 회원가입_중복_실패() {
         //given
         User user1 = User.builder()
-                .userPassword("1234")
+                .password("1234")
                 .email("email@gmail.com")
                 .build();
 
         User user2 = User.builder()
-                .userPassword("4321")
+                .password("4321")
                 .email("email@gmail.com")
                 .build();
 
@@ -67,7 +65,7 @@ public class UserServiceTest {
     void 회원조회_단일_성공() {
         //given
         User user1 = User.builder()
-                .userPassword("1234")
+                .password("1234")
                 .email("email@gmail.com")
                 .build();
 
@@ -83,12 +81,12 @@ public class UserServiceTest {
     void 회원조회_리스트() {
         //given
         User user1 = User.builder()
-                .userPassword("1234")
+                .password("1234")
                 .email("email@gmail.com")
                 .build();
 
         User user2 = User.builder()
-                .userPassword("4321")
+                .password("4321")
                 .email("email@naver.com")
                 .build();
 
@@ -107,7 +105,7 @@ public class UserServiceTest {
     void 회원_정보_수정() {
         //given
         User user1 = User.builder()
-                .userPassword("1234")
+                .password("1234")
                 .email("email@gmail.com")
                 .build();
 
@@ -119,7 +117,7 @@ public class UserServiceTest {
         User user = userService.findUser(userId1);
 
         User userRequest = User.builder()
-                .userPassword("4321")
+                .password("4321")
                 .email("email@naver.com")
                 .build();
 
@@ -132,7 +130,7 @@ public class UserServiceTest {
         User user2 = userService.findUser(userId1);
 
         //then
-        assertThat(user2.getUserPassword()).isEqualTo("4321");
+        assertThat(user2.getPassword()).isEqualTo("4321");
         assertThat(user2.getEmail()).isEqualTo("email@naver.com");
     }
 
@@ -140,7 +138,7 @@ public class UserServiceTest {
     void 회원_정보_삭제() {
         //given
         User user1 = User.builder()
-                .userPassword("1234")
+                .password("1234")
                 .email("email@gmail.com")
                 .build();
 

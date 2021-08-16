@@ -6,12 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mangpo.server.entity.common.BaseTimeEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,10 +24,11 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Column(name = "user_pw")
-    private String userPassword;
+    private String password;
 
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
     private Sex sex;
 
     private LocalDate birthdate;
@@ -40,8 +37,8 @@ public class User extends BaseTimeEntity {
 
 
 
-    public void changeUserPassword(String userPassword){
-        this.userPassword = userPassword;
+    public void changeUserPassword(String password){
+        this.password = password;
     }
     public void changeEmail(String email){
         this.email = email;

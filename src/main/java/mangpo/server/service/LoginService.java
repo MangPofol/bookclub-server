@@ -3,10 +3,10 @@ package mangpo.server.service;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.User;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LoginService {
 
@@ -16,9 +16,8 @@ public class LoginService {
      * @return null 로그인 실패
      */
     public User login(String email, String password) {
-        List<User> usersByEmail = userService.findUsersByEmail(email);
-        User user = usersByEmail.get(0);
-        String userPassword = usersByEmail.get(0).getUserPassword();
+        User user = userService.findUserByEmail(email);
+        String userPassword = user.getPassword();
         if (userPassword.equals(password))
             return user;
         return null;

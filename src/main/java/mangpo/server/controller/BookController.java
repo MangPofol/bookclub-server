@@ -8,9 +8,7 @@ import mangpo.server.entity.User;
 import mangpo.server.service.BookService;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
-import mangpo.server.session.SessionConst;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +26,8 @@ public class BookController {
 
     @GetMapping("/{email}/{category}")
     public Result getBooksByEmailAndCategory(@PathVariable String email ,@PathVariable BookCategory category){
-        List<User> usersByEmail = userService.findUsersByEmail(email);
-        List<ClubBookUser> listByUser = clubBookUserService.findListByUser(usersByEmail.get(0));
+        User userByEmail = userService.findUserByEmail(email);
+        List<ClubBookUser> listByUser = clubBookUserService.findListByUser(userByEmail);
 
         List<BookResponseDto> books = listByUser.stream()
                 .filter(m -> m.getBook().getCategory().equals(category))

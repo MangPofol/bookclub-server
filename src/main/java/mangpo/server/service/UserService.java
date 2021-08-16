@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,8 +24,8 @@ public class UserService {
     }
 
     private void validateDuplicateUser(User user) {
-        List<User> findUser = userRepository.findUsersByEmail(user.getEmail());
-        if (!findUser.isEmpty()){
+        User findUser = userRepository.findUserByEmail(user.getEmail());
+        if (findUser != null){
             throw new IllegalStateException("이미 사용중인 이메일입니다.");
         }
     }
@@ -37,8 +36,8 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new NotExistUserException("존재하지 않는 유저입니다."));
     }
 
-    public List<User> findUsersByEmail(String email){
-        return userRepository.findUsersByEmail(email);
+    public User findUserByEmail(String email){
+        return userRepository.findUserByEmail(email);
     }
 
     @Transactional
@@ -49,8 +48,8 @@ public class UserService {
 
         if(userRequest.getEmail() != null)
             user.changeEmail(userRequest.getEmail());
-        if(userRequest.getUserPassword() != null)
-            user.changeUserPassword(userRequest.getUserPassword());
+        if(userRequest.getPassword() != null)
+            user.changeUserPassword(userRequest.getPassword());
     }
 
     @Transactional

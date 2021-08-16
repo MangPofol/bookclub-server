@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import mangpo.server.entity.Sex;
 import mangpo.server.entity.User;
 import mangpo.server.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,32 +19,21 @@ public class UserController {
 
     private final UserService userService;
 
-//    @PostMapping
-//    public Result saveUser(@RequestBody CreateUserRequestDto createUserRequestDto){
-//
-//        User user = User.builder()
-//                .email(createUserRequestDto.email)
-//                .userPassword(createUserRequestDto.userPassword)
-//                .build();
-//
-//        userService.join(user);
-//
-//        CreateUserResponseDto response = new CreateUserResponseDto(user.getEmail());
-//
-//        return new Result(response);
-//    }
-
     @PostMapping
     public ResponseEntity<CreateUserResponseDto> createUser(@RequestBody CreateUserRequestDto createUserRequestDto){
 
         User user = User.builder()
                 .email(createUserRequestDto.email)
-                .userPassword(createUserRequestDto.userPassword)
+                .password(createUserRequestDto.password)
+                .birthdate(createUserRequestDto.birthdate)
+                .nickname(createUserRequestDto.nickname)
+                .sex(createUserRequestDto.sex)
+                .profileImgLocation(createUserRequestDto.profileImgLocation)
                 .build();
 
         try{
             userService.join(user);
-            CreateUserResponseDto response = new CreateUserResponseDto(user.getEmail());
+            CreateUserResponseDto response = new CreateUserResponseDto(user.getEmail(),user.getNickname(),user.getSex(),user.getBirthdate(),user.getProfileImgLocation());
 
             return ResponseEntity.ok(response);
         }catch (IllegalStateException e){
@@ -52,7 +42,8 @@ public class UserController {
     }
 
 //    @GetMapping
-//    public Result<FindOneUserResponseDto> findOneUser(@RequestBody FindOneUserRequestDto findOneUserRequestDto){
+//    public Result<FindOneUserDto> findOneUser(@RequestBody FindOneUserDto findOneUserDto){
+//        String email = findOneUserDto.getEmail();
 //
 //    }
 
@@ -71,7 +62,11 @@ public class UserController {
     @NoArgsConstructor
     static class CreateUserRequestDto {
         private String email;
-        private String userPassword;
+        private String password;
+        private String nickname;
+        private Sex sex;
+        private LocalDate birthdate;
+        private String profileImgLocation;
     }
 
     @Data
@@ -79,19 +74,17 @@ public class UserController {
     @NoArgsConstructor
     static class CreateUserResponseDto {
         private String email;
+        private String nickname;
+        private Sex sex;
+        private LocalDate birthdate;
+        private String profileImgLocation;
     }
 
 //    @Data
 //    @AllArgsConstructor
 //    @NoArgsConstructor
-//    static class FindOneUserRequestDto {
+//    static class FindOneUserDto {
 //        private String email;
 //    }
-//
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    static class FindOneUserResponseDto {
-//        private String email;
-//    }
+
 }
