@@ -25,7 +25,7 @@ public class UserService {
     }
 
     private void validateDuplicateUser(User user) {
-        List<User> findUser = userRepository.findByEmail(user.getEmail());
+        List<User> findUser = userRepository.findUsersByEmail(user.getEmail());
         if (!findUser.isEmpty()){
             throw new IllegalStateException("이미 사용중인 이메일입니다.");
         }
@@ -35,6 +35,10 @@ public class UserService {
 
     public User findUser(Long userId){
         return userRepository.findById(userId).orElseThrow(() -> new NotExistUserException("존재하지 않는 유저입니다."));
+    }
+
+    public List<User> findUsersByEmail(String email){
+        return userRepository.findUsersByEmail(email);
     }
 
     @Transactional

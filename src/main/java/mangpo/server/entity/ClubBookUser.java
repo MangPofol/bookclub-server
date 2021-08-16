@@ -1,12 +1,18 @@
 package mangpo.server.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClubBookUser extends BaseTimeEntity {
 
     @Id @GeneratedValue

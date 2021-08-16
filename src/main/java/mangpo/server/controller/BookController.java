@@ -1,19 +1,19 @@
 package mangpo.server.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import mangpo.server.entity.Book;
 import mangpo.server.entity.BookCategory;
+import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.User;
 import mangpo.server.service.BookService;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.UserService;
+import mangpo.server.session.SessionConst;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,16 +23,46 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
+    private final ClubBookUserService clubBookUserService;
+    private final UserService userService;
 
-    @GetMapping("/{bookCategory}")
-    public Result getMyBooks(@PathVariable("bookCategory") BookCategory category){
-        List<Book> books = bookService.findByBookCategory(category);
+    @GetMapping("/{email}/{category}")
+    public Result getBooksByEmailAndCategory(@PathVariable String email ,@PathVariable BookCategory category){
+        List<User> usersByEmail = userService.findUsersByEmail(email);
+        List<ClubBookUser> listByUser = clubBookUserService.findListByUser(usersByEmail.get(0));
 
-        List<MyBooksResponseDto> collect = books.stream()
-                .map(m -> new MyBooksResponseDto(m.getId(),m.getName(),m.getIsbn(),m.getCategory()))
+        List<BookResponseDto> books = listByUser.stream()
+                .filter(m -> m.getBook().getCategory().equals(category))
+                .map(m -> m.getBook())
+                .map(m ->  new BookResponseDto(m.getId(),m.getName(),m.getIsbn(),m.getCategory()))
                 .collect(Collectors.toList());
 
-        return new Result(collect);
+        //같은책인데 다른걸로 뜨는거 처리: 클라이언트에서 하나만 보이게 표시하도록 부탁
+        return new Result(books);
+    }
+
+//    @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+    @PostMapping
+    public ResponseEntity<CreateBookDto> createBook( @RequestBody CreateBookDto createBookDto){
+
+        User loginUser = userService.findUser(1L);//mock
+
+        Book newBook = Book.builder()
+                .isbn(createBookDto.isbn)
+                .name(createBookDto.name)
+                .category(createBookDto.category)
+                .build();
+
+        Long bookId = bookService.createBook(newBook);
+
+        ClubBookUser clubBookUser = ClubBookUser.builder()
+                .book(newBook)
+                .user(loginUser)
+                .build();
+
+        Long clubBookUserId = clubBookUserService.createClubBookUser(clubBookUser);
+
+        return new ResponseEntity(createBookDto, HttpStatus.CREATED);
     }
 
 
@@ -46,8 +76,17 @@ public class BookController {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class MyBooksResponseDto {
+    static class BookResponseDto {
         private Long id;
+        private String name;
+        private String isbn;
+        private BookCategory category;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class CreateBookDto {
         private String name;
         private String isbn;
         private BookCategory category;

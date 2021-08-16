@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,6 +29,14 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "user_pw")
     private String userPassword;
+
+    private String nickname;
+
+    private Sex sex;
+
+    private LocalDate birthdate;
+
+    private String profileImgLocation;
 
 
 
