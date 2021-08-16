@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Book;
 
 import mangpo.server.entity.BookCategory;
+import mangpo.server.entity.User;
 import mangpo.server.exeption.NotExistBookException;
 import mangpo.server.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,16 @@ public class BookService {
 
     @Transactional
     public Long createBook(Book book){
+        validateDuplicateBook(book);
         bookRepository.save(book);
         return book.getId();
+    }
+
+    private void validateDuplicateBook(Book book) {
+        Book findBook = bookRepository.findByIsbn(book.getIsbn());
+        if (findBook != null){
+            throw new IllegalStateException("이미 등록된 책입니다.");
+        }
     }
 
     @Transactional
