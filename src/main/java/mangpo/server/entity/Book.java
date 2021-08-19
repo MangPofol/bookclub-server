@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,4 +29,7 @@ public class Book {
     @Enumerated(EnumType.STRING)
     @Column(name = "book_category")
     private BookCategory category;
+
+    @OneToMany(mappedBy = "book",fetch = FetchType.LAZY)
+    private List<Post> posts = new ArrayList<>();
 }

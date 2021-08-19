@@ -8,6 +8,7 @@ import mangpo.server.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 
@@ -38,8 +39,9 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Post post){
-        postRepository.delete(post);
+    public void deletePost(Long id){
+        postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
+        postRepository.deleteById(id);
     }
     public List<Post> findPostsByBook(Book book){
         return postRepository.findByBook(book);
