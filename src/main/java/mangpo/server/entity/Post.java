@@ -1,12 +1,16 @@
 package mangpo.server.entity;
 
-import lombok.Getter;
+import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class Post extends BaseTimeEntity {
 
     @Id @GeneratedValue
@@ -25,7 +29,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_scope")
     private PostScope scope;
 
-    private boolean isIncomplete;
+    private Boolean isIncomplete;
 
     @Column(name = "post_img_location")
     private String imgLocation;
@@ -35,5 +39,16 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "post_content")
     private String content;
-
+//
+//    public void changeType(PostType postType){
+//        this.type = postType;
+//    }
+//
+//    public void changeScope(PostScope scope){
+//        this.scope = scope;
+//    }
+//
+//    public void changeIsIncomplete(Boolean isIncomplete){
+//        this.isIncomplete = isIncomplete;
+//    }
 }

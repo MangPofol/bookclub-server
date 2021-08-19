@@ -8,6 +8,7 @@ import mangpo.server.entity.User;
 import mangpo.server.service.BookService;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
+import mangpo.server.session.SessionConst;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,11 +40,11 @@ public class BookController {
         return new Result(books);
     }
 
-//    @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-    @PostMapping
-    public ResponseEntity<CreateBookDto> createBook( @RequestBody CreateBookDto createBookDto){
 
-        User loginUser = userService.findUser(1L);//mock
+    @PostMapping
+    public ResponseEntity<CreateBookDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, @RequestBody CreateBookDto createBookDto){
+
+//        User loginUser = userService.findUser(1L);//mock
 
         Book newBook = Book.builder()
                 .isbn(createBookDto.isbn)
@@ -51,16 +52,12 @@ public class BookController {
                 .category(createBookDto.category)
                 .build();
 
-        Long bookId = bookService.createBook(newBook);
-
-        ClubBookUser clubBookUser = ClubBookUser.builder()
-                .book(newBook)
-                .user(loginUser)
-                .build();
-
-        Long clubBookUserId = clubBookUserService.createClubBookUser(clubBookUser);
-
-        return new ResponseEntity(createBookDto, HttpStatus.CREATED);
+        try{
+            Long bookId = bookService.createBook(newBook);
+            return new ResponseEntity(createBookDto, HttpStatus.CREATED);
+        }catch (IllegalStateException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
