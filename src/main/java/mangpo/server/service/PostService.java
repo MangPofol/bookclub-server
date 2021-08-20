@@ -1,15 +1,19 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.controller.PostController;
 import mangpo.server.entity.Book;
 import mangpo.server.entity.Post;
 import mangpo.server.entity.User;
+import mangpo.server.repository.BookRepository;
 import mangpo.server.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,6 +22,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final BookRepository bookRepository;
 
     @Transactional
     public Long createPost(Post post){
@@ -42,8 +47,10 @@ public class PostService {
         postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
         postRepository.deleteById(id);
     }
-    public List<Post> findPostsByBook(Book book){
-        return postRepository.findByBook(book);
+
+    public List<Post> findPostsByBookId(Long bookId){
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
+        return book.getPosts();
     }
 
 
