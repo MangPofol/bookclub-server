@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 public class Post extends BaseTimeEntity {
 
@@ -39,16 +39,9 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "post_content")
     private String content;
-//
-//    public void changeType(PostType postType){
-//        this.type = postType;
-//    }
-//
-//    public void changeScope(PostScope scope){
-//        this.scope = scope;
-//    }
-//
-//    public void changeIsIncomplete(Boolean isIncomplete){
-//        this.isIncomplete = isIncomplete;
-//    }
+
+    public void changeBook(Book book){
+        this.book = book;
+    }
+
 }

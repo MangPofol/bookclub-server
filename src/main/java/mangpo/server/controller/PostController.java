@@ -8,13 +8,10 @@ import mangpo.server.entity.*;
 import mangpo.server.service.BookService;
 import mangpo.server.service.PostService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,19 +36,10 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createPost(@RequestBody CreatePostRequestDto requestDto, UriComponentsBuilder b){
+    public ResponseEntity<Long> createPost(@RequestBody PostRequestDto requestDto, UriComponentsBuilder b){
         Book requestBook = bookService.findBook(requestDto.getBookId());
-
-        Post post = Post.builder()
-                .book(requestBook)
-                .type(requestDto.type)
-                .scope(requestDto.scope)
-                .isIncomplete(requestDto.isIncomplete)
-                .imgLocation(requestDto.imgLocation)
-                .title(requestDto.title)
-                .content(requestDto.content)
-                .build();
-
+        Post post = requestDto.toEntityExceptBook();
+        post.changeBook(requestBook);
         Long postId = postService.createPost(post);
 
         UriComponents uriComponents =
@@ -61,13 +49,21 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletePost(@PathVariable Long id){
+    public ResponseEntity<?> deletePost(@PathVariable Long id){
         postService.deletePost(id);
 
         return ResponseEntity.ok().build();
     }
 
-//    @PatchMapping     QDL 활용해보기
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto){
+        Post requestEntity = requestDto.toEntityExceptBook();
+        postService.updatePost(id,requestEntity);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 
     @Data
     @AllArgsConstructor
@@ -101,7 +97,7 @@ public class PostController {
     }
 
     @Data
-    static class CreatePostRequestDto {
+    static class PostRequestDto {
         private Long bookId;
         private PostType type;
         private PostScope scope;
@@ -109,6 +105,17 @@ public class PostController {
         private String imgLocation;
         private String title;
         private String content;
+
+        public Post toEntityExceptBook(){
+            return Post.builder()
+                    .type(this.type)
+                    .scope(this.scope)
+                    .isIncomplete(this.isIncomplete)
+                    .imgLocation(this.imgLocation)
+                    .title(this.title)
+                    .content(this.content)
+                    .build();
+        }
     }
 
 

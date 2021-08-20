@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+//noargs accesslevel protected 로 변경하고 allargs 때서 리팩토링
 public class Book {
 
     @Id @GeneratedValue
