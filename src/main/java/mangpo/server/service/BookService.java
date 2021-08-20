@@ -11,6 +11,7 @@ import mangpo.server.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -36,12 +37,12 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long id){
-        Book book = bookRepository.findById(id).orElseThrow(() -> new NotExistBookException("존재하지 않는 책입니다."));
+        Book book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
         bookRepository.delete(book);
     }
 
     public Book findBook(Long id){
-        return bookRepository.findById(id).orElseThrow(() -> new NotExistBookException("존재하지 않는 책입니다."));
+        return bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
     }
 
     public List<Book> findBooks(){
@@ -52,16 +53,4 @@ public class BookService {
         return bookRepository.findByCategory(bookCategory);
     }
 
-//    private BookCategory getCategory(String bookCategory) {
-//        BookCategory bc;
-//        if(bookCategory.equals("before"))
-//            bc = BookCategory.BEFORE;
-//        else if(bookCategory.equals("now"))
-//            bc = BookCategory.NOW;
-//        else if(bookCategory.equals("after"))
-//            bc = BookCategory.AFTER;
-//        else
-//            throw new IllegalStateException("잘못된 책 상태입니다");
-//        return bc;
-//    }
 }

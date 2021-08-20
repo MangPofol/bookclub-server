@@ -11,6 +11,7 @@ import mangpo.server.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public class ClubService {
     //TODO 문제 발생 가능성 높음: 나중에 잘 살펴보기
     @Transactional
     public void updateClub(Long id, Club clubRequest){
-        Club club = clubRepository.findById(id).orElseThrow(() ->   new NotExistClubException("존재하지 않는 클럽입니다."));
+        Club club = clubRepository.findById(id).orElseThrow(() ->   new EntityNotFoundException("존재하지 않는 클럽입니다."));
 
         validateDuplicateClubName(clubRequest);
 
@@ -56,7 +57,7 @@ public class ClubService {
 
     @Transactional
     public void deleteClub(Long id){
-        Club club = clubRepository.findById(id).orElseThrow(() -> new NotExistClubException("존재하지 않는 클럽입니다."));
+        Club club = clubRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
         clubRepository.delete(club);
     }
 
@@ -64,7 +65,7 @@ public class ClubService {
         return clubRepository.findAll();
     }
     public Club findClub(Long clubId){
-        return clubRepository.findById(clubId).orElseThrow(() -> new NotExistClubException("존재하지 않는 클럽입니다."));
+        return clubRepository.findById(clubId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
     }
 
 }

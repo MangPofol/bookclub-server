@@ -27,7 +27,7 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long postId, Post postRequest){
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 포스트입니다."));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
 
         post.setBook(postRequest.getBook());
         post.setType(postRequest.getType());

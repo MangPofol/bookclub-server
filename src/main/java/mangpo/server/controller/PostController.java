@@ -29,7 +29,7 @@ public class PostController {
     @GetMapping
     public Result<GetPostsResponseDto> getPostsByBookId(@RequestParam Long bookId){
         Book book = bookService.findBook(bookId);
-        List<Post> posts = book.getPosts();//페치조인 필요
+        List<Post> posts = book.getPosts();
 
         List<GetPostsResponseDto> collect = posts.stream()
                 .map(GetPostsResponseDto::new)

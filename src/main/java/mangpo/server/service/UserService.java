@@ -7,6 +7,7 @@ import mangpo.server.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class UserService {
     public List<User> findUsers(){ return userRepository.findAll();}
 
     public User findUser(Long userId){
-        return userRepository.findById(userId).orElseThrow(() -> new NotExistUserException("존재하지 않는 유저입니다."));
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
     }
 
     public User findUserByEmail(String email){
@@ -54,7 +55,7 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> new NotExistUserException("존재하지 않는 유저입니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
 
         userRepository.delete(user);
     }
