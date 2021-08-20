@@ -34,6 +34,8 @@ public class PostService {
     public void updatePost(Long postId, Post postRequest){
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
         //changeXXX로 변환
+        //TODO bean validation 필요
+
         post.setType(postRequest.getType());
         post.setScope(postRequest.getScope());
         post.setIsIncomplete(postRequest.getIsIncomplete());
@@ -46,6 +48,10 @@ public class PostService {
     public void deletePost(Long id){
         postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
         postRepository.deleteById(id);
+    }
+
+    public Post findPost(Long id){
+        return postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
     public List<Post> findPostsByBookId(Long bookId){

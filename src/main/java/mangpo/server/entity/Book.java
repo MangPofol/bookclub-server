@@ -1,9 +1,6 @@
 package mangpo.server.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 //noargs accesslevel protected 로 변경하고 allargs 때서 리팩토링
 public class Book {
 
@@ -31,6 +28,7 @@ public class Book {
     @Column(name = "book_category")
     private BookCategory category;
 
-    @OneToMany(mappedBy = "book",fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 }

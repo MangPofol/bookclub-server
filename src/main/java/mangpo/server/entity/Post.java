@@ -44,4 +44,13 @@ public class Post extends BaseTimeEntity {
         this.book = book;
     }
 
+    //==연관관계 편의 메소드==//
+    public void addBook(Book book) {
+        if(this.book != null)
+            this.book.getPosts().remove(this);
+
+        this.book = book;
+        book.getPosts().add(this);
+    }
+
 }
