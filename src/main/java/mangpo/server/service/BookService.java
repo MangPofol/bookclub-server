@@ -55,7 +55,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public List<Book> findByBookCategory(BookCategory bookCategory){
+    public List<Book> findByCategory(BookCategory bookCategory){
         return bookRepository.findByCategory(bookCategory);
     }
 

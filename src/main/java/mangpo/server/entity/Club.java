@@ -1,9 +1,6 @@
 package mangpo.server.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -11,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Club extends BaseTimeEntity {
 

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,7 +66,7 @@ public class UserController {
         private String password;
         private String nickname;
         private Sex sex;
-        private LocalDate birthdate;
+        private LocalDateTime birthdate;
         private String profileImgLocation;
     }
 
@@ -76,7 +77,7 @@ public class UserController {
         private String email;
         private String nickname;
         private Sex sex;
-        private LocalDate birthdate;
+        private LocalDateTime birthdate;
         private String profileImgLocation;
     }
 

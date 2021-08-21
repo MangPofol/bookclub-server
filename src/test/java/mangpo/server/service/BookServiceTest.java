@@ -2,7 +2,6 @@ package mangpo.server.service;
 
 import mangpo.server.entity.Book;
 import mangpo.server.entity.BookCategory;
-import mangpo.server.exeption.NotExistBookException;
 import mangpo.server.repository.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,7 +103,7 @@ class BookServiceTest {
 
         //then
         assertThatThrownBy(() -> bookService.findBook(bookId))
-                .isInstanceOf(NotExistBookException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("존재하지 않는 책입니다.");
     }
 
@@ -133,10 +133,10 @@ class BookServiceTest {
         Long bookId3 = bookService.createBook(book3);
 
         //when
-        List<Book> byBookCategory = bookService.findByBookCategory(BookCategory.NOW);
+        List<Book> result = bookService.findByCategory(BookCategory.NOW);
 
         //then
-        assertThat(byBookCategory.size()).isEqualTo(2);
-        assertThat(byBookCategory).contains(book1,book2);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).contains(book1,book2);
     }
 }

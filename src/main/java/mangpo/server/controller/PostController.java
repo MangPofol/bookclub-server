@@ -25,7 +25,7 @@ public class PostController {
     private final BookService bookService;
 
     @GetMapping
-    public Result<GetPostsResponseDto> getPostsByBookId(@RequestParam Long bookId){
+    public Result<List<GetPostsResponseDto>> getPostsByBookId(@RequestParam Long bookId){
         List<Post> posts = postService.findPostsByBookId(bookId);
 
         List<GetPostsResponseDto> collect = posts.stream()

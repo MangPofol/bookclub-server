@@ -32,7 +32,7 @@ public class ClubService {
     }
 
     private void validateDuplicateClubName(Club club) {
-        List<Club> findClub = clubRepository.findByName(club.getName());
+        Optional<Club> findClub = clubRepository.findByName(club.getName());
         if(!findClub.isEmpty()){
             throw new IllegalStateException("이미 존재하는 클럽 이름입니다.");
         }
@@ -66,6 +66,9 @@ public class ClubService {
     }
     public Club findClub(Long clubId){
         return clubRepository.findById(clubId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
+    }
+    public Club findByName(String clubName){
+        return clubRepository.findByName(clubName).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
     }
 
 }

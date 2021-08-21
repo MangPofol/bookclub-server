@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
-    private final ClubBookUserService clubBookUserService;
+    private final ClubBookUserService cubService;
     private final UserService userService;
 
-    @GetMapping("/{email}/{category}")
-    public Result getBooksByEmailAndCategory(@PathVariable String email ,@PathVariable BookCategory category){
+    @GetMapping
+    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email ,@RequestParam BookCategory category){
         User userByEmail = userService.findUserByEmail(email);
-        List<ClubBookUser> listByUser = clubBookUserService.findListByUser(userByEmail);
+        List<ClubBookUser> listByUser = cubService.findListByUser(userByEmail);
 
 
         //listByUser 에서 책만 뽑기
@@ -41,11 +41,12 @@ public class BookController {
                 .collect(Collectors.toList());
 
         HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
-        bookHashSet.stream()
+
+        List<BookResponseDto> collect = bookHashSet.stream()
                 .map(BookResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new Result(bookHashSet);
+        return new Result(collect);
     }
 
 
@@ -62,6 +63,13 @@ public class BookController {
                 .build();
 
         Long bookId = bookService.createBook(newBook);
+
+        ClubBookUser cbu = ClubBookUser.builder()
+                .book(newBook)
+                .user(loginUser)
+                .build();
+
+        cubService.createClubBookUser(cbu);
 
         UriComponents uriComponents =
                 b.path("/books/{bookId}").buildAndExpand(bookId);

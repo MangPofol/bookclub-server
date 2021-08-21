@@ -8,6 +8,7 @@ import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -31,7 +32,7 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
-    private LocalDate birthdate;
+    private LocalDateTime birthdate;
 
     private String profileImgLocation;
 
