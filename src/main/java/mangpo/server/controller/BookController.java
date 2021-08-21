@@ -9,10 +9,12 @@ import mangpo.server.service.BookService;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
 import mangpo.server.session.SessionConst;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,36 +32,60 @@ public class BookController {
         User userByEmail = userService.findUserByEmail(email);
         List<ClubBookUser> listByUser = clubBookUserService.findListByUser(userByEmail);
 
-        List<BookResponseDto> books = listByUser.stream()
+
+        //listByUser 에서 책만 뽑기
+        List<Book> booksExtracted = listByUser.stream()
                 .filter(m -> m.getBook().getCategory().equals(category))
                 .map(m -> m.getBook())
-                .map(m ->  new BookResponseDto(m.getId(),m.getName(),m.getIsbn(),m.getCategory()))
                 .collect(Collectors.toList());
 
-        //같은책인데 다른걸로 뜨는거 처리: 클라이언트에서 하나만 보이게 표시하도록 부탁
-        return new Result(books);
+        //책 중복 제거
+        HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
+        bookHashSet.stream()
+                .map(BookResponseDto::new)
+                .collect(Collectors.toList());
+
+        return new Result(bookHashSet);
     }
 
 
     @PostMapping
-    public ResponseEntity<CreateBookDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, @RequestBody CreateBookDto createBookDto){
+    public ResponseEntity<BookRequestDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+                                                     @RequestBody BookRequestDto bookRequestDto, UriComponentsBuilder b){
 
 //        User loginUser = userService.findUser(1L);//mock
 
         Book newBook = Book.builder()
-                .isbn(createBookDto.isbn)
-                .name(createBookDto.name)
-                .category(createBookDto.category)
+                .isbn(bookRequestDto.isbn)
+                .name(bookRequestDto.name)
+                .category(bookRequestDto.category)
                 .build();
 
-        try{
-            Long bookId = bookService.createBook(newBook);
-            return new ResponseEntity(createBookDto, HttpStatus.CREATED);
-        }catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
-        }
+        Long bookId = bookService.createBook(newBook);
+
+        UriComponents uriComponents =
+                b.path("/books/{bookId}").buildAndExpand(bookId);
+
+//        return ResponseEntity.noContent().build().created(uriComponents.toUri()).build();
+
+        return ResponseEntity.created(uriComponents.toUri()).body(bookRequestDto);
     }
 
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody BookRequestDto bookRequestDto){
+        Book bookRequest = bookRequestDto.toEntityExceptIdAndPosts(bookRequestDto);
+        bookService.updateBook(id, bookRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> updateBook(@PathVariable Long id){
+        bookService.deleteBook(id);
+
+        return ResponseEntity.ok().build();
+    }
 
     @Data
     @AllArgsConstructor
@@ -76,14 +102,29 @@ public class BookController {
         private String name;
         private String isbn;
         private BookCategory category;
+
+        public BookResponseDto(Book book){
+            this.id = book.getId();
+            this.name = book.getName();
+            this.isbn = book.getIsbn();
+            this.category = book.getCategory();
+        }
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class CreateBookDto {
+    static class BookRequestDto {
         private String name;
         private String isbn;
         private BookCategory category;
+
+        public Book toEntityExceptIdAndPosts(BookRequestDto bookRequestDto){
+            return Book.builder()
+                    .name(this.name)
+                    .isbn(this.isbn)
+                    .category(this.category)
+                    .build();
+        }
     }
 }

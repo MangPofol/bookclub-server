@@ -41,6 +41,12 @@ public class BookService {
         bookRepository.delete(book);
     }
 
+    @Transactional
+    public void updateBook(Long id, Book bookRequest){
+        Book book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
+        book.updateBook(bookRequest);
+    }
+
     public Book findBook(Long id){
         return bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
     }

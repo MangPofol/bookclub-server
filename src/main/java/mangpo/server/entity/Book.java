@@ -31,4 +31,10 @@ public class Book {
     @Builder.Default
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
+
+    public void updateBook(Book bookRequest){
+        this.name = bookRequest.name;
+        this.isbn = bookRequest.isbn;
+        this.category = bookRequest.category;
+    }
 }
