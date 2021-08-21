@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,12 +102,16 @@ public class BookController {
         private String name;
         private String isbn;
         private BookCategory category;
+        private LocalDateTime createdDate;
+        private LocalDateTime modifiedDate;
 
         public BookResponseDto(Book book){
             this.id = book.getId();
             this.name = book.getName();
             this.isbn = book.getIsbn();
             this.category = book.getCategory();
+            this.createdDate = book.getCreatedDate();
+            this.modifiedDate = book.getModifiedDate();
         }
     }
 
