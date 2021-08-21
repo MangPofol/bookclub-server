@@ -1,6 +1,7 @@
 package mangpo.server.entity;
 
 import lombok.*;
+import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //noargs accesslevel protected 로 변경하고 allargs 때서 리팩토링
-public class Book {
+public class Book extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "book_id")

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,6 +84,8 @@ public class PostController {
         private String imgLocation;
         private String title;
         private String content;
+        private LocalDateTime createdDate;
+        private LocalDateTime modifiedDate;
 
         public GetPostsResponseDto(Post post){
             this.id = post.getId();
@@ -92,6 +95,8 @@ public class PostController {
             this.imgLocation = post.getImgLocation();
             this.title = post.getTitle();
             this.content = post.getContent();
+            this.createdDate = post.getCreatedDate();
+            this.modifiedDate = post.getModifiedDate();
         }
     }
 

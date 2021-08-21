@@ -39,7 +39,6 @@ public class BookController {
                 .map(m -> m.getBook())
                 .collect(Collectors.toList());
 
-        //책 중복 제거
         HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
         bookHashSet.stream()
                 .map(BookResponseDto::new)
@@ -81,7 +80,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id){
+    public ResponseEntity<?> deleteBook(@PathVariable Long id){
         bookService.deleteBook(id);
 
         return ResponseEntity.ok().build();
