@@ -5,6 +5,7 @@ import mangpo.server.entity.Book;
 import mangpo.server.entity.BookCategory;
 import mangpo.server.entity.ClubBookUser;
 import mangpo.server.entity.User;
+import mangpo.server.repository.BookQueryRepository;
 import mangpo.server.service.BookService;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
@@ -25,13 +26,14 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
-    private final ClubBookUserService cubService;
+    private final ClubBookUserService cbuService;
     private final UserService userService;
+    private final BookQueryRepository bookQueryRepository;
 
     @GetMapping
     public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email ,@RequestParam BookCategory category){
         User userByEmail = userService.findUserByEmail(email);
-        List<ClubBookUser> listByUser = cubService.findListByUser(userByEmail);
+        List<ClubBookUser> listByUser = cbuService.findListByUser(userByEmail);
 
 
         //listByUser 에서 책만 뽑기
@@ -53,9 +55,6 @@ public class BookController {
     @PostMapping
     public ResponseEntity<BookRequestDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
                                                      @RequestBody BookRequestDto bookRequestDto, UriComponentsBuilder b){
-
-//        User loginUser = userService.findUser(1L);//mock
-
         Book newBook = Book.builder()
                 .isbn(bookRequestDto.isbn)
                 .name(bookRequestDto.name)
@@ -69,7 +68,7 @@ public class BookController {
                 .user(loginUser)
                 .build();
 
-        cubService.createClubBookUser(cbu);
+        cbuService.createClubBookUser(cbu);
 
         UriComponents uriComponents =
                 b.path("/books/{bookId}").buildAndExpand(bookId);
@@ -85,14 +84,16 @@ public class BookController {
         Book bookRequest = bookRequestDto.toEntityExceptIdAndPosts(bookRequestDto);
         bookService.updateBook(id, bookRequest);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long id){
-        bookService.deleteBook(id);
+    @DeleteMapping("/{bookId}")
+    public ResponseEntity<?> deleteBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+        Book bookRequest = bookService.findBook(bookId);
+        bookQueryRepository.deleteClubBookUserByUserAndBook(loginUser, bookRequest);
+        bookService.deleteBook(bookId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Data

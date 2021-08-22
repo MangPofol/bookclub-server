@@ -25,18 +25,18 @@ public class PostController {
     private final BookService bookService;
 
     @GetMapping
-    public Result<List<GetPostsResponseDto>> getPostsByBookId(@RequestParam Long bookId){
+    public Result<List<PostResponseDto>> getPostsByBookId(@RequestParam Long bookId){
         List<Post> posts = postService.findPostsByBookId(bookId);
 
-        List<GetPostsResponseDto> collect = posts.stream()
-                .map(GetPostsResponseDto::new)
+        List<PostResponseDto> collect = posts.stream()
+                .map(PostResponseDto::new)
                 .collect(Collectors.toList());
 
         return new Result(collect);
     }
 
     @PostMapping
-    public ResponseEntity<Long> createPost(@RequestBody PostRequestDto requestDto, UriComponentsBuilder b){
+    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, UriComponentsBuilder b){
         Book requestBook = bookService.findBook(requestDto.getBookId());
         Post post = requestDto.toEntityExceptBook();
         post.changeBook(requestBook);
@@ -45,14 +45,16 @@ public class PostController {
         UriComponents uriComponents =
                 b.path("/posts/{postId}").buildAndExpand(postId);
 
-        return ResponseEntity.created(uriComponents.toUri()).build();
+        PostResponseDto postResponseDto = new PostResponseDto(post);
+
+        return ResponseEntity.created(uriComponents.toUri()).body(postResponseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id){
         postService.deletePost(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")
@@ -60,7 +62,7 @@ public class PostController {
         Post requestEntity = requestDto.toEntityExceptBook();
         postService.updatePost(id,requestEntity);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 
@@ -76,7 +78,7 @@ public class PostController {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class GetPostsResponseDto {
+    static class PostResponseDto {
         private Long id;
         private PostType type;
         private PostScope scope;
@@ -87,7 +89,7 @@ public class PostController {
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
 
-        public GetPostsResponseDto(Post post){
+        public PostResponseDto(Post post){
             this.id = post.getId();
             this.type = post.getType();
             this.scope = post.getScope();
