@@ -83,6 +83,21 @@ public class ClubController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubRequestDto updateClubRequestDto){
+        Club request = updateClubRequestDto.toEntity();
+        clubService.updateClub(clubId,request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteClub(@PathVariable Long clubId){
+        clubService.deleteClub(clubId);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
@@ -109,6 +124,24 @@ public class ClubController {
                     .build();
         }
     }
+
+    @Data
+    static class UpdateClubRequestDto {
+        private String name;
+        private ColorSet colorSet;
+        private Integer level;
+        private Long presidentId;
+
+        public Club toEntity(){
+            return Club.builder()
+                    .name(this.name)
+                    .colorSet(this.colorSet)
+                    .level(this.level)
+                    .presidentId(this.presidentId)
+                    .build();
+        }
+    }
+
 
     @Data
     static class addClubToUserBookRequestDto{
