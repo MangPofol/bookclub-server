@@ -15,4 +15,6 @@ public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>
 
     @EntityGraph(attributePaths = ("book"))
     List<ClubBookUser> findListByUser(User user);
+
+    Long deleteAllByClub(Club club);
 }

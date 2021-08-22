@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,8 +26,8 @@ public class UserService {
     }
 
     private void validateDuplicateUser(User user) {
-        User findUser = userRepository.findUserByEmail(user.getEmail()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
-        if (findUser != null){
+        Optional<User> findUser = userRepository.findUserByEmail(user.getEmail());
+        if (!findUser.isEmpty()){
             throw new IllegalStateException("이미 사용중인 이메일입니다.");
         }
     }

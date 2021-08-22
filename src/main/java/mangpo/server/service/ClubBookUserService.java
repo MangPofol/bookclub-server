@@ -2,6 +2,7 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Book;
+import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
 import mangpo.server.entity.User;
 import mangpo.server.repository.ClubBookUserRepository;
@@ -21,6 +22,11 @@ public class ClubBookUserService {
     public Long createClubBookUser(ClubBookUser clubBookUser){
         clubBookUserRepository.save(clubBookUser);
         return clubBookUser.getId();
+    }
+
+    @Transactional
+    public void deleteAllClubBookUserByClub(Club club){
+        Long delete = clubBookUserRepository.deleteAllByClub(club);
     }
 
     public List<ClubBookUser> findListByUser(User user){

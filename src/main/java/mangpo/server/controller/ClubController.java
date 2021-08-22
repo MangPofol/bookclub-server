@@ -83,7 +83,7 @@ public class ClubController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{clubId}")
     public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubRequestDto updateClubRequestDto){
         Club request = updateClubRequestDto.toEntity();
         clubService.updateClub(clubId,request);
@@ -91,11 +91,14 @@ public class ClubController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{clubId}")
     public ResponseEntity<?> deleteClub(@PathVariable Long clubId){
+        Club club = clubService.findClub(clubId);
+        cbuService.deleteAllClubBookUserByClub(club);
+
         clubService.deleteClub(clubId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 

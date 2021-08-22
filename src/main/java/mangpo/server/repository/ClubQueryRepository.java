@@ -24,7 +24,7 @@ public class ClubQueryRepository {
         return queryFactory
                 .select(clubBookUser.club).distinct()
                 .from(clubBookUser)
-                .where(clubBookUser.user.eq(userRequest))
+                .where(clubBookUser.club.isNotNull() ,clubBookUser.user.eq(userRequest))
                 .fetch();
 
     }
