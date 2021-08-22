@@ -42,7 +42,7 @@ public class ClubController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createClub(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+    public ResponseEntity<ClubResponseDto> createClub(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
                                         @RequestBody CreateClubRequestDto createClubRequestDto, UriComponentsBuilder builder){
 
         Club club = createClubRequestDto.toEntity(loginUser);
@@ -58,7 +58,9 @@ public class ClubController {
         UriComponents uriComponents =
                 builder.path("/clubs/{clubId}").buildAndExpand(clubId);
 
-        return ResponseEntity.created(uriComponents.toUri()).build();
+        ClubResponseDto clubResponseDto = new ClubResponseDto(club);
+
+        return ResponseEntity.created(uriComponents.toUri()).body(clubResponseDto);
     }
 
     //컨트롤 uri
@@ -80,7 +82,7 @@ public class ClubController {
 
         cbuService.createClubBookUser(build);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{clubId}")
@@ -88,7 +90,7 @@ public class ClubController {
         Club request = updateClubRequestDto.toEntity();
         clubService.updateClub(clubId,request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{clubId}")
