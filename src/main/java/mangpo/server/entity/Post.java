@@ -4,6 +4,8 @@ import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +42,10 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_content")
     private String content;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post")
+    private List<Liked> likedList = new ArrayList<>();
+
     public void changeBook(Book book){
         this.book = book;
     }
@@ -52,5 +58,8 @@ public class Post extends BaseTimeEntity {
         this.book = book;
         book.getPosts().add(this);
     }
+
+
+
 
 }

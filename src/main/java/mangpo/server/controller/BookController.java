@@ -96,6 +96,8 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    @P
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

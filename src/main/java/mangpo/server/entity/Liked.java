@@ -25,4 +25,22 @@ public class Liked {
     private Post post;
 
     private boolean isLiked;
+
+    public void doLikeToPost(Post post){
+        this.post = post;
+        post.getLikedList().add(this);
+    }
+
+    public void undoLikeToPost(Post post){
+        post.getLikedList().remove(this);
+    }
+
+    public void doLikeToBook(Book book){
+        this.book = book;
+        book.getLikedList().add(this);
+    }
+
+    public void undoLikeToBook(Book book){
+        book.getLikedList().remove(this);
+    }
 }
