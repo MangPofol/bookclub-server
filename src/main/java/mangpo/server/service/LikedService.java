@@ -19,14 +19,13 @@ public class LikedService {
 
     @Transactional
     public Long createLiked(Liked liked){
-        Liked save = likedRepository.save(liked);
+        likedRepository.save(liked);
+        return liked.getId();
     }
 
     @Transactional
-    public void updateLiked(Long likedId, Liked likedRequest){
-        Liked liked = likedRepository.findById(likedId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 좋아요 정보입니다."));
-
-        liked.
+    public void deleteLiked(Liked liked){
+        likedRepository.delete(liked);
     }
 
 }

@@ -1,11 +1,13 @@
 package mangpo.server.entity;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Liked {
 
     @Id @GeneratedValue

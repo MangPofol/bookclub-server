@@ -1,13 +1,11 @@
 package mangpo.server.controller;
 
 import lombok.*;
-import mangpo.server.entity.Book;
-import mangpo.server.entity.BookCategory;
-import mangpo.server.entity.ClubBookUser;
-import mangpo.server.entity.User;
+import mangpo.server.entity.*;
 import mangpo.server.repository.BookQueryRepository;
 import mangpo.server.service.BookService;
 import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.LikedService;
 import mangpo.server.service.UserService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +27,9 @@ public class BookController {
     private final ClubBookUserService cbuService;
     private final UserService userService;
     private final BookQueryRepository bookQueryRepository;
+    private final LikedService likedService;
 
-    @GetMapping
+    @GetMapping//Todo fetchjoin, get query with projection
     public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email ,@RequestParam BookCategory category){
         User userByEmail = userService.findUserByEmail(email);
         List<ClubBookUser> listByUser = cbuService.findListByUser(userByEmail);
@@ -96,7 +95,33 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-    @P
+    @PostMapping("/{bookId}/do-like")
+    public ResponseEntity<?> doLike(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+        Book book = bookService.findBook(bookId);
+
+        Liked liked = Liked.builder()
+                .user(loginUser)
+                .isLiked(true)
+                .build();
+        liked.doLikeToBook(book);
+        likedService.createLiked(liked);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{bookId}/undo-like")
+    public ResponseEntity<?> undoLike(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+        Book book = bookService.findBook(bookId);
+
+        List<Liked> collect = book.getLikedList().stream()
+                .filter(l -> l.getUser() == loginUser)
+                .collect(Collectors.toList());
+        Liked liked = collect.get(0);
+        liked.undoLikeToBook(book);
+        likedService.deleteLiked(liked);
+
+        return ResponseEntity.noContent().build();
+    }
 
     @Data
     @AllArgsConstructor
@@ -115,6 +140,7 @@ public class BookController {
         private BookCategory category;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
+//        private List<Liked> likedList;
 
         public BookResponseDto(Book book){
             this.id = book.getId();
@@ -126,6 +152,8 @@ public class BookController {
         }
     }
 
+
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -133,6 +161,7 @@ public class BookController {
         private String name;
         private String isbn;
         private BookCategory category;
+
 
         public Book toEntityExceptIdAndPosts(BookRequestDto bookRequestDto){
             return Book.builder()
@@ -142,4 +171,5 @@ public class BookController {
                     .build();
         }
     }
+
 }
