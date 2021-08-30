@@ -1,6 +1,7 @@
 package mangpo.server.controller;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import mangpo.server.entity.*;
 import mangpo.server.repository.BookQueryRepository;
 import mangpo.server.service.BookService;
@@ -18,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/books")
@@ -40,7 +42,7 @@ public class BookController {
                 .filter(m -> m.getBook().getCategory().equals(category))
                 .map(m -> m.getBook())
                 .collect(Collectors.toList());
-
+        //중복제거
         HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
 
         List<BookResponseDto> collect = bookHashSet.stream()
@@ -114,8 +116,9 @@ public class BookController {
         Book book = bookService.findBook(bookId);
 
         List<Liked> collect = book.getLikedList().stream()
-                .filter(l -> l.getUser() == loginUser)
+                .filter(l -> l.getUser().getId() == loginUser.getId())
                 .collect(Collectors.toList());
+
         Liked liked = collect.get(0);
         liked.undoLikeToBook(book);
         likedService.deleteLiked(liked);
@@ -140,7 +143,7 @@ public class BookController {
         private BookCategory category;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
-//        private List<Liked> likedList;
+        private List<LikedResponseDto> likedList;
 
         public BookResponseDto(Book book){
             this.id = book.getId();
@@ -149,9 +152,20 @@ public class BookController {
             this.category = book.getCategory();
             this.createdDate = book.getCreatedDate();
             this.modifiedDate = book.getModifiedDate();
+            this.likedList = book.getLikedList()
+                    .stream()
+                    .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
+                    .collect(Collectors.toList());
         }
     }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class LikedResponseDto {
+        private String userNickname;
+        private Boolean isLiked;
+    }
 
 
     @Data

@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Liked {
 
@@ -26,7 +27,7 @@ public class Liked {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private boolean isLiked;
+    private Boolean isLiked;
 
     public void doLikeToPost(Post post){
         this.post = post;
