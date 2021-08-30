@@ -31,21 +31,28 @@ public class BookController {
     private final BookQueryRepository bookQueryRepository;
     private final LikedService likedService;
 
-    @GetMapping//Todo fetchjoin, get query with projection
+    @GetMapping//Todo fetchjoin
     public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email ,@RequestParam BookCategory category){
         User userByEmail = userService.findUserByEmail(email);
-        List<ClubBookUser> listByUser = cbuService.findListByUser(userByEmail);
+        List<Book> byUserAndBook = bookQueryRepository.findByUserAndBook(userByEmail, category);
 
+//        List<ClubBookUser> listByUser = cbuService.findListByUser(userByEmail);
 
-        //listByUser 에서 책만 뽑기
-        List<Book> booksExtracted = listByUser.stream()
-                .filter(m -> m.getBook().getCategory().equals(category))
-                .map(m -> m.getBook())
-                .collect(Collectors.toList());
-        //중복제거
-        HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
+//        List<Book> bookList = listByUser.stream()
+//                .map(m -> m.getBook())
+//                .collect(Collectors.toList());
 
-        List<BookResponseDto> collect = bookHashSet.stream()
+//
+//
+//        //listByUser 에서 책만 뽑기
+//        List<Book> booksExtracted = listByUser.stream()
+//                .filter(m -> m.getBook().getCategory().equals(category))
+//                .map(m -> m.getBook())
+//                .collect(Collectors.toList());
+//        //중복제거
+//        HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
+//
+          List<BookResponseDto> collect = byUserAndBook.stream()
                 .map(BookResponseDto::new)
                 .collect(Collectors.toList());
 
@@ -91,7 +98,7 @@ public class BookController {
     @DeleteMapping("/{bookId}")
     public ResponseEntity<?> deleteBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
         Book bookRequest = bookService.findBook(bookId);
-        bookQueryRepository.deleteClubBookUserByUserAndBook(loginUser, bookRequest);
+        bookQueryRepository.deleteByUserAndBook(loginUser, bookRequest);
         bookService.deleteBook(bookId);
 
         return ResponseEntity.noContent().build();

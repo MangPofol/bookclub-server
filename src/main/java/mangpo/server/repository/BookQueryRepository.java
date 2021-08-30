@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static mangpo.server.entity.QBook.book;
 import static mangpo.server.entity.QClubBookUser.clubBookUser;
 
 
@@ -21,7 +22,7 @@ public class BookQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Long deleteClubBookUserByUserAndBook(User userRequest, Book bookRequest){
+    public Long deleteByUserAndBook(User userRequest, Book bookRequest) {
         Long count = queryFactory
                 .delete(clubBookUser)
                 .where(clubBookUser.user.eq(userRequest),
@@ -31,6 +32,17 @@ public class BookQueryRepository {
         return count;
     }
 
+
+    public List<Book> findByUserAndBook(User userRequest, BookCategory bookCategory) {
+        return queryFactory.
+                selectDistinct(book).
+                from(clubBookUser).
+                join(clubBookUser.book, book).
+                where(clubBookUser.user.eq(userRequest),
+                        clubBookUser.book.isNotNull(),
+                        clubBookUser.book.category.eq(bookCategory)).
+                fetch();
+    }
 
 
 }
