@@ -1,11 +1,13 @@
 package mangpo.server.controller;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.*;
 import mangpo.server.service.BookService;
+import mangpo.server.service.CommentService;
 import mangpo.server.service.LikedService;
 import mangpo.server.service.PostService;
 import mangpo.server.session.SessionConst;
@@ -26,7 +28,9 @@ public class PostController {
     private final PostService postService;
     private final BookService bookService;
     private final LikedService likedService;
+    private final CommentService commentService;
 
+    //Todo dto로 직접 조회 고려
     @GetMapping
     public Result<List<PostResponseDto>> getPostsByBookId(@RequestParam Long bookId){
         List<Post> posts = postService.findPostsByBookId(bookId);
@@ -97,8 +101,6 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -110,7 +112,7 @@ public class PostController {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class PostResponseDto {
+    public static class PostResponseDto {
         private Long id;
         private PostType type;
         private PostScope scope;
@@ -121,8 +123,9 @@ public class PostController {
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
         private List<LikedResponseDto> likedList;
+        private List<CommentResponseDto> commentsDto;
 
-
+//        @QueryProjection
         public PostResponseDto(Post post){
             this.id = post.getId();
             this.type = post.getType();
@@ -133,9 +136,15 @@ public class PostController {
             this.content = post.getContent();
             this.createdDate = post.getCreatedDate();
             this.modifiedDate = post.getModifiedDate();
+
             this.likedList = post.getLikedList()
                     .stream()
                     .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
+                    .collect(Collectors.toList());
+
+            this.commentsDto = post.getComments()
+                    .stream()
+                    .map(CommentResponseDto::new)
                     .collect(Collectors.toList());
         }
     }
@@ -171,5 +180,17 @@ public class PostController {
         }
     }
 
+    @Data
+    static class CommentResponseDto {
+        private String userNickname;
+        private String content;
+        private LocalDateTime modifiedDate;
+
+        public CommentResponseDto(Comment comment){
+            this.userNickname = comment.getUser().getNickname();
+            this.content = comment.getContent();
+            this.modifiedDate = comment.getModifiedDate();
+        }
+    }
 
 }

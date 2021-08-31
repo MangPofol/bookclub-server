@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -56,7 +57,9 @@ public class PostService {
 
     public List<Post> findPostsByBookId(Long bookId){
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
-        return book.getPosts();
+        List<Post> byBook = postRepository.findByBook(book);
+
+        return byBook;
     }
 
 
