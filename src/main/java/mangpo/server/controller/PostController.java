@@ -184,11 +184,13 @@ public class PostController {
     static class CommentResponseDto {
         private String userNickname;
         private String content;
+        private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
 
         public CommentResponseDto(Comment comment){
             this.userNickname = comment.getUser().getNickname();
             this.content = comment.getContent();
+            this.createdDate = comment.getCreatedDate();
             this.modifiedDate = comment.getModifiedDate();
         }
     }
