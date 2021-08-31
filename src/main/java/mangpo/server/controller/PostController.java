@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.*;
 import mangpo.server.service.BookService;
+import mangpo.server.service.LikedService;
 import mangpo.server.service.PostService;
+import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -23,6 +25,7 @@ public class PostController {
 
     private final PostService postService;
     private final BookService bookService;
+    private final LikedService likedService;
 
     @GetMapping
     public Result<List<PostResponseDto>> getPostsByBookId(@RequestParam Long bookId){
@@ -65,6 +68,35 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{postId}/do-like")
+    public ResponseEntity<?> doLikePost(@PathVariable Long postId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+        Post post = postService.findPost(postId);
+
+        Liked liked = Liked.builder()
+                .user(loginUser)
+                .isLiked(true)
+                .build();
+        liked.doLikeToPost(post);
+        likedService.createLiked(liked);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{postId}/undo-like")
+    public ResponseEntity<?> undoLikeBook(@PathVariable Long postId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+        Post post = postService.findPost(postId);
+
+        List<Liked> collect = post.getLikedList().stream()
+                .filter(l -> l.getUser().getId() == loginUser.getId())
+                .collect(Collectors.toList());
+
+        Liked liked = collect.get(0);
+        liked.undoLikeToPost(post);
+        likedService.deleteLiked(liked);
+
+        return ResponseEntity.noContent().build();
+    }
+
 
 
     @Data
@@ -88,6 +120,8 @@ public class PostController {
         private String content;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
+        private List<LikedResponseDto> likedList;
+
 
         public PostResponseDto(Post post){
             this.id = post.getId();
@@ -99,7 +133,20 @@ public class PostController {
             this.content = post.getContent();
             this.createdDate = post.getCreatedDate();
             this.modifiedDate = post.getModifiedDate();
+            this.likedList = post.getLikedList()
+                    .stream()
+                    .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
+                    .collect(Collectors.toList());
         }
+    }
+
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class LikedResponseDto {
+        private String userNickname;
+        private Boolean isLiked;
     }
 
     @Data

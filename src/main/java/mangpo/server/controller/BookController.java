@@ -105,7 +105,7 @@ public class BookController {
     }
 
     @PostMapping("/{bookId}/do-like")
-    public ResponseEntity<?> doLike(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+    public ResponseEntity<?> doLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
         Book book = bookService.findBook(bookId);
 
         Liked liked = Liked.builder()
@@ -119,7 +119,7 @@ public class BookController {
     }
 
     @PostMapping("/{bookId}/undo-like")
-    public ResponseEntity<?> undoLike(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+    public ResponseEntity<?> undoLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
         Book book = bookService.findBook(bookId);
 
         List<Liked> collect = book.getLikedList().stream()
