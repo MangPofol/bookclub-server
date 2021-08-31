@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comments")
@@ -65,10 +67,14 @@ public class CommentController {
     static class CommentDto {
         private Long postId;
         private String content;
+        private LocalDateTime createdDate;
+        private LocalDateTime modifiedDate;
 
         public CommentDto(Comment comment){
             this.postId = comment.getPost().getId();
             this.content = comment.getContent();
+            this.createdDate = comment.getCreatedDate();
+            this.modifiedDate = comment.getModifiedDate();
         }
     }
 }
