@@ -1,14 +1,37 @@
+#spring:
+#  datasource:
+#    url: jdbc:mariadb://127.0.0.1:3307/mangpo
+#    username: root
+#    password: asdfuiop196!
+#    driver-class-name: org.mariadb.jdbc.Driver
+#
+#  jpa:
+#    database-platform: org.hibernate.dialect.MariaDBDialect
+#    hibernate:
+#      generate-ddl: true
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        #       show_sql: true
+#        format_sql: true
+#
+#
+#
+#logging.level:
+#  org.hibernate.SQL: debug
+## org.hibernate.type: trace
+
 spring:
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3307/mangpo
+    url: jdbc:h2:tcp://localhost/~/mangpo
     username: root
-    password: asdfuiop196!
-    driver-class-name: org.mariadb.jdbc.Driver
+    password:
+    driver-class-name: org.h2.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
+#    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      generate-ddl: true
+#      generate-ddl: true
       ddl-auto: update
     properties:
       hibernate:
