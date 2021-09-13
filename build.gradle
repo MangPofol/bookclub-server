@@ -5,6 +5,11 @@ plugins {
 	id 'java'
 }
 
+jar{
+	enabled = false
+	archiveClassifier.set("")
+}
+
 group = 'mangpo'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -45,7 +50,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-//	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	runtimeOnly 'com.h2database:h2'
 
 
