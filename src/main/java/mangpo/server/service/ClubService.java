@@ -43,6 +43,7 @@ public class ClubService {
     public void updateClub(Long id, Club clubRequest){
         Club club = clubRepository.findById(id).orElseThrow(() ->   new EntityNotFoundException("존재하지 않는 클럽입니다."));
 
+
         validateDuplicateClubName(clubRequest);
 
         if(clubRequest.getName() != null)

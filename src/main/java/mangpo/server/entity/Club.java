@@ -28,6 +28,9 @@ public class Club extends BaseTimeEntity {
     @Column(name = "club_president")
     private Long presidentId;
 
+    @Column(name = "club_description")
+    private String description;
+
     public void changeName(String name){ this.name = name; }
     public void changeColorSet(ColorSet colorSet){ this.colorSet = colorSet;}
     public void changeLevel(int level){ this.level = level;}

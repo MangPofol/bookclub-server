@@ -31,8 +31,8 @@ public class ClubController {
     private final BookService bookService;
     private final ClubQueryRepository clubQueryRepository;
 
-    @GetMapping("/{clubId}")
-    public Result<List<ClubResponseDto>> getClubsByUser(@PathVariable Long clubId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+    @GetMapping
+    public Result<List<ClubResponseDto>> getClubsByUser(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
         List<Club> distinctClub = clubQueryRepository.findDistinctClub(loginUser);
         List<ClubResponseDto> collect = distinctClub.stream()
                 .map(ClubResponseDto::new)
@@ -119,6 +119,7 @@ public class ClubController {
     static class CreateClubRequestDto {
         private String name;
         private ColorSet colorSet;
+        private String description;
 
         public Club toEntity(User loginUser){
             return Club.builder()
@@ -126,6 +127,7 @@ public class ClubController {
                     .colorSet(this.colorSet)
                     .level(1)
                     .presidentId(loginUser.getId())
+                    .description(description)
                     .build();
         }
     }
@@ -136,6 +138,7 @@ public class ClubController {
         private ColorSet colorSet;
         private Integer level;
         private Long presidentId;
+        private String description;
 
         public Club toEntity(){
             return Club.builder()
@@ -143,6 +146,7 @@ public class ClubController {
                     .colorSet(this.colorSet)
                     .level(this.level)
                     .presidentId(this.presidentId)
+                    .description(description)
                     .build();
         }
     }
@@ -160,6 +164,7 @@ public class ClubController {
         private ColorSet colorSet;
         private Integer level;
         private Long presidentId;
+        private String description;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
 
@@ -171,6 +176,7 @@ public class ClubController {
             this.presidentId = clubRequest.getPresidentId();
             this.createdDate = clubRequest.getCreatedDate();
             this.modifiedDate = clubRequest.getModifiedDate();
+            this.description = clubRequest.getDescription();
         }
     }
 
