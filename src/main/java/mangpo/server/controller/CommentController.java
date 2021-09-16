@@ -27,14 +27,15 @@ public class CommentController {
 
 
     @PostMapping
-    public ResponseEntity<Result<CommentDto>> createComment(@RequestBody CommentDto commentRequestDto,
-                                                               UriComponentsBuilder b,
-                                                               @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+    public ResponseEntity<Result<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto,
+                                                                   UriComponentsBuilder b,
+                                                                   @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
         Post post = postService.findPost(commentRequestDto.postId);
 
         Comment comment = Comment.builder()
                 .user(loginUser)
                 .content(commentRequestDto.getContent())
+                .parentCommentId(commentRequestDto.getParentCommentId())
                 .build();
         comment.addComment(post);
         Long commentId = commentService.createComment(comment);
@@ -42,8 +43,8 @@ public class CommentController {
         UriComponents uriComponents =
                 b.path("/comments/{commentId}").buildAndExpand(commentId);
 
-        CommentDto commentResponseDto = new CommentDto(comment);
-        Result<CommentDto> result= new Result(commentResponseDto);
+        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+        Result<CommentResponseDto> result= new Result(commentResponseDto);
 
         return ResponseEntity.created(uriComponents.toUri()).body(result);
     }
@@ -64,17 +65,29 @@ public class CommentController {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class CommentDto {
+    static class CommentRequestDto {
         private Long postId;
+        private String content;
+        private Long parentCommentId;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class CommentResponseDto {
+        private Long postId;
+        private Long parentCommentId;
         private String content;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
 
-        public CommentDto(Comment comment){
+        public CommentResponseDto(Comment comment){
             this.postId = comment.getPost().getId();
+            this.parentCommentId = comment.getParentCommentId();
             this.content = comment.getContent();
             this.createdDate = comment.getCreatedDate();
             this.modifiedDate = comment.getModifiedDate();
         }
     }
+
 }
