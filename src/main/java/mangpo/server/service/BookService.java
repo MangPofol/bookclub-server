@@ -8,6 +8,7 @@ import mangpo.server.entity.BookCategory;
 import mangpo.server.entity.User;
 import mangpo.server.exeption.NotExistBookException;
 import mangpo.server.repository.BookRepository;
+import mangpo.server.repository.ClubBookUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +25,8 @@ public class BookService {
 
     @Transactional
     public Long createBook(Book book){
-        validateDuplicateBook(book);
         bookRepository.save(book);
         return book.getId();
-    }
-
-    private void validateDuplicateBook(Book book) {
-        Optional<Book> findBook = bookRepository.findByIsbn(book.getIsbn());
-        if (!findBook.isEmpty()){
-            throw new IllegalStateException("이미 등록된 책입니다.");
-        }
     }
 
     @Transactional

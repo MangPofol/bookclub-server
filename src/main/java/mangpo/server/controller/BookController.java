@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -69,13 +70,13 @@ public class BookController {
                 .category(bookRequestDto.category)
                 .build();
 
+        validateDuplicateBook(newBook.getIsbn(),loginUser);
         Long bookId = bookService.createBook(newBook);
 
         ClubBookUser cbu = ClubBookUser.builder()
                 .book(newBook)
                 .user(loginUser)
                 .build();
-
         cbuService.createClubBookUser(cbu);
 
         UriComponents uriComponents =
@@ -84,6 +85,17 @@ public class BookController {
 //        return ResponseEntity.noContent().build().created(uriComponents.toUri()).build();
 
         return ResponseEntity.created(uriComponents.toUri()).body(bookRequestDto);
+    }
+
+    private void validateDuplicateBook(String isbn, User user) {
+        List<ClubBookUser> listByUser = cbuService.findListByUser(user);
+
+        Optional<ClubBookUser> any = listByUser.stream()
+                .filter(m -> m.getBook().getIsbn().equals(isbn))
+                .findAny();
+
+        if (any.isPresent())
+            throw new IllegalStateException("이미 유저가 등록한 책입니다.");
     }
 
 
