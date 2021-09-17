@@ -16,30 +16,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClubBookUserService {
 
-    private final ClubBookUserRepository clubBookUserRepository;
+    private final ClubBookUserRepository cbuRepository;
 
     @Transactional
     public Long createClubBookUser(ClubBookUser clubBookUser){
-        clubBookUserRepository.save(clubBookUser);
+        cbuRepository.save(clubBookUser);
         return clubBookUser.getId();
     }
 
     @Transactional
     public void deleteAllClubBookUserByClub(Club club){
-        Long delete = clubBookUserRepository.deleteAllByClub(club);
+        Long delete = cbuRepository.deleteAllByClub(club);
     }
 
     public List<ClubBookUser> findListByUser(User user){
-        List<ClubBookUser> listByUser = clubBookUserRepository.findListByUser(user);
+        List<ClubBookUser> listByUser = cbuRepository.findListByUser(user);
         return listByUser;
     }
 
     public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
-        ClubBookUser clubBookUser = clubBookUserRepository.findByUserAndBook(user,book);
+        ClubBookUser clubBookUser = cbuRepository.findByUserAndBook(user,book);
         return clubBookUser;
     }
 
+    public List<User> findUsersByClub(Club club){
+        return cbuRepository.findUsersByClub(club);
+    }
 
+    public List<ClubBookUser> findClubBookUserByClub(Club club){
+        return cbuRepository.findClubBookUserByClub(club);
+    }
 
 
 }

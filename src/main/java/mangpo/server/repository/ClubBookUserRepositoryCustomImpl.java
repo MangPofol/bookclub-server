@@ -1,17 +1,16 @@
 package mangpo.server.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import mangpo.server.entity.Book;
-import mangpo.server.entity.ClubBookUser;
-import mangpo.server.entity.QClubBookUser;
-import mangpo.server.entity.User;
+import mangpo.server.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static mangpo.server.entity.QBook.book;
 import static mangpo.server.entity.QClubBookUser.clubBookUser;
+import static mangpo.server.entity.QUser.user;
 
 public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryCustom {
 
@@ -30,5 +29,29 @@ public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryC
                         clubBookUser.book.eq(book),
                         clubBookUser.club.isNull())
                 .fetchOne();
+    }
+
+    //book 정보 없는 조회
+    public List<User> findUsersByClub(Club club){
+        return queryFactory
+                .selectDistinct(user)
+                .from(clubBookUser)
+                .join(clubBookUser.user, user)
+                .where(clubBookUser.user.isNotNull(),
+                        clubBookUser.book.isNull(),
+                        clubBookUser.club.eq(club))
+                .fetch();
+    }
+
+    //club 정보 없는 조회
+    public List<ClubBookUser> findClubBookUserByClub(Club club) {
+        return queryFactory
+                .selectFrom(clubBookUser)
+                .join(clubBookUser.book, book).fetchJoin()
+                .where(clubBookUser.user.isNotNull(),
+                        clubBookUser.club.eq(club),
+                        clubBookUser.book.isNotNull())
+                .fetch();
+
     }
 }

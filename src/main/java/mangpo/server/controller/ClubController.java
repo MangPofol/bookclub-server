@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import mangpo.server.dto.ClubInfoResponseDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubQueryRepository;
 import mangpo.server.service.BookService;
@@ -30,6 +31,21 @@ public class ClubController {
     private final ClubBookUserService cbuService;
     private final BookService bookService;
     private final ClubQueryRepository clubQueryRepository;
+
+    @GetMapping("{clubId}")
+    public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId){
+        Club club = clubService.findClub(clubId);
+        List<User> usersInClub = cbuService.findUsersByClub(club);
+
+        List<ClubBookUser> cbuByClub = cbuService.findClubBookUserByClub(club);
+
+       ClubInfoResponseDto clubInfo = new ClubInfoResponseDto();
+       clubInfo.setClubInfo(club);
+       clubInfo.setUsersInClubDtoList(usersInClub);
+       clubInfo.setBookAndUserDtoList(cbuByClub);
+
+        return new Result<ClubInfoResponseDto>(clubInfo);
+    }
 
     @GetMapping
     public Result<List<ClubResponseDto>> getClubsByUser(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
@@ -114,6 +130,21 @@ public class ClubController {
         private T data;
     }
 
+//    @Data
+//    static class ClubInfoResponseDto{
+//        private Long id;
+//        private String name;
+//        private ColorSet colorSet;
+//        private Integer level;
+//        private Long presidentId;
+//        private String description;
+//        private LocalDateTime clubCreatedDate;
+//        private LocalDateTime clubModifiedDate;
+//
+//        private List<BookRes>
+//
+//
+//    }
 
     @Data
     static class CreateClubRequestDto {

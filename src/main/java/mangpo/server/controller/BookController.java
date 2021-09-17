@@ -2,6 +2,7 @@ package mangpo.server.controller;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.BookResponseDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.BookQueryRepository;
 import mangpo.server.service.BookService;
@@ -33,7 +34,7 @@ public class BookController {
     private final LikedService likedService;
 
     @GetMapping//Todo fetchjoin
-    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email ,@RequestParam BookCategory category){
+    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email , @RequestParam BookCategory category){
         User userByEmail = userService.findUserByEmail(email);
         List<Book> byUserAndBook = bookQueryRepository.findByUserAndBook(userByEmail, category);
 
@@ -152,31 +153,31 @@ public class BookController {
         private T data;
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class BookResponseDto {
-        private Long id;
-        private String name;
-        private String isbn;
-        private BookCategory category;
-        private LocalDateTime createdDate;
-        private LocalDateTime modifiedDate;
-        private List<LikedResponseDto> likedList;
-
-        public BookResponseDto(Book book){
-            this.id = book.getId();
-            this.name = book.getName();
-            this.isbn = book.getIsbn();
-            this.category = book.getCategory();
-            this.createdDate = book.getCreatedDate();
-            this.modifiedDate = book.getModifiedDate();
-            this.likedList = book.getLikedList()
-                    .stream()
-                    .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
-                    .collect(Collectors.toList());
-        }
-    }
+//    @Data
+//    @AllArgsConstructor
+//    @NoArgsConstructor
+//    static class BookResponseDto {
+//        private Long id;
+//        private String name;
+//        private String isbn;
+//        private BookCategory category;
+//        private LocalDateTime createdDate;
+//        private LocalDateTime modifiedDate;
+//        private List<LikedResponseDto> likedList;
+//
+//        public BookResponseDto(Book book){
+//            this.id = book.getId();
+//            this.name = book.getName();
+//            this.isbn = book.getIsbn();
+//            this.category = book.getCategory();
+//            this.createdDate = book.getCreatedDate();
+//            this.modifiedDate = book.getModifiedDate();
+//            this.likedList = book.getLikedList()
+//                    .stream()
+//                    .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
+//                    .collect(Collectors.toList());
+//        }
+//    }
 
     @Data
     @AllArgsConstructor

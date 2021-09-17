@@ -2,6 +2,7 @@ package mangpo.server.service;
 
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.ClubInfoResponseDto;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ColorSet;
 import mangpo.server.entity.User;
@@ -65,11 +66,14 @@ public class ClubService {
     public List<Club> findClubs(){
         return clubRepository.findAll();
     }
+
     public Club findClub(Long clubId){
         return clubRepository.findById(clubId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
     }
+
     public Club findByName(String clubName){
         return clubRepository.findByName(clubName).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
     }
+
 
 }
