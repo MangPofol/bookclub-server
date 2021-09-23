@@ -4,6 +4,7 @@ import lombok.Data;
 import mangpo.server.entity.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +20,15 @@ public class ClubInfoResponseDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+//    private HashMap<Long, String> hotMemo;
+//    private HashMap<Long, String> hotTopic;
+
     private List<UsersInClubDto> userInfo;
     private List<BookAndUserDto> bookAndUserInfo;//userId,bookId,isbn
+
+    public void setHotMemoAndTopic(){
+
+    }
 
     public void setClubInfo(Club club){
         this.id = club.getId();

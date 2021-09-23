@@ -13,4 +13,6 @@ public interface ClubBookUserRepositoryCustom {
     public List<User> findUsersByClub(Club club);
 
     public List<ClubBookUser> findClubBookUserByClub(Club club);
+
+    public Boolean isDuplicate(ClubBookUser clubBookUser);
 }

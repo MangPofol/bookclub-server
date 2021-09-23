@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,8 +21,17 @@ public class ClubBookUserService {
 
     @Transactional
     public Long createClubBookUser(ClubBookUser clubBookUser){
+        validateDuplicateCBU(clubBookUser);
+
         cbuRepository.save(clubBookUser);
         return clubBookUser.getId();
+    }
+
+    private void validateDuplicateCBU(ClubBookUser clubBookUser) {
+        Boolean isDuplicate = cbuRepository.isDuplicate(clubBookUser);
+
+        if (isDuplicate == Boolean.TRUE)
+            throw new IllegalStateException("이미 존재하는 정보입니다");
     }
 
     @Transactional

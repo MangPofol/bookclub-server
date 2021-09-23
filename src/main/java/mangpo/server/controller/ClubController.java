@@ -11,6 +11,7 @@ import mangpo.server.repository.ClubQueryRepository;
 import mangpo.server.service.BookService;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.ClubService;
+import mangpo.server.service.UserService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,24 +32,25 @@ public class ClubController {
     private final ClubBookUserService cbuService;
     private final BookService bookService;
     private final ClubQueryRepository clubQueryRepository;
+    private final UserService userService;
 
     @GetMapping("{clubId}")
-    public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId){
+    public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId) {
         Club club = clubService.findClub(clubId);
         List<User> usersInClub = cbuService.findUsersByClub(club);
 
         List<ClubBookUser> cbuByClub = cbuService.findClubBookUserByClub(club);
 
-       ClubInfoResponseDto clubInfo = new ClubInfoResponseDto();
-       clubInfo.setClubInfo(club);
-       clubInfo.setUsersInClubDtoList(usersInClub);
-       clubInfo.setBookAndUserDtoList(cbuByClub);
+        ClubInfoResponseDto clubInfo = new ClubInfoResponseDto();
+        clubInfo.setClubInfo(club);
+        clubInfo.setUsersInClubDtoList(usersInClub);
+        clubInfo.setBookAndUserDtoList(cbuByClub);
 
         return new Result<ClubInfoResponseDto>(clubInfo);
     }
 
     @GetMapping
-    public Result<List<ClubResponseDto>> getClubsByUser(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+    public Result<List<ClubResponseDto>> getClubsByUser(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
         List<Club> distinctClub = clubQueryRepository.findDistinctClub(loginUser);
         List<ClubResponseDto> collect = distinctClub.stream()
                 .map(ClubResponseDto::new)
@@ -59,7 +61,7 @@ public class ClubController {
 
     @PostMapping
     public ResponseEntity<ClubResponseDto> createClub(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                        @RequestBody CreateClubRequestDto createClubRequestDto, UriComponentsBuilder builder){
+                                                      @RequestBody CreateClubRequestDto createClubRequestDto, UriComponentsBuilder builder) {
 
         Club club = createClubRequestDto.toEntity(loginUser);
         Long clubId = clubService.createClub(club);
@@ -84,10 +86,10 @@ public class ClubController {
     //user,book만이 존재하는 ClubBookUser 엔티티의 정보를 이용해 새로운 ClubBookUser 엔티티를 만든다
     @PostMapping("/{clubId}/add-book")
     public ResponseEntity<?> addClubToUserBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                     @PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto){
+                                               @PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto) {
 
         Book book = bookService.findBook(requestDto.bookId);
-        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);
+        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
         Club byId = clubService.findClub(clubId);
 
         ClubBookUser build = ClubBookUser.builder()
@@ -101,16 +103,38 @@ public class ClubController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{clubId}/add-user")
+    public ResponseEntity<?> addUserToClub(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+                                               @PathVariable Long clubId, @RequestBody addUserToClubRequestDto requestDto) {
+
+        Club club = clubService.findClub(clubId);
+        Long presidentId = club.getPresidentId();
+
+        if (loginUser.getId() != presidentId)
+            throw new IllegalStateException("권한이 없는 유저입니다.");
+
+        String email = requestDto.getEmail();
+        User userByEmail = userService.findUserByEmail(email);
+
+        ClubBookUser clubBookUser = ClubBookUser.builder()
+                .club(club)
+                .user(userByEmail)
+                .build();
+        cbuService.createClubBookUser(clubBookUser);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/{clubId}")
-    public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubRequestDto updateClubRequestDto){
+    public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubRequestDto updateClubRequestDto) {
         Club request = updateClubRequestDto.toEntity();
-        clubService.updateClub(clubId,request);
+        clubService.updateClub(clubId, request);
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{clubId}")
-    public ResponseEntity<?> deleteClub(@PathVariable Long clubId){
+    public ResponseEntity<?> deleteClub(@PathVariable Long clubId) {
         Club club = clubService.findClub(clubId);
         cbuService.deleteAllClubBookUserByClub(club);
 
@@ -120,31 +144,13 @@ public class ClubController {
     }
 
 
-
-
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class Result<T>{
+    static class Result<T> {
         private T data;
     }
 
-//    @Data
-//    static class ClubInfoResponseDto{
-//        private Long id;
-//        private String name;
-//        private ColorSet colorSet;
-//        private Integer level;
-//        private Long presidentId;
-//        private String description;
-//        private LocalDateTime clubCreatedDate;
-//        private LocalDateTime clubModifiedDate;
-//
-//        private List<BookRes>
-//
-//
-//    }
 
     @Data
     static class CreateClubRequestDto {
@@ -152,7 +158,7 @@ public class ClubController {
         private ColorSet colorSet;
         private String description;
 
-        public Club toEntity(User loginUser){
+        public Club toEntity(User loginUser) {
             return Club.builder()
                     .name(this.name)
                     .colorSet(this.colorSet)
@@ -171,7 +177,7 @@ public class ClubController {
         private Long presidentId;
         private String description;
 
-        public Club toEntity(){
+        public Club toEntity() {
             return Club.builder()
                     .name(this.name)
                     .colorSet(this.colorSet)
@@ -184,12 +190,12 @@ public class ClubController {
 
 
     @Data
-    static class addClubToUserBookRequestDto{
+    static class addClubToUserBookRequestDto {
         private Long bookId;
     }
 
     @Data
-    static class ClubResponseDto{
+    static class ClubResponseDto {
         private Long id;
         private String name;
         private ColorSet colorSet;
@@ -199,7 +205,7 @@ public class ClubController {
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
 
-        public ClubResponseDto(Club clubRequest){
+        public ClubResponseDto(Club clubRequest) {
             this.id = clubRequest.getId();
             this.name = clubRequest.getName();
             this.colorSet = clubRequest.getColorSet();
@@ -209,6 +215,11 @@ public class ClubController {
             this.modifiedDate = clubRequest.getModifiedDate();
             this.description = clubRequest.getDescription();
         }
+    }
+
+    @Data
+    static class addUserToClubRequestDto{
+        private String email;
     }
 
 }
