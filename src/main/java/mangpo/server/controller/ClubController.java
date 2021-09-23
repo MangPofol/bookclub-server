@@ -13,6 +13,7 @@ import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.ClubService;
 import mangpo.server.service.UserService;
 import mangpo.server.session.SessionConst;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -110,8 +111,9 @@ public class ClubController {
         Club club = clubService.findClub(clubId);
         Long presidentId = club.getPresidentId();
 
-        if (loginUser.getId() != presidentId)
-            throw new IllegalStateException("권한이 없는 유저입니다.");
+        if (loginUser.getId() != presidentId){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         String email = requestDto.getEmail();
         User userByEmail = userService.findUserByEmail(email);
