@@ -86,10 +86,11 @@ public class BookController {
         return ResponseEntity.created(uriComponents.toUri()).body(bookRequestDto);
     }
 
-    private void validateDuplicateBook(String isbn, User user) {
-        List<ClubBookUser> listByUser = cbuService.findListByUserExceptClub(user);
+    private void validateDuplicateBook(String isbn, User loginUser) {
+        List<ClubBookUser> listByUser = cbuService.findListByUserExceptClub(loginUser);
 
         Optional<ClubBookUser> any = listByUser.stream()
+                .filter(m->m.getUser().getId().equals(loginUser.getId()))
                 .filter(m -> m.getBook().getIsbn().equals(isbn))
                 .findAny();
 
