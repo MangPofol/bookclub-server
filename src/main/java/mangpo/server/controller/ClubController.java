@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.ClubInfoResponseDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubQueryRepository;
@@ -23,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clubs")
@@ -40,15 +42,18 @@ public class ClubController {
         Club club = clubService.findClub(clubId);
         List<User> usersInClub = cbuService.findUsersByClub(club);
 
+        int memberSize = cbuService.findUsersByClub(club).size();
         List<ClubBookUser> cbuByClub = cbuService.findClubBookUserByClub(club);
 
         ClubInfoResponseDto clubInfo = new ClubInfoResponseDto();
 
-//        List<Post> hotMemo = clubQueryRepository.findHotMemoByClub(club);
-//        List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club);
+//        log.info("@@@@@메모 시작@@@@@@@@@@");
+        List<Post> hotMemo = clubQueryRepository.findHotMemoByClub(club,memberSize);
+//        log.info("@@@@@메모 끝@@@@@@@@@@");
+        List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club,memberSize);
 
-//        clubInfo.setHotMemo(hotMemo);
-//        clubInfo.setHotTopic(hotTopic);
+        clubInfo.setHotMemo(hotMemo);
+        clubInfo.setHotTopic(hotTopic);
         clubInfo.setClubInfo(club);
         clubInfo.setUsersInClubDtoList(usersInClub);
         clubInfo.setBookAndUserDtoList(cbuByClub);

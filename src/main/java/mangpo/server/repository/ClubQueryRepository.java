@@ -1,16 +1,30 @@
 package mangpo.server.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import mangpo.server.entity.Club;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.User;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import mangpo.server.entity.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.beans.Expression;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static mangpo.server.entity.QBook.book;
 import static mangpo.server.entity.QClubBookUser.clubBookUser;
+import static mangpo.server.entity.QComment.comment;
+import static mangpo.server.entity.QLiked.liked;
+import static mangpo.server.entity.QPost.post;
 
+@Slf4j
 @Repository
 public class ClubQueryRepository {
 
@@ -21,20 +35,218 @@ public class ClubQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Club> findDistinctClub(User userRequest){
+    public List<Club> findDistinctClub(User userRequest) {
         return queryFactory
                 .select(clubBookUser.club).distinct()
                 .from(clubBookUser)
-                .where(clubBookUser.club.isNotNull() ,clubBookUser.user.eq(userRequest))
+                .where(clubBookUser.club.isNotNull(), clubBookUser.user.eq(userRequest))
                 .fetch();
 
     }
 
-//    public List<Post> findHotMemoByClub(Club club){
-//
-//    }
-//
-//    public List<Post> findHotTopicByClub(Club club){
-//
-//    }
+    public List<Post> findHotMemoByClub(Club clubRequest,int memberSize) {
+
+//        List<Book> books = queryFactory
+//                .select(book)
+//                .from(clubBookUser)
+//                .join(clubBookUser.book, book)
+//                .where(clubBookUser.club.eq(clubRequest),
+//                        clubBookUser.book.isNotNull(),
+//                        clubBookUser.user.isNotNull())
+//                .fetch();
+
+        SaveTime saveTime = new SaveTime();
+        saveTime.setSearchEndDate( LocalDateTime.now());
+        saveTime.setSearchStartDate(LocalDateTime.now().minusWeeks(2));
+
+        log.info("searchStartDate={}",  saveTime.getSearchStartDate());
+        log.info("searchEndDate={}", saveTime.getSearchEndDate());
+
+
+//        List<Post> posts = queryFactory
+//                .select(post)
+//                .from(post)
+//                .where(post.createdDate.between(SaveTime.searchStartDate, SaveTime.searchEndDate),
+//                        post.type.eq(PostType.MEMO),
+//                        post.book.in(books))
+//                .fetch();
+
+        List<Post> posts = queryFactory
+                .select(post)
+                .from(post)
+                .where(post.createdDate.between(saveTime.getSearchStartDate(), saveTime.getSearchEndDate()),
+                        post.type.eq(PostType.MEMO),
+                        post.book.in(JPAExpressions
+                                .select(book)
+                                .from(clubBookUser)
+                                .join(clubBookUser.book, book)
+                                .where(clubBookUser.club.eq(clubRequest),
+                                        clubBookUser.book.isNotNull(),
+                                        clubBookUser.user.isNotNull())))
+                .fetch();
+
+        log.info("posts={}",  posts);
+
+        List<Tuple> likedList = queryFactory
+                .select(liked.post, liked.count())
+                .from(liked).distinct()
+                .join(liked.post, post)
+                .where(liked.post.in(posts))
+                .groupBy(liked.post)
+                .fetch();
+
+        log.info("likedList={}",  likedList);
+
+        List<Tuple> comments = queryFactory
+                .select(comment.post, comment.count())
+                .from(comment).distinct()
+                .join(comment.post, post)
+                .where(comment.post.in(posts))
+                .groupBy(comment.post)
+                .fetch();
+        log.info("comments={}",  comments);
+
+
+
+        double memberCeil = Math.ceil(memberSize / 2.0);
+
+        List<Post> postFilteredFromLikedList = likedList.stream()
+                .filter(m -> m.get(liked.count()) >= memberCeil)
+                .map(m -> m.get(liked.post))
+                .collect(Collectors.toList());
+        log.info("postFilteredFromLikedList={}",  postFilteredFromLikedList);
+
+        List<Post> postFilteredFromComments = comments.stream()
+                .filter(m -> m.get(comment.count()) >= memberSize * 2L)
+                .map(m -> m.get(comment.post))
+                .collect(Collectors.toList());
+        log.info("postFilteredFromComments={}",  postFilteredFromComments);
+
+        List<Post> intersection = postFilteredFromLikedList.stream()
+                .filter(postFilteredFromComments::contains)
+                .collect(Collectors.toList());
+        log.info("intersection={}",  intersection);
+
+        if (intersection.size() > 3) {
+            Collections.shuffle(intersection);
+            List<Post> result = new ArrayList<>();
+            result.add(intersection.get(0));
+            result.add(intersection.get(1));
+            result.add(intersection.get(2));
+            log.info("result={}",  result);
+
+            return result;
+        }
+        log.info("intersection={}",  intersection);
+        log.info("intersectionGetId={}",  intersection.get(0).getId());
+
+        return intersection;
+    }
+
+    public List<Post> findHotTopicByClub(Club clubRequest,int memberSize) {
+//        List<Book> books = queryFactory
+//                .select(book)
+//                .from(clubBookUser)
+//                .join(clubBookUser.book, book)
+//                .where(clubBookUser.club.eq(clubRequest),
+//                        clubBookUser.book.isNotNull(),
+//                        clubBookUser.user.isNotNull())
+//                .fetch();
+
+        SaveTime saveTime = new SaveTime();
+        saveTime.setSearchEndDate( LocalDateTime.now());
+        saveTime.setSearchStartDate(LocalDateTime.now().minusWeeks(2));
+
+        log.info("searchStartDate={}",  saveTime.getSearchStartDate());
+        log.info("searchEndDate={}", saveTime.getSearchEndDate());
+
+
+//        List<Post> posts = queryFactory
+//                .select(post)
+//                .from(post)
+//                .where(post.createdDate.between(SaveTime.searchStartDate, SaveTime.searchEndDate),
+//                        post.type.eq(PostType.MEMO),
+//                        post.book.in(books))
+//                .fetch();
+
+        List<Post> posts = queryFactory
+                .select(post)
+                .from(post)
+                .where(post.createdDate.between(saveTime.getSearchStartDate(), saveTime.getSearchEndDate()),
+                        post.type.eq(PostType.TOPIC),
+                        post.book.in(JPAExpressions
+                                .select(book)
+                                .from(clubBookUser)
+                                .join(clubBookUser.book, book)
+                                .where(clubBookUser.club.eq(clubRequest),
+                                        clubBookUser.book.isNotNull(),
+                                        clubBookUser.user.isNotNull())))
+                .fetch();
+
+        log.info("posts={}",  posts);
+
+        List<Tuple> likedList = queryFactory
+                .select(liked.post, liked.count())
+                .from(liked).distinct()
+                .join(liked.post, post)
+                .where(liked.post.in(posts))
+                .groupBy(liked.post)
+                .fetch();
+
+        log.info("likedList={}",  likedList);
+
+        List<Tuple> comments = queryFactory
+                .select(comment.post, comment.count())
+                .from(comment).distinct()
+                .join(comment.post, post)
+                .where(comment.post.in(posts))
+                .groupBy(comment.post)
+                .fetch();
+        log.info("comments={}",  comments);
+
+
+
+        double memberCeil = Math.ceil(memberSize / 2.0);
+
+        List<Post> postFilteredFromLikedList = likedList.stream()
+                .filter(m -> m.get(liked.count()) >= memberCeil)
+                .map(m -> m.get(liked.post))
+                .collect(Collectors.toList());
+        log.info("postFilteredFromLikedList={}",  postFilteredFromLikedList);
+
+        List<Post> postFilteredFromComments = comments.stream()
+                .filter(m -> m.get(comment.count()) >= memberSize * 2L)
+                .map(m -> m.get(comment.post))
+                .collect(Collectors.toList());
+        log.info("postFilteredFromComments={}",  postFilteredFromComments);
+
+        List<Post> intersection = postFilteredFromLikedList.stream()
+                .filter(postFilteredFromComments::contains)
+                .collect(Collectors.toList());
+        log.info("intersection={}",  intersection);
+
+        if (intersection.size() > 3) {
+            Collections.shuffle(intersection);
+            List<Post> result = new ArrayList<>();
+            result.add(intersection.get(0));
+            result.add(intersection.get(1));
+            result.add(intersection.get(2));
+            log.info("result={}",  result);
+
+            return result;
+        }
+        log.info("intersection={}",  intersection);
+        log.info("intersectionGetId={}",  intersection.get(0).getId());
+
+        return intersection;
+    }
+
+    @Data
+    class SaveTime {
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        public LocalDateTime searchStartDate;
+
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        public LocalDateTime searchEndDate;
+    }
 }
