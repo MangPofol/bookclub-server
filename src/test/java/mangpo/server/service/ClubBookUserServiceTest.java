@@ -42,23 +42,27 @@ public class ClubBookUserServiceTest {
     @DisplayName("클럽 기준으로 cbu 전부 삭제")
     void deleteAllClubBookUserByClub() {
         //given
-        Club club = Club.builder().build();
+        Club club1 = Club.builder().build();
+        Book book1  = Book.builder().build();
 
         ClubBookUser cbu1 = ClubBookUser.builder()
-                .club(club)
+                .club(club1)
                 .build();
 
         ClubBookUser cbu2 = ClubBookUser.builder()
-                .club(club)
+                .club(club1)
+                .book(book1)
                 .build();
 
 
-        clubService.createClub(club);
+        clubService.createClub(club1);
+        bookService.createBook(book1);
+
         Long saved1 = clubBookUserService.createClubBookUser(cbu1);
         Long saved2 = clubBookUserService.createClubBookUser(cbu2);
 
         //when
-        clubBookUserService.deleteAllClubBookUserByClub(club);
+        clubBookUserService.deleteAllClubBookUserByClub(club1);
 
         em.flush();
         em.clear();
@@ -72,15 +76,23 @@ public class ClubBookUserServiceTest {
     void cbu_리스트_조회_유저로() {
         //given
         User user = User.builder().build();
+        Book book1 = Book.builder().build();
+        Book book2 = Book.builder().build();
+
         ClubBookUser cbu1 = ClubBookUser.builder()
                 .user(user)
+                .book(book1)
                 .build();
 
         ClubBookUser cbu2 = ClubBookUser.builder()
                 .user(user)
+                .book(book2)
                 .build();
 
         userService.join(user);
+        bookService.createBook(book1);
+        bookService.createBook(book2);
+
         Long saved1 = clubBookUserService.createClubBookUser(cbu1);
         Long saved2 = clubBookUserService.createClubBookUser(cbu2);
 
