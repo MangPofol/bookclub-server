@@ -20,15 +20,11 @@ public class ClubInfoResponseDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-//    private HashMap<Long, String> hotMemo;
-//    private HashMap<Long, String> hotTopic;
+    private HashMap<Long, String> hotMemo;//id,title
+    private HashMap<Long, String> hotTopic;//id,title
 
     private List<UsersInClubDto> userInfo;
     private List<BookAndUserDto> bookAndUserInfo;//userId,bookId,isbn
-
-    public void setHotMemoAndTopic(){
-
-    }
 
     public void setClubInfo(Club club){
         this.id = club.getId();
@@ -39,6 +35,18 @@ public class ClubInfoResponseDto {
         this.description = club.getDescription();
         this.createdDate = club.getCreatedDate();
         this.modifiedDate = club.getModifiedDate();
+    }
+
+    public void setHotMemo(List<Post> posts){
+        for (Post p: posts) {
+            hotMemo.put(p.getId(),p.getTitle());
+        }
+    }
+
+    public void setHotTopic(List<Post> posts){
+        for (Post p: posts) {
+            hotTopic.put(p.getId(),p.getTitle());
+        }
     }
 
     public void setUsersInClubDtoList(List<User> user){

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,8 +38,8 @@ public class ClubBookUserService {
         Long delete = cbuRepository.deleteAllByClub(club);
     }
 
-    public List<ClubBookUser> findListByUser(User user){
-        List<ClubBookUser> listByUser = cbuRepository.findListByUser(user);
+    public List<ClubBookUser> findListByUserExceptClub(User user){
+        List<ClubBookUser> listByUser = cbuRepository.findListByUserExceptClub(user);
         return listByUser;
     }
 

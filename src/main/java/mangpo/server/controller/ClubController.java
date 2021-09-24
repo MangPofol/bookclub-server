@@ -43,6 +43,12 @@ public class ClubController {
         List<ClubBookUser> cbuByClub = cbuService.findClubBookUserByClub(club);
 
         ClubInfoResponseDto clubInfo = new ClubInfoResponseDto();
+
+//        List<Post> hotMemo = clubQueryRepository.findHotMemoByClub(club);
+//        List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club);
+
+//        clubInfo.setHotMemo(hotMemo);
+//        clubInfo.setHotTopic(hotTopic);
         clubInfo.setClubInfo(club);
         clubInfo.setUsersInClubDtoList(usersInClub);
         clubInfo.setBookAndUserDtoList(cbuByClub);

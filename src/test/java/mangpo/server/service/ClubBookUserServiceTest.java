@@ -2,7 +2,6 @@ package mangpo.server.service;
 
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubBookUserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -88,7 +85,7 @@ public class ClubBookUserServiceTest {
         Long saved2 = clubBookUserService.createClubBookUser(cbu2);
 
         //when
-        List<ClubBookUser> listByUser = clubBookUserService.findListByUser(user);
+        List<ClubBookUser> listByUser = clubBookUserService.findListByUserExceptClub(user);
 
         //then
         assertThat(listByUser.size()).isEqualTo(2);

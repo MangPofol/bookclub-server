@@ -13,8 +13,8 @@ import java.util.List;
 
 public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>, ClubBookUserRepositoryCustom {
 
-    @EntityGraph(attributePaths = ("book"))
-    List<ClubBookUser> findListByUser(User user);
+//    @EntityGraph(attributePaths = ("book"))
+//    List<ClubBookUser> findListByUserExceptClub(User user);
 
     Long deleteAllByClub(Club club);
 }

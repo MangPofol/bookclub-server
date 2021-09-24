@@ -23,6 +23,17 @@ public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryC
     }
 
 
+    @Override
+    public List<ClubBookUser> findListByUserExceptClub(User user) {
+        return queryFactory
+                .selectFrom(clubBookUser)
+                .join(clubBookUser.book, book).fetchJoin()
+                .where(clubBookUser.user.isNotNull(),
+                        clubBookUser.club.isNull(),
+                        clubBookUser.book.isNotNull())
+                .fetch();
+    }
+
     //    @Query("select cbu form ClubBookUser cbu where cbu.user = :user and cbu.book =:book and cbu.club is null")
     public ClubBookUser findByUserAndBook(User user, Book book) {
         return queryFactory

@@ -2,6 +2,7 @@ package mangpo.server.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import mangpo.server.entity.Club;
+import mangpo.server.entity.Post;
 import mangpo.server.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -29,4 +30,11 @@ public class ClubQueryRepository {
 
     }
 
+//    public List<Post> findHotMemoByClub(Club club){
+//
+//    }
+//
+//    public List<Post> findHotTopicByClub(Club club){
+//
+//    }
 }

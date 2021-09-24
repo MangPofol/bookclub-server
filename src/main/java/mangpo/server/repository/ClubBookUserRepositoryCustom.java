@@ -8,6 +8,8 @@ import mangpo.server.entity.User;
 import java.util.List;
 
 public interface ClubBookUserRepositoryCustom {
+    List<ClubBookUser> findListByUserExceptClub(User user);
+
     public ClubBookUser findByUserAndBook(User user, Book book);
 
     public List<User> findUsersByClub(Club club);
