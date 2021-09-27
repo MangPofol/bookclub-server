@@ -10,7 +10,6 @@ build/
 #### CYC ####
 #*.log
 application.properties
-application.yml
 aws.yml
 
 
