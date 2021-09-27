@@ -11,7 +11,7 @@ build/
 #*.log
 application.properties
 application.yml
-
+aws.yml
 
 
 ### STS ###
