@@ -48,4 +48,8 @@ public class PostClubScopeService {
         return pcsRepository.findByPost(post);
     }
 
+    public List<PostClubScope> findListByClub(Club club){
+        return pcsRepository.findByClub(club);
+    }
+
 }

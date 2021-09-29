@@ -137,8 +137,8 @@ public class ClubQueryRepository {
 
             return result;
         }
-        log.info("intersection={}",  intersection);
-        log.info("intersectionGetId={}",  intersection.get(0).getId());
+//        log.info("intersection={}",  intersection);
+//        log.info("intersectionGetId={}",  intersection.get(0).getId());
 
         return intersection;
     }
@@ -235,8 +235,8 @@ public class ClubQueryRepository {
 
             return result;
         }
-        log.info("intersection={}",  intersection);
-        log.info("intersectionGetId={}",  intersection.get(0).getId());
+//        log.info("intersection={}",  intersection);
+//        log.info("intersectionGetId={}",  intersection.get(0).getId());
 
         return intersection;
     }

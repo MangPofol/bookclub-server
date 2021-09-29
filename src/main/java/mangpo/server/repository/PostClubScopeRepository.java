@@ -15,4 +15,7 @@ public interface PostClubScopeRepository extends JpaRepository<PostClubScope,Lon
 
     @EntityGraph(attributePaths = "club")
     List<PostClubScope> findByPost(Post post);
+
+    @EntityGraph(attributePaths = "club")
+    List<PostClubScope> findByClub(Club club);
 }

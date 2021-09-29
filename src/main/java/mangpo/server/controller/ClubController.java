@@ -141,6 +141,13 @@ public class ClubController {
         Club request = updateClubRequestDto.toEntity();
         clubService.updateClub(clubId, request);
 
+        Club club = clubService.findClub(clubId);
+        List<PostClubScope> listByClub = pscService.findListByClub(club);
+
+        for (PostClubScope pcs : listByClub) {
+            pcs.changeClubName(updateClubRequestDto.getName());
+        }
+
         return ResponseEntity.noContent().build();
     }
 

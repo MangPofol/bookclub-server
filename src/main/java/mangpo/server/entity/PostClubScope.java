@@ -25,4 +25,9 @@ public class PostClubScope {
     private Club club;
 
     private String clubName;
+
+
+    public void changeClubName(String newClubName){
+        this.clubName = newClubName;
+    }
 }

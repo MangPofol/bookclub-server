@@ -71,7 +71,6 @@ class ClubServiceTest {
 
     }
 
-
     @Test
     void 클럽조회_단일_성공() {
         //given
