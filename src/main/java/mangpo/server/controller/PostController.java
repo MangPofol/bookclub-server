@@ -1,15 +1,11 @@
 package mangpo.server.controller;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.*;
-import mangpo.server.service.BookService;
-import mangpo.server.service.CommentService;
-import mangpo.server.service.LikedService;
-import mangpo.server.service.PostService;
+import mangpo.server.service.*;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +23,39 @@ public class PostController {
 
     private final PostService postService;
     private final BookService bookService;
+    private final ClubService clubService;
     private final LikedService likedService;
     private final CommentService commentService;
+    private final PostClubScopeService pscService;
 
     //Todo dto로 직접 조회 고려
     @GetMapping
     public Result<List<PostResponseDto>> getPostsByBookId(@RequestParam Long bookId){
         List<Post> posts = postService.findPostsByBookId(bookId);
+
+        List<PostResponseDto> collect = posts.stream()
+                .map(PostResponseDto::new)
+                .collect(Collectors.toList());
+
+        return new Result(collect);
+    }
+
+    @GetMapping
+    public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam Long clubId){
+        List<Post> posts = postService.findPostsByBookId(bookId);
+        Club clubRequest = clubService.findClub(clubId);
+
+        for (Post post : posts) {
+            if (post.getScope() == PostScope.CLUB){
+                List<PostClubScope> listByPost = pscService.findListByPost(post);
+
+                boolean present = listByPost.stream()
+                        .anyMatch(m -> m.getClub() == clubRequest);
+
+                if (!present)
+                    posts.remove(post);
+            }
+        }
 
         List<PostResponseDto> collect = posts.stream()
                 .map(PostResponseDto::new)
@@ -49,6 +71,24 @@ public class PostController {
         post.changeBook(requestBook);
         Long postId = postService.createPost(post);
 
+        if (requestDto.getScope() == PostScope.CLUB){
+            List<Long> clubIdListForScope = requestDto.getClubIdListForScope();
+
+            for (Long clubId : clubIdListForScope) {
+                Club club = clubService.findClub(clubId);
+
+                PostClubScope pcs = PostClubScope.builder()
+                        .post(post)
+                        .club(club)
+                        .clubName(club.getName())
+                        .build();
+
+                Long pcsId = pscService.createPCS(pcs);
+            }
+
+
+        }
+
         UriComponents uriComponents =
                 b.path("/posts/{postId}").buildAndExpand(postId);
 
@@ -59,6 +99,8 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id){
+        Post post = postService.findPost(id);
+        pscService.deleteAllPcsByPost(post);
         postService.deletePost(id);
 
         return ResponseEntity.noContent().build();
@@ -91,7 +133,7 @@ public class PostController {
         Post post = postService.findPost(postId);
 
         List<Liked> collect = post.getLikedList().stream()
-                .filter(l -> l.getUser().getId() == loginUser.getId())
+                .filter(l -> l.getUser().getId().equals(loginUser.getId()))
                 .collect(Collectors.toList());
 
         Liked liked = collect.get(0);
@@ -167,6 +209,7 @@ public class PostController {
         private String imgLocation;
         private String title;
         private String content;
+        private List<Long> clubIdListForScope;
 
         public Post toEntityExceptBook(){
             return Post.builder()

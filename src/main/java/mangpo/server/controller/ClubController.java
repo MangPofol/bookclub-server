@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.ClubInfoResponseDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubQueryRepository;
-import mangpo.server.service.BookService;
-import mangpo.server.service.ClubBookUserService;
-import mangpo.server.service.ClubService;
-import mangpo.server.service.UserService;
+import mangpo.server.service.*;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +33,7 @@ public class ClubController {
     private final BookService bookService;
     private final ClubQueryRepository clubQueryRepository;
     private final UserService userService;
+    private final PostClubScopeService pscService;
 
     @GetMapping("{clubId}")
     public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId) {
@@ -150,6 +148,7 @@ public class ClubController {
     public ResponseEntity<?> deleteClub(@PathVariable Long clubId) {
         Club club = clubService.findClub(clubId);
         cbuService.deleteAllClubBookUserByClub(club);
+        pscService.deleteAllPcsByClub(club);
 
         clubService.deleteClub(clubId);
 

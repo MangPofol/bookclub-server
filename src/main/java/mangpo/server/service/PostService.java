@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.controller.PostController;
 import mangpo.server.entity.Book;
 import mangpo.server.entity.Post;
+import mangpo.server.entity.PostClubScope;
 import mangpo.server.entity.User;
 import mangpo.server.repository.BookRepository;
 import mangpo.server.repository.PostRepository;
