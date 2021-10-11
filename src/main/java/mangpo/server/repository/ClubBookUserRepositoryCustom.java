@@ -1,5 +1,6 @@
 package mangpo.server.repository;
 
+import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.Book;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
@@ -16,5 +17,5 @@ public interface ClubBookUserRepositoryCustom {
 
     public List<ClubBookUser> findClubBookUserByClub(Club club);
 
-    public Boolean isDuplicate(ClubBookUser clubBookUser);
+    public Boolean isDuplicate(ClubBookUserSearchCondition cbuSearchCondition);
 }

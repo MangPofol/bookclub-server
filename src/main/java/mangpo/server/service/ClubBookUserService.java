@@ -1,6 +1,7 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.Book;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
@@ -27,7 +28,8 @@ public class ClubBookUserService {
     }
 
     private void validateDuplicateCBU(ClubBookUser clubBookUser) {
-        Boolean isDuplicate = cbuRepository.isDuplicate(clubBookUser);
+        ClubBookUserSearchCondition cbuCond = new ClubBookUserSearchCondition(clubBookUser);
+        Boolean isDuplicate = cbuRepository.isDuplicate(cbuCond);
 
         if (isDuplicate == Boolean.TRUE)
             throw new IllegalStateException("이미 존재하는 정보입니다");
@@ -39,13 +41,11 @@ public class ClubBookUserService {
     }
 
     public List<ClubBookUser> findListByUserExceptClub(User user){
-        List<ClubBookUser> listByUser = cbuRepository.findListByUserExceptClub(user);
-        return listByUser;
+        return cbuRepository.findListByUserExceptClub(user);
     }
 
     public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
-        ClubBookUser clubBookUser = cbuRepository.findByUserAndBook(user,book);
-        return clubBookUser;
+        return cbuRepository.findByUserAndBook(user,book);
     }
 
     public List<User> findUsersByClub(Club club){

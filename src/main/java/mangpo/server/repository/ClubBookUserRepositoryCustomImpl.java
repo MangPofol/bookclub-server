@@ -2,6 +2,7 @@ package mangpo.server.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -68,12 +69,12 @@ public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryC
     }
 
     @Override
-    public Boolean isDuplicate(ClubBookUser clubBookUserRequest) {
+    public Boolean isDuplicate(ClubBookUserSearchCondition cbuSearchCondition) {
         List<ClubBookUser> result = queryFactory
                 .selectFrom(clubBookUser)
-                .where(clubEq(clubBookUserRequest.getClub()),
-                        bookEq(clubBookUserRequest.getBook()),
-                        userEq(clubBookUserRequest.getUser()))
+                .where(clubEq(cbuSearchCondition.getClub()),
+                        bookEq(cbuSearchCondition.getBook()),
+                        userEq(cbuSearchCondition.getUser()))
                 .fetch();
 
         if(result.isEmpty())

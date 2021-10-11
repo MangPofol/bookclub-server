@@ -36,22 +36,6 @@ public class BookController {
         User userByEmail = userService.findUserByEmail(email);
         List<Book> byUserAndBook = bookQueryRepository.findByUserAndBook(userByEmail, category);
 
-//        List<ClubBookUser> listByUser = cbuService.findListByUser(userByEmail);
-
-//        List<Book> bookList = listByUser.stream()
-//                .map(m -> m.getBook())
-//                .collect(Collectors.toList());
-
-//
-//
-//        //listByUser 에서 책만 뽑기
-//        List<Book> booksExtracted = listByUser.stream()
-//                .filter(m -> m.getBook().getCategory().equals(category))
-//                .map(m -> m.getBook())
-//                .collect(Collectors.toList());
-//        //중복제거
-//        HashSet<Book> bookHashSet = new HashSet<>(booksExtracted);
-//
           List<BookResponseDto> collect = byUserAndBook.stream()
                 .map(BookResponseDto::new)
                 .collect(Collectors.toList());
@@ -152,31 +136,6 @@ public class BookController {
         private T data;
     }
 
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    static class BookResponseDto {
-//        private Long id;
-//        private String name;
-//        private String isbn;
-//        private BookCategory category;
-//        private LocalDateTime createdDate;
-//        private LocalDateTime modifiedDate;
-//        private List<LikedResponseDto> likedList;
-//
-//        public BookResponseDto(Book book){
-//            this.id = book.getId();
-//            this.name = book.getName();
-//            this.isbn = book.getIsbn();
-//            this.category = book.getCategory();
-//            this.createdDate = book.getCreatedDate();
-//            this.modifiedDate = book.getModifiedDate();
-//            this.likedList = book.getLikedList()
-//                    .stream()
-//                    .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
-//                    .collect(Collectors.toList());
-//        }
-//    }
 
     @Data
     @AllArgsConstructor

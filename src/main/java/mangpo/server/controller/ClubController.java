@@ -43,20 +43,20 @@ public class ClubController {
         int memberSize = cbuService.findUsersByClub(club).size();
         List<ClubBookUser> cbuByClub = cbuService.findClubBookUserByClub(club);
 
-        ClubInfoResponseDto clubInfo = new ClubInfoResponseDto();
+        ClubInfoResponseDto clubInfoResponseDto = new ClubInfoResponseDto();
 
 //        log.info("@@@@@메모 시작@@@@@@@@@@");
         List<Post> hotMemo = clubQueryRepository.findHotMemoByClub(club,memberSize);
 //        log.info("@@@@@메모 끝@@@@@@@@@@");
         List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club,memberSize);
 
-        clubInfo.setHotMemo(hotMemo);
-        clubInfo.setHotTopic(hotTopic);
-        clubInfo.setClubInfo(club);
-        clubInfo.setUsersInClubDtoList(usersInClub);
-        clubInfo.setBookAndUserDtoList(cbuByClub);
+        clubInfoResponseDto.setHotMemo(hotMemo);
+        clubInfoResponseDto.setHotTopic(hotTopic);
+        clubInfoResponseDto.setClubInfo(club);
+        clubInfoResponseDto.setUsersInClubDtoList(usersInClub);
+        clubInfoResponseDto.setBookAndUserDtoList(cbuByClub);
 
-        return new Result<ClubInfoResponseDto>(clubInfo);
+        return new Result<ClubInfoResponseDto>(clubInfoResponseDto);
     }
 
     @GetMapping
