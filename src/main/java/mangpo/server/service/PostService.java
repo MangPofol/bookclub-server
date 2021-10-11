@@ -41,7 +41,6 @@ public class PostService {
         post.setType(postRequest.getType());
         post.setScope(postRequest.getScope());
         post.setIsIncomplete(postRequest.getIsIncomplete());
-        post.setImgLocation(postRequest.getImgLocation());
         post.setTitle(postRequest.getTitle());
         post.setContent(postRequest.getContent());
     }
@@ -54,6 +53,10 @@ public class PostService {
 
     public Post findPost(Long id){
         return postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
+    }
+
+    public Post findPostFetchJoinImgLoc(Long id){
+        return postRepository.findFetchById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
     public List<Post> findPostsByBookId(Long bookId){

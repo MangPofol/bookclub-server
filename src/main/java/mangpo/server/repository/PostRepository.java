@@ -12,4 +12,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     @EntityGraph(attributePaths = ("comments"))
     List<Post> findByBook(Book book);
+
+    @EntityGraph(attributePaths = ("postImageLocations"))
+    Optional<Post> findFetchById(Long id);
 }

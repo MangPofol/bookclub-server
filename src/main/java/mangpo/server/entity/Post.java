@@ -33,9 +33,6 @@ public class Post extends BaseTimeEntity {
 
     private Boolean isIncomplete;
 
-    @Column(name = "post_img_location")
-    private String imgLocation;
-
     @Column(name = "post_title")
     private String title;
 
@@ -49,6 +46,10 @@ public class Post extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImageLocation> postImageLocations = new ArrayList<>();
 
     public void changeBook(Book book){
         this.book = book;

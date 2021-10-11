@@ -82,10 +82,20 @@ public class PostController {
         Book requestBook = bookService.findBook(requestDto.getBookId());
         Post post = requestDto.toEntityExceptBook();
         post.changeBook(requestBook);
-        Long postId = postService.createPost(post);
+
+        for (String imgLoc : requestDto.getPostImgLocations()) {
+            PostImageLocation postImageLocation = PostImageLocation.builder()
+                    .post(post)
+                    .imgLocation(imgLoc)
+                    .build();
+
+            post.getPostImageLocations().add(postImageLocation);
+        }
 
         if (requestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(requestDto, post);
+
+        Long postId = postService.createPost(post);
 
         UriComponents uriComponents =
                 b.path("/posts/{postId}").buildAndExpand(postId);
@@ -123,11 +133,23 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    //TODO put vs patch
     @PatchMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        Post post = postService.findPost(id);
+//        Post post = postService.findPost(id);
+        Post post = postService.findPostFetchJoinImgLoc(id);
         PostScope ogScope = post.getScope();
 
+        post.getPostImageLocations().clear();
+
+        for (String s:  requestDto.getPostImgLocations()) {
+            PostImageLocation p = PostImageLocation.builder()
+                    .post(post)
+                    .imgLocation(s)
+                    .build();
+
+            post.getPostImageLocations().add(p);
+        }
 
         if (ogScope == PostScope.CLUB) {
             pscService.deleteAllPcsByPost(post);
@@ -192,6 +214,7 @@ public class PostController {
         private String content;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
+        private List<String> postImgLocations;
         private List<LikedResponseDto> likedList;
         private List<CommentResponseDto> commentsDto;
 
@@ -201,11 +224,14 @@ public class PostController {
             this.type = post.getType();
             this.scope = post.getScope();
             this.isIncomplete = post.getIsIncomplete();
-            this.imgLocation = post.getImgLocation();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.createdDate = post.getCreatedDate();
             this.modifiedDate = post.getModifiedDate();
+
+            this.postImgLocations = post.getPostImageLocations().stream()
+                    .map(PostImageLocation::getImgLocation)
+                    .collect(Collectors.toList());
 
             this.likedList = post.getLikedList()
                     .stream()
@@ -238,13 +264,14 @@ public class PostController {
         private String title;
         private String content;
         private List<Long> clubIdListForScope;
+        private List<String> postImgLocations;
+
 
         public Post toEntityExceptBook() {
             return Post.builder()
                     .type(this.type)
                     .scope(this.scope)
                     .isIncomplete(this.isIncomplete)
-                    .imgLocation(this.imgLocation)
                     .title(this.title)
                     .content(this.content)
                     .build();

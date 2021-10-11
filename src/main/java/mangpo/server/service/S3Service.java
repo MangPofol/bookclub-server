@@ -1,4 +1,4 @@
-package mangpo.server;
+package mangpo.server.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
