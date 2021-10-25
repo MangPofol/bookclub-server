@@ -100,34 +100,34 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{bookId}/do-like")
-    public ResponseEntity<?> doLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
-        Book book = bookService.findBook(bookId);
-
-        Liked liked = Liked.builder()
-                .user(loginUser)
-                .isLiked(true)
-                .build();
-        liked.doLikeToBook(book);
-        likedService.createLiked(liked);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{bookId}/undo-like")
-    public ResponseEntity<?> undoLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
-        Book book = bookService.findBook(bookId);
-
-        List<Liked> collect = book.getLikedList().stream()
-                .filter(l -> l.getUser().getId() == loginUser.getId())
-                .collect(Collectors.toList());
-
-        Liked liked = collect.get(0);
-        liked.undoLikeToBook(book);
-        likedService.deleteLiked(liked);
-
-        return ResponseEntity.noContent().build();
-    }
+//    @PostMapping("/{bookId}/do-like")
+//    public ResponseEntity<?> doLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+//        Book book = bookService.findBook(bookId);
+//
+//        Liked liked = Liked.builder()
+//                .user(loginUser)
+//                .isLiked(true)
+//                .build();
+//        liked.doLikeToBook(book);
+//        likedService.createLiked(liked);
+//
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @PostMapping("/{bookId}/undo-like")
+//    public ResponseEntity<?> undoLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+//        Book book = bookService.findBook(bookId);
+//
+//        List<Liked> collect = book.getLikedList().stream()
+//                .filter(l -> l.getUser().getId() == loginUser.getId())
+//                .collect(Collectors.toList());
+//
+//        Liked liked = collect.get(0);
+//        liked.undoLikeToBook(book);
+//        likedService.deleteLiked(liked);
+//
+//        return ResponseEntity.noContent().build();
+//    }
 
     @Data
     @AllArgsConstructor
@@ -137,13 +137,13 @@ public class BookController {
     }
 
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class LikedResponseDto {
-        private String userNickname;
-        private Boolean isLiked;
-    }
+//    @Data
+//    @AllArgsConstructor
+//    @NoArgsConstructor
+//    static class LikedResponseDto {
+//        private String userNickname;
+//        private Boolean isLiked;
+//    }
 
 
     @Data

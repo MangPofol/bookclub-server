@@ -33,10 +33,6 @@ public class Book extends BaseTimeEntity {
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "book")
-    private List<Liked> LikedList = new ArrayList<>();
-
     public void update(Book bookRequest){
         this.name = bookRequest.name;
         this.isbn = bookRequest.isbn;

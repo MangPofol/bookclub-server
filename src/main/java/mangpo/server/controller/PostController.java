@@ -126,6 +126,7 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         Post post = postService.findPost(id);
         pscService.deleteAllPcsByPost(post);
+        likedService.deleteByPost(post);
         postService.deletePost(id);
 
         return ResponseEntity.noContent().build();

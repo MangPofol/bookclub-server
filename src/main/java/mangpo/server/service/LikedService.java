@@ -28,4 +28,9 @@ public class LikedService {
         likedRepository.delete(liked);
     }
 
+    @Transactional
+    public void deleteByPost(Post post){
+        likedRepository.deleteByPost(post);
+    }
+
 }

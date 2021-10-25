@@ -20,10 +20,6 @@ public class Liked {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -38,12 +34,4 @@ public class Liked {
         post.getLikedList().remove(this);
     }
 
-    public void doLikeToBook(Book book){
-        this.book = book;
-        book.getLikedList().add(this);
-    }
-
-    public void undoLikeToBook(Book book){
-        book.getLikedList().remove(this);
-    }
 }

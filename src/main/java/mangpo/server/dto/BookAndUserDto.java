@@ -22,9 +22,8 @@ public class BookAndUserDto {
     private BookCategory category;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private List<LikedResponseDto> likedList;
 
-    public BookAndUserDto(ClubBookUser cbu){
+    public BookAndUserDto(ClubBookUser cbu) {
         User user = cbu.getUser();
         this.userId = user.getId();
         this.userNickname = user.getNickname();
@@ -36,9 +35,5 @@ public class BookAndUserDto {
         this.category = book.getCategory();
         this.createdDate = book.getCreatedDate();
         this.modifiedDate = book.getModifiedDate();
-        this.likedList = book.getLikedList()
-                .stream()
-                .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
-                .collect(Collectors.toList());
     }
 }

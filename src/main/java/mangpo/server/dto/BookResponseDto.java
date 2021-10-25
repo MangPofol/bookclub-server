@@ -21,18 +21,13 @@ public class BookResponseDto {
     private BookCategory category;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private List<LikedResponseDto> likedList;
 
-    public BookResponseDto(Book book){
+    public BookResponseDto(Book book) {
         this.id = book.getId();
         this.name = book.getName();
         this.isbn = book.getIsbn();
         this.category = book.getCategory();
         this.createdDate = book.getCreatedDate();
         this.modifiedDate = book.getModifiedDate();
-        this.likedList = book.getLikedList()
-                .stream()
-                .map(m-> new LikedResponseDto(m.getUser().getNickname(),m.getIsLiked()))
-                .collect(Collectors.toList());
     }
 }
