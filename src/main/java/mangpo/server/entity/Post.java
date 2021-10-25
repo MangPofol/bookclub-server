@@ -24,10 +24,6 @@ public class Post extends BaseTimeEntity {
     private Book book;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "post_type")
-    private PostType type;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "post_scope")
     private PostScope scope;
 
@@ -38,6 +34,10 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "post_content")
     private String content;
+
+    private String location;
+    private String readTime;
+    private String hyperlink;
 
     @Builder.Default
     @OneToMany(mappedBy = "post")
@@ -63,8 +63,4 @@ public class Post extends BaseTimeEntity {
         this.book = book;
         book.getPosts().add(this);
     }
-
-
-
-
 }

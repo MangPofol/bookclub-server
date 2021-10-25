@@ -44,8 +44,11 @@ public class ClubBookUserService {
         return cbuRepository.findListByUserExceptClub(user);
     }
 
-    public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
-        return cbuRepository.findByUserAndBook(user,book);
+//    public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
+//        return cbuRepository.findByUserAndBook(user,book);
+//    }
+    public List<ClubBookUser> findByCondition(ClubBookUserSearchCondition cbuSearchCond){
+        return cbuRepository.findBySearchCondition(cbuSearchCond);
     }
 
     public List<User> findUsersByClub(Club club){

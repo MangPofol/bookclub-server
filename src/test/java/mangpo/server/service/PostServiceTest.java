@@ -42,13 +42,18 @@ class PostServiceTest {
 
         Post post = Post.builder()
                 .book(book)
-                .type(PostType.MEMO)
                 .scope(PostScope.PUBLIC)
                 .isIncomplete(Boolean.TRUE)
-                .imgLocation("123죽시국이미지123")
                 .title("죽시국을 읽고")
                 .content("죽시국 짱")
                 .build();
+
+        PostImageLocation imgLoc = PostImageLocation.builder()
+                .post(post)
+                .imgLocation("img1")
+                .build();
+
+        post.getPostImageLocations().add(imgLoc);
 
         //when
         Long postId = postService.createPost(post);
@@ -69,14 +74,19 @@ class PostServiceTest {
         Long bookId = bookService.createBook(book);
 
         Post post = Post.builder()
-                .type(PostType.MEMO)
+                .book(book)
                 .scope(PostScope.PUBLIC)
                 .isIncomplete(Boolean.TRUE)
-                .imgLocation("123죽시국이미지123")
                 .title("죽시국을 읽고")
                 .content("죽시국 짱")
                 .build();
 
+        PostImageLocation imgLoc = PostImageLocation.builder()
+                .post(post)
+                .imgLocation("img1")
+                .build();
+
+        post.getPostImageLocations().add(imgLoc);
         post.addBook(book);
 
         Long postId = postService.createPost(post);
@@ -100,14 +110,19 @@ class PostServiceTest {
         Long bookId = bookService.createBook(book);
 
         Post post = Post.builder()
-                .type(PostType.MEMO)
+                .book(book)
                 .scope(PostScope.PUBLIC)
                 .isIncomplete(Boolean.TRUE)
-                .imgLocation("123죽시국이미지123")
                 .title("죽시국을 읽고")
                 .content("죽시국 짱")
                 .build();
 
+        PostImageLocation imgLoc = PostImageLocation.builder()
+                .post(post)
+                .imgLocation("img1")
+                .build();
+
+        post.getPostImageLocations().add(imgLoc);
         post.addBook(book);
 
         Long postId = postService.createPost(post);
@@ -132,14 +147,19 @@ class PostServiceTest {
         Long bookId = bookService.createBook(book);
 
         Post post = Post.builder()
-                .type(PostType.MEMO)
+                .book(book)
                 .scope(PostScope.PUBLIC)
                 .isIncomplete(Boolean.TRUE)
-                .imgLocation("123죽시국이미지123")
                 .title("죽시국을 읽고")
                 .content("죽시국 짱")
                 .build();
 
+        PostImageLocation imgLoc = PostImageLocation.builder()
+                .post(post)
+                .imgLocation("img1")
+                .build();
+
+        post.getPostImageLocations().add(imgLoc);
         post.addBook(book);
 
         Long postId = postService.createPost(post);
@@ -148,14 +168,18 @@ class PostServiceTest {
 
         //when
         Post postRequest = Post.builder()
-                .type(PostType.TOPIC)
                 .scope(PostScope.PUBLIC)
                 .isIncomplete(Boolean.TRUE)
-                .imgLocation("123죽시국이미지123")
                 .title("죽시국을 읽고")
                 .content("죽시국 노잼")
                 .build();
 
+        PostImageLocation imgLoc2 = PostImageLocation.builder()
+                .post(post)
+                .imgLocation("img1")
+                .build();
+
+        postRequest.getPostImageLocations().add(imgLoc2);
         postService.updatePost(postId,postRequest);
 
         em.flush();
@@ -165,7 +189,6 @@ class PostServiceTest {
 
         //then
         assertThat(postUpdated.getContent()).isEqualTo("죽시국 노잼");
-        assertThat(postUpdated.getType()).isEqualTo(PostType.TOPIC);
         assertThat(postUpdated.getId()).isEqualTo(postId);
     }
 
@@ -182,13 +205,18 @@ class PostServiceTest {
 
         Post post = Post.builder()
                 .book(book)
-                .type(PostType.MEMO)
                 .scope(PostScope.PUBLIC)
                 .isIncomplete(Boolean.TRUE)
-                .imgLocation("123죽시국이미지123")
                 .title("죽시국을 읽고")
                 .content("죽시국 짱")
                 .build();
+
+        PostImageLocation imgLoc = PostImageLocation.builder()
+                .post(post)
+                .imgLocation("img1")
+                .build();
+
+        post.getPostImageLocations().add(imgLoc);
 
         Long postId = postService.createPost(post);
 

@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.dto.ClubInfoResponseDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubQueryRepository;
@@ -45,13 +45,17 @@ public class ClubController {
 
         ClubInfoResponseDto clubInfoResponseDto = new ClubInfoResponseDto();
 
-//        log.info("@@@@@메모 시작@@@@@@@@@@");
-        List<Post> hotMemo = clubQueryRepository.findHotMemoByClub(club,memberSize);
-//        log.info("@@@@@메모 끝@@@@@@@@@@");
-        List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club,memberSize);
+////        log.info("@@@@@메모 시작@@@@@@@@@@");
+//        List<Post> hotMemo = clubQueryRepository.findTrendingPostByClub(club,memberSize);
+////        log.info("@@@@@메모 끝@@@@@@@@@@");
+//        List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club,memberSize);
 
-        clubInfoResponseDto.setHotMemo(hotMemo);
-        clubInfoResponseDto.setHotTopic(hotTopic);
+        List<Post> trendingPostByClub = clubQueryRepository.findTrendingPostByClub(club, memberSize);
+
+
+//        clubInfoResponseDto.setHotMemo(hotMemo);
+//        clubInfoResponseDto.setTrendingPost(hotTopic);
+        clubInfoResponseDto.setTrendingPost(trendingPostByClub);
         clubInfoResponseDto.setClubInfo(club);
         clubInfoResponseDto.setUsersInClubDtoList(usersInClub);
         clubInfoResponseDto.setBookAndUserDtoList(cbuByClub);
@@ -99,7 +103,12 @@ public class ClubController {
                                                @PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto) {
 
         Book book = bookService.findBook(requestDto.bookId);
-        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
+//        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
+        ClubBookUserSearchCondition cbuSearchCond = new ClubBookUserSearchCondition();
+        cbuSearchCond.setUser(loginUser);
+        cbuSearchCond.setBook(book);
+
+        ClubBookUser byUserAndBook = cbuService.findByCondition(cbuSearchCond).get(0);
         Club byId = clubService.findClub(clubId);
 
         ClubBookUser build = ClubBookUser.builder()

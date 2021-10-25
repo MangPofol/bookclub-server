@@ -46,17 +46,15 @@ public class PostController {
     @GetMapping
     public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(defaultValue = "-1") Long clubId) {
         List<Post> posts = postService.findPostsByBookId(bookId);
-        log.info("posts={}", posts);
+//        log.info("posts={}", posts);
 
         if (clubId != -1) {
             Club clubRequest = clubService.findClub(clubId);
-            log.info("clubRequest={}", clubRequest);
 
             Iterator<Post> iter = posts.iterator();
 
             while(iter.hasNext()){
                 Post p = iter.next();
-                log.info("post={}", p);
                 if (p.getScope() == PostScope.CLUB) {
                     List<PostClubScope> listByPost = pscService.findListByPost(p);
 
@@ -133,7 +131,6 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    //TODO put vs patch
     @PatchMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
 //        Post post = postService.findPost(id);
@@ -206,7 +203,6 @@ public class PostController {
     @NoArgsConstructor
     public static class PostResponseDto {
         private Long id;
-        private PostType type;
         private PostScope scope;
         private Boolean isIncomplete;
         private String imgLocation;
@@ -214,6 +210,10 @@ public class PostController {
         private String content;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
+        private String location;
+        private String readTime;
+        private String hyperlink;
+
         private List<String> postImgLocations;
         private List<LikedResponseDto> likedList;
         private List<CommentResponseDto> commentsDto;
@@ -221,11 +221,13 @@ public class PostController {
         //        @QueryProjection
         public PostResponseDto(Post post) {
             this.id = post.getId();
-            this.type = post.getType();
             this.scope = post.getScope();
             this.isIncomplete = post.getIsIncomplete();
             this.title = post.getTitle();
             this.content = post.getContent();
+            this.location = post.getLocation();
+            this.readTime = post.getReadTime();
+            this.hyperlink = post.getHyperlink();
             this.createdDate = post.getCreatedDate();
             this.modifiedDate = post.getModifiedDate();
 
@@ -257,23 +259,27 @@ public class PostController {
     @Data
     static class PostRequestDto {
         private Long bookId;
-        private PostType type;
         private PostScope scope;
         private Boolean isIncomplete;
         private String imgLocation;
         private String title;
         private String content;
+        private String location;
+        private String readTime;
+        private String hyperlink;
         private List<Long> clubIdListForScope;
         private List<String> postImgLocations;
 
 
         public Post toEntityExceptBook() {
             return Post.builder()
-                    .type(this.type)
                     .scope(this.scope)
                     .isIncomplete(this.isIncomplete)
                     .title(this.title)
                     .content(this.content)
+                    .location(this.location)
+                    .readTime(this.readTime)
+                    .hyperlink(this.hyperlink)
                     .build();
         }
     }

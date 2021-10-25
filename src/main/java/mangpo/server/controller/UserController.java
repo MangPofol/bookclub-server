@@ -4,88 +4,82 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.Result;
+import mangpo.server.dto.UserRequestDto;
+import mangpo.server.dto.UserResponseDto;
+import mangpo.server.entity.Genre;
 import mangpo.server.entity.Sex;
 import mangpo.server.entity.User;
+import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+    private final ClubBookUserService cbuService;
+
+    @GetMapping
+    public ResponseEntity<Result<UserResponseDto>> getUserInfo(@RequestParam Long userId) {
+        User user = userService.findUser(userId);
+
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+        return ResponseEntity.ok(new Result<>(userResponseDto));
+    }
 
     @PostMapping
-    public ResponseEntity<CreateUserResponseDto> createUser(@RequestBody CreateUserRequestDto createUserRequestDto){
+    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
 
-        User user = User.builder()
-                .email(createUserRequestDto.email)
-                .password(createUserRequestDto.password)
-                .birthdate(createUserRequestDto.birthdate)
-                .nickname(createUserRequestDto.nickname)
-                .sex(createUserRequestDto.sex)
-                .profileImgLocation(createUserRequestDto.profileImgLocation)
-                .build();
+        User user = userRequestDto.toEntityExceptId();
 
-        try{
-            userService.join(user);
-            CreateUserResponseDto response = new CreateUserResponseDto(user.getEmail(),user.getNickname(),user.getSex(),user.getBirthdate(),user.getProfileImgLocation());
+        Long userId = userService.createUser(user);
 
-            return ResponseEntity.ok(response);
-        }catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
-        }
+        UriComponents uriComponents =
+                b.path("/users/{userId}").buildAndExpand(userId);
+
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+        Result<UserResponseDto> result = new Result<>(userResponseDto);
+
+        return ResponseEntity.created(uriComponents.toUri()).body(result);
     }
 
-//    @GetMapping
-//    public Result<FindOneUserDto> findOneUser(@RequestBody FindOneUserDto findOneUserDto){
-//        String email = findOneUserDto.getEmail();
-//
+
+    @PostMapping("/{userId}/change-dormant")
+    public ResponseEntity<?> changeUserDormant(@PathVariable Long userId) {
+        User user = userService.findUser(userId);
+        userService.changeDormant(user);
+
+        return ResponseEntity.noContent().build();
+    }
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+//        User user = userService.findUser(id);
 //    }
 
+    @PatchMapping("/{userId}")
+    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto) {
+        User user = userService.findUser(userId);
+//        User userRequest = userRequestDto.toEntityExceptId();
 
+//        for (Genre genre : userRequest.getGenres()) {
+//            genre.addUser(user);
+//        }
 
+        userService.updateUser(userId,userRequestDto);
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Result<T>{
-        private T data;
+        return ResponseEntity.noContent().build();
     }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class CreateUserRequestDto {
-        private String email;
-        private String password;
-        private String nickname;
-        private Sex sex;
-        private LocalDateTime birthdate;
-        private String profileImgLocation;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class CreateUserResponseDto {
-        private String email;
-        private String nickname;
-        private Sex sex;
-        private LocalDateTime birthdate;
-        private String profileImgLocation;
-    }
-
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    static class FindOneUserDto {
-//        private String email;
-//    }
-
 }

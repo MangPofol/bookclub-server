@@ -37,18 +37,23 @@ public class ClubInfoResponseDto {
         this.modifiedDate = club.getModifiedDate();
     }
 
-    public void setHotMemo(List<Post> posts) {
-        for (Post p : posts) {
-            hotMemo.put(p.getId(), p.getTitle());
-        }
-
-    }
-
-    public void setHotTopic(List<Post> posts) {
+    public void setTrendingPost(List<Post> posts) {
         for (Post p : posts) {
             hotTopic.put(p.getId(), p.getTitle());
         }
     }
+//    public void setHotMemo(List<Post> posts) {
+//        for (Post p : posts) {
+//            hotMemo.put(p.getId(), p.getTitle());
+//        }
+//
+//    }
+//
+//    public void setHotTopic(List<Post> posts) {
+//        for (Post p : posts) {
+//            hotTopic.put(p.getId(), p.getTitle());
+//        }
+//    }
 
     public void setUsersInClubDtoList(List<User> user) {
         List<UsersInClubDto> collect = user.stream()

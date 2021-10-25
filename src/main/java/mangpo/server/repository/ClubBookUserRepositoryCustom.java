@@ -17,5 +17,7 @@ public interface ClubBookUserRepositoryCustom {
 
     public List<ClubBookUser> findClubBookUserByClub(Club club);
 
+    public List<ClubBookUser> findBySearchCondition(ClubBookUserSearchCondition cbuSearchCondition);
+
     public Boolean isDuplicate(ClubBookUserSearchCondition cbuSearchCondition);
 }

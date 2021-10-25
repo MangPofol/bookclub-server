@@ -1,5 +1,6 @@
 package mangpo.server.service;
 
+import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubBookUserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -89,7 +90,7 @@ public class ClubBookUserServiceTest {
                 .book(book2)
                 .build();
 
-        userService.join(user);
+        userService.createUser(user);
         bookService.createBook(book1);
         bookService.createBook(book2);
 
@@ -115,16 +116,19 @@ public class ClubBookUserServiceTest {
                 .book(book)
                 .build();
 
-        userService.join(user);
+        userService.createUser(user);
         bookService.createBook(book);
 
         Long clubBookUser = clubBookUserService.createClubBookUser(cbu1);
 
         //when
-        ClubBookUser byUserAndBookExceptClub = clubBookUserService.findByUserAndBookExceptClub(user, book);
-
+//        ClubBookUser byUserAndBookExceptClub = clubBookUserService.findByUserAndBookExceptClub(user, book);
+        ClubBookUserSearchCondition cbuCond = new ClubBookUserSearchCondition();
+        cbuCond.setUser(user);
+        cbuCond.setBook(book);
+        List<ClubBookUser> byCondition = clubBookUserService.findByCondition(cbuCond);
         //then
-        assertThat(byUserAndBookExceptClub).isEqualTo(cbu1);
+        assertThat(byCondition).isEqualTo(cbu1);
     }
 
 }

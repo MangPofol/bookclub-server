@@ -38,7 +38,6 @@ public class PostService {
         //changeXXX로 변환
         //TODO bean validation 필요
 
-        post.setType(postRequest.getType());
         post.setScope(postRequest.getScope());
         post.setIsIncomplete(postRequest.getIsIncomplete());
         post.setTitle(postRequest.getTitle());
