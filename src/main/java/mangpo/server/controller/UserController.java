@@ -64,6 +64,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/validate-duplicate")
+    public ResponseEntity<?> validateDuplicate(@RequestBody UserValidationDto userValidationDto){
+        userService.validateDuplicateUser(userValidationDto.getEmail());
+
+        return ResponseEntity.noContent().build();
+    }
+
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
 //        User user = userService.findUser(id);
@@ -81,5 +88,10 @@ public class UserController {
         userService.updateUser(userId,userRequestDto);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @Data
+    static class UserValidationDto{
+        String email;
     }
 }

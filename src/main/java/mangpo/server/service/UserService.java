@@ -27,7 +27,7 @@ public class UserService {
         return user.getId();
     }
 
-    private void validateDuplicateUser(String email) {
+    public void validateDuplicateUser(String email) {
         if(email == null)
             return;
         Optional<User> findUser = userRepository.findUserByEmail(email);
