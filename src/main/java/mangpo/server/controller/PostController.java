@@ -90,10 +90,10 @@ public class PostController {
             post.getPostImageLocations().add(postImageLocation);
         }
 
+        Long postId = postService.createPost(post);
+
         if (requestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(requestDto, post);
-
-        Long postId = postService.createPost(post);
 
         UriComponents uriComponents =
                 b.path("/posts/{postId}").buildAndExpand(postId);
