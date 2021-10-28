@@ -14,6 +14,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +31,7 @@ public class PostController {
     private final ClubService clubService;
     private final LikedService likedService;
     private final CommentService commentService;
-    private final PostClubScopeService pscService;
+    private final PostClubScopeService pcsService;
 
     //Todo dto로 직접 조회 고려
 //    @GetMapping
@@ -48,31 +50,54 @@ public class PostController {
         List<Post> posts = postService.findPostsByBookId(bookId);
 //        log.info("posts={}", posts);
 
-        if (clubId != -1) {
-            Club clubRequest = clubService.findClub(clubId);
+        if (clubId != -1)
+            excludePostByClubScope(clubId, posts);
 
-            Iterator<Post> iter = posts.iterator();
+//        List<PostResponseDto> collect = posts.stream()
+//                .map(PostResponseDto::new)
+//                .collect(Collectors.toList());
 
-            while(iter.hasNext()){
-                Post p = iter.next();
-                if (p.getScope() == PostScope.CLUB) {
-                    List<PostClubScope> listByPost = pscService.findListByPost(p);
 
-                    boolean present = listByPost.stream()
-                            .anyMatch(m -> m.getClub() == clubRequest);
+        List<PostResponseDto> collect = new ArrayList<>();
+        createPostResponseDto(posts, collect);
 
-                    if (!present)
-                        iter.remove();
+        return new Result(collect);
+    }
+
+    private void createPostResponseDto(List<Post> posts, List<PostResponseDto> collect) {
+        for (Post post : posts) {
+            PostResponseDto postResponseDto = new PostResponseDto(post);
+            PostScope scope = post.getScope();
+
+            if (scope.equals(PostScope.CLUB)){
+                List<PostClubScope> listByPost = pcsService.findListByPost(post);
+
+                for (PostClubScope pcs : listByPost) {
+                    postResponseDto.addPostScopeClub(pcs.getId(), pcs.getClubName());
                 }
+            }
+            collect.add(postResponseDto);
+        }
+    }
 
+    private void excludePostByClubScope(Long clubId, List<Post> posts) {
+        Club clubRequest = clubService.findClub(clubId);
+
+        Iterator<Post> iter = posts.iterator();
+
+        while(iter.hasNext()){
+            Post p = iter.next();
+            if (p.getScope() == PostScope.CLUB) {
+                List<PostClubScope> listByPost = pcsService.findListByPost(p);
+
+                boolean present = listByPost.stream()
+                        .anyMatch(m -> m.getClub() == clubRequest);
+
+                if (!present)
+                    iter.remove();
             }
 
         }
-        List<PostResponseDto> collect = posts.stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
-
-        return new Result(collect);
     }
 
     @PostMapping
@@ -116,7 +141,7 @@ public class PostController {
                     .clubName(club.getName())
                     .build();
 
-            Long pcsId = pscService.createPCS(pcs);
+            Long pcsId = pcsService.createPCS(pcs);
         }
 
 
@@ -125,7 +150,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         Post post = postService.findPost(id);
-        pscService.deleteAllPcsByPost(post);
+        pcsService.deleteAllPcsByPost(post);
         likedService.deleteByPost(post);
         postService.deletePost(id);
 
@@ -150,7 +175,7 @@ public class PostController {
         }
 
         if (ogScope == PostScope.CLUB) {
-            pscService.deleteAllPcsByPost(post);
+            pcsService.deleteAllPcsByPost(post);
         }
         if (requestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(requestDto, post);
@@ -216,6 +241,7 @@ public class PostController {
         private String hyperlink;
 
         private List<String> postImgLocations;
+        private HashMap<Long, String> postScopeClub = new HashMap<>();
         private List<LikedResponseDto> likedList;
         private List<CommentResponseDto> commentsDto;
 
@@ -245,6 +271,10 @@ public class PostController {
                     .stream()
                     .map(CommentResponseDto::new)
                     .collect(Collectors.toList());
+        }
+
+        public void addPostScopeClub(Long id, String clubName) {
+            this.postScopeClub.put(id,clubName);
         }
     }
 
