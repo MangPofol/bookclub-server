@@ -53,11 +53,6 @@ public class PostController {
         if (clubId != -1)
             excludePostByClubScope(clubId, posts);
 
-//        List<PostResponseDto> collect = posts.stream()
-//                .map(PostResponseDto::new)
-//                .collect(Collectors.toList());
-
-
         List<PostResponseDto> collect = new ArrayList<>();
         createPostResponseDto(posts, collect);
 
@@ -96,7 +91,6 @@ public class PostController {
                 if (!present)
                     iter.remove();
             }
-
         }
     }
 
