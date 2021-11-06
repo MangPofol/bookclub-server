@@ -39,3 +39,13 @@
   <div align="center"><img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/example.png" width="100%"/></div>
   <br>  
 </p>
+
+
+### 기타 자료 & TMI 모음
+
+* 린캔버스: https://coconut-cheese-fcb.notion.site/e1eb8b3f053a40008a9cc7160a26095d
+* 2021년 정부지원 창업 동아리 선정 당시 사진
+<p align="center">
+  <div align="center"><img src="https://github.com/CYC0227/mangpo-ERD/blob/main/KakaoTalk_20211020_172331193.png?raw=true" width="70%"/></div>
+  <br>  
+</p>
