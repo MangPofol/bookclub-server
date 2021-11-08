@@ -45,6 +45,10 @@ public class User extends BaseTimeEntity {
     private List<Genre> genres = new ArrayList<>();
 
     @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ToDo> todos = new ArrayList<>();
+
+    @Builder.Default
     private Boolean isDormant = Boolean.FALSE;//휴면회원
 
     public void update(UserRequestDto userRequest){

@@ -1,10 +1,11 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.ToDoCreateDto;
+import mangpo.server.dto.ToDoDeleteDto;
 import mangpo.server.dto.UserRequestDto;
-import mangpo.server.entity.Genre;
+import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
-import mangpo.server.exeption.NotExistUserException;
 import mangpo.server.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -66,4 +68,5 @@ public class UserService {
     public void changeDormant(User user){
         user.changeIsDormant();
     }
+
 }

@@ -1,26 +1,17 @@
 package mangpo.server.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.Result;
-import mangpo.server.dto.UserRequestDto;
-import mangpo.server.dto.UserResponseDto;
-import mangpo.server.entity.Genre;
-import mangpo.server.entity.Sex;
+import mangpo.server.dto.*;
 import mangpo.server.entity.User;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
+import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -89,6 +80,7 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+
 
     @Data
     static class UserValidationDto{

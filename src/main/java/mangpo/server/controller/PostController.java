@@ -56,7 +56,7 @@ public class PostController {
         List<PostResponseDto> collect = new ArrayList<>();
         createPostResponseDto(posts, collect);
 
-        return new Result(collect);
+        return new Result<>(collect);
     }
 
     private void createPostResponseDto(List<Post> posts, List<PostResponseDto> collect) {
