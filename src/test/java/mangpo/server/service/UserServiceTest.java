@@ -71,7 +71,7 @@ public class UserServiceTest {
 
         Long userId = userService.createUser(user1);
         //when
-        User findUser = userService.findUser(userId);
+        User findUser = userService.findById(userId);
 
         //then
         assertThat(user1.getId()).isEqualTo(findUser.getId());
@@ -150,7 +150,7 @@ public class UserServiceTest {
         em.clear();
 
         //then
-        assertThatThrownBy(() -> userService.findUser(userId1))
+        assertThatThrownBy(() -> userService.findById(userId1))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("존재하지 않는 유저입니다.");
     }

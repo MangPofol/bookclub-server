@@ -6,6 +6,7 @@ import mangpo.server.dto.*;
 import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
 import mangpo.server.service.ToDoService;
+import mangpo.server.service.UserService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class ToDoController {
 
     private final ToDoService toDoService;
+    private final UserService userService;
 
     @GetMapping
     public Result<List<ToDoResponseDto>> getToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
@@ -35,13 +37,17 @@ public class ToDoController {
     //복수의 리소스 생성
     @PostMapping("/create-todos")
     public ResponseEntity<?> createToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser , @RequestBody ToDoCreateDto toDoCreateDto){
-        toDoService.createToDos(loginUser, toDoCreateDto);
+        User initProxy = userService.findById(loginUser.getId());
+        toDoService.createToDos(initProxy, toDoCreateDto);
+
         return ResponseEntity.noContent().build();
     }
     //복수의 리소스 삭제
     @PostMapping("/delete-todos")
     public ResponseEntity<?> deleteToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser , @RequestBody ToDoDeleteDto toDoDeleteDto){
-        toDoService.deleteToDos(loginUser,toDoDeleteDto);
+        User initProxy = userService.findById(loginUser.getId());
+        toDoService.deleteToDos(initProxy,toDoDeleteDto);
+
         return ResponseEntity.noContent().build();
     }
 }

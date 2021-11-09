@@ -1,8 +1,6 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ToDoCreateDto;
-import mangpo.server.dto.ToDoDeleteDto;
 import mangpo.server.dto.UserRequestDto;
 import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
@@ -13,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,7 +37,7 @@ public class UserService {
 
     public List<User> findUsers(){ return userRepository.findAll();}
 
-    public User findUser(Long userId){
+    public User findById(Long userId){
         return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
     }
 
@@ -68,5 +65,4 @@ public class UserService {
     public void changeDormant(User user){
         user.changeIsDormant();
     }
-
 }

@@ -7,7 +7,6 @@ import mangpo.server.dto.*;
 import mangpo.server.entity.User;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
-import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -24,7 +23,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Result<UserResponseDto>> getUserInfo(@RequestParam Long userId) {
-        User user = userService.findUser(userId);
+        User user = userService.findById(userId);
 
         UserResponseDto userResponseDto = new UserResponseDto(user);
         return ResponseEntity.ok(new Result<>(userResponseDto));
@@ -49,7 +48,7 @@ public class UserController {
 
     @PostMapping("/{userId}/change-dormant")
     public ResponseEntity<?> changeUserDormant(@PathVariable Long userId) {
-        User user = userService.findUser(userId);
+        User user = userService.findById(userId);
         userService.changeDormant(user);
 
         return ResponseEntity.noContent().build();
@@ -69,7 +68,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto) {
-        User user = userService.findUser(userId);
+        User user = userService.findById(userId);
 //        User userRequest = userRequestDto.toEntityExceptId();
 
 //        for (Genre genre : userRequest.getGenres()) {
