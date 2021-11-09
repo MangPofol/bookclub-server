@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/ToDos")
+@RequestMapping("/todos")
 public class ToDoController {
 
     private final ToDoService toDoService;
