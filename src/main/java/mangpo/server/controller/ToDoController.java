@@ -32,13 +32,14 @@ public class ToDoController {
         return new Result<>(collect);
     }
 
-    @PostMapping
+    //복수의 리소스 생성
+    @PostMapping("/create-todos")
     public ResponseEntity<?> createToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser , @RequestBody ToDoCreateDto toDoCreateDto){
         toDoService.createToDos(loginUser, toDoCreateDto);
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping
+    //복수의 리소스 삭제
+    @PostMapping("/delete-todos")
     public ResponseEntity<?> deleteToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser , @RequestBody ToDoDeleteDto toDoDeleteDto){
         toDoService.deleteToDos(loginUser,toDoDeleteDto);
         return ResponseEntity.noContent().build();
