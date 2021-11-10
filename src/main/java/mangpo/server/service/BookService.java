@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Book;
 
 import mangpo.server.entity.BookCategory;
+import mangpo.server.entity.BookInfo;
 import mangpo.server.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,7 +43,7 @@ public class BookService {
         return bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
     }
 
-    public List<Book> findBooks(){
+    public List<Book> findAllBooks(){
         return bookRepository.findAll();
     }
 
@@ -49,4 +51,9 @@ public class BookService {
         return bookRepository.findByCategory(bookCategory);
     }
 
+    @Transactional
+    public void setBookInfo(Book book, BookInfo bookInfo){
+        Book byId = bookRepository.findById(book.getId()).get();
+        byId.setBookInfo(bookInfo);
+    }
 }

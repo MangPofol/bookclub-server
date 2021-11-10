@@ -77,7 +77,7 @@ class BookServiceTest {
         Long clubId1 = bookService.createBook(book1);
         Long clubId2 = bookService.createBook(book2);
         //when
-        List<Book> books = bookService.findBooks();
+        List<Book> books = bookService.findAllBooks();
 
 
         //then

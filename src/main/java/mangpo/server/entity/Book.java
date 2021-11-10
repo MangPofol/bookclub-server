@@ -19,6 +19,10 @@ public class Book extends BaseTimeEntity {
     @Column(name = "book_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_info_id")
+    private BookInfo bookInfo;
+
     @Column(name = "book_name")
     private String name;
 
@@ -37,5 +41,9 @@ public class Book extends BaseTimeEntity {
         this.name = bookRequest.name;
         this.isbn = bookRequest.isbn;
         this.category = bookRequest.category;
+    }
+
+    public void setBookInfo(BookInfo bookInfo) {
+        this.bookInfo = bookInfo;
     }
 }
