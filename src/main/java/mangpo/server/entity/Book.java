@@ -23,12 +23,6 @@ public class Book extends BaseTimeEntity {
     @JoinColumn(name = "book_info_id")
     private BookInfo bookInfo;
 
-    @Column(name = "book_name")
-    private String name;
-
-    @Column(name = "book_isbn")
-    private String isbn;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "book_category")
     private BookCategory category;
@@ -38,8 +32,7 @@ public class Book extends BaseTimeEntity {
     private List<Post> posts = new ArrayList<>();
 
     public void update(Book bookRequest){
-        this.name = bookRequest.name;
-        this.isbn = bookRequest.isbn;
+
         this.category = bookRequest.category;
     }
 
