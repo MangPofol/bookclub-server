@@ -1,6 +1,5 @@
 package mangpo.server.service;
 
-import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubBookUserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -63,7 +62,7 @@ public class ClubBookUserServiceTest {
         Long saved2 = clubBookUserService.createClubBookUser(cbu2);
 
         //when
-        clubBookUserService.deleteAllClubBookUserByClub(club1);
+        clubBookUserService.deleteAllByClub(club1);
 
         em.flush();
         em.clear();

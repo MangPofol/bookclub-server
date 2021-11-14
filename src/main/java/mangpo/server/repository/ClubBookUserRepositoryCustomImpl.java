@@ -83,7 +83,7 @@ public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryC
     }
 
     @Override
-    public List<ClubBookUser> findBySearchCondition(ClubBookUserSearchCondition cbuSearchCondition) {
+    public List<ClubBookUser> findAllBySearchCondition(ClubBookUserSearchCondition cbuSearchCondition) {
         return queryFactory
                 .selectFrom(clubBookUser)
                 .where(clubEq(cbuSearchCondition.getClub()),
@@ -91,6 +91,7 @@ public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryC
                         userEq(cbuSearchCondition.getUser()))
                 .fetch();
     }
+
 
     private BooleanExpression clubEq(Club club) {
         return isEmpty(club) ? null : clubBookUser.club.eq(club);

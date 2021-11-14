@@ -32,7 +32,6 @@ public class Book extends BaseTimeEntity {
     private List<Post> posts = new ArrayList<>();
 
     public void update(Book bookRequest){
-
         this.category = bookRequest.category;
     }
 

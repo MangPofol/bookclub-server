@@ -12,7 +12,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByCategory(BookCategory category);
 
-    Optional<Book> findByIsbn(String isbn);
+//    Optional<Book> findByIsbn(String isbn);
 
     @Override
     @EntityGraph(attributePaths = ("posts"))

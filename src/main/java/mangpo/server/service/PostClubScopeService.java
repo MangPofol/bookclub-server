@@ -1,7 +1,6 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.entity.Book;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.Post;
 import mangpo.server.entity.PostClubScope;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,11 +43,11 @@ public class PostClubScopeService {
     }
 
     public List<PostClubScope> findListByPost(Post post){
-        return pcsRepository.findByPost(post);
+        return pcsRepository.findAllByPost(post);
     }
 
     public List<PostClubScope> findListByClub(Club club){
-        return pcsRepository.findByClub(club);
+        return pcsRepository.findAllByClub(club);
     }
 
 }

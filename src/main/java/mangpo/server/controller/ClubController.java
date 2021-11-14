@@ -108,7 +108,7 @@ public class ClubController {
         cbuSearchCond.setUser(loginUser);
         cbuSearchCond.setBook(book);
 
-        ClubBookUser byUserAndBook = cbuService.findByCondition(cbuSearchCond).get(0);
+        ClubBookUser byUserAndBook = cbuService.findAllByCondition(cbuSearchCond).get(0);
         Club byId = clubService.findClub(clubId);
 
         ClubBookUser build = ClubBookUser.builder()
@@ -163,7 +163,7 @@ public class ClubController {
     @DeleteMapping("/{clubId}")
     public ResponseEntity<?> deleteClub(@PathVariable Long clubId) {
         Club club = clubService.findClub(clubId);
-        cbuService.deleteAllClubBookUserByClub(club);
+        cbuService.deleteAllByClub(club);
         pscService.deleteAllPcsByClub(club);
 
         clubService.deleteClub(clubId);

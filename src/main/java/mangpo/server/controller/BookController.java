@@ -3,12 +3,10 @@ package mangpo.server.controller;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.BookResponseDto;
+import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.*;
 import mangpo.server.repository.BookQueryRepository;
-import mangpo.server.service.BookService;
-import mangpo.server.service.ClubBookUserService;
-import mangpo.server.service.LikedService;
-import mangpo.server.service.UserService;
+import mangpo.server.service.*;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +27,8 @@ public class BookController {
     private final ClubBookUserService cbuService;
     private final UserService userService;
     private final BookQueryRepository bookQueryRepository;
-    private final LikedService likedService;
+    private final BookInfoService bookInfoService;
+    private final PostService postService;
 
     @GetMapping//Todo fetchjoin
     public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email , @RequestParam BookCategory category){
@@ -45,15 +44,27 @@ public class BookController {
 
 
     @PostMapping
-    public ResponseEntity<BookRequestDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                                     @RequestBody BookRequestDto bookRequestDto, UriComponentsBuilder b){
-        Book newBook = Book.builder()
-                .isbn(bookRequestDto.isbn)
-                .name(bookRequestDto.name)
-                .category(bookRequestDto.category)
+    public ResponseEntity<CreateBookDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
+                                                    @RequestBody CreateBookDto createBookDto, UriComponentsBuilder b){
+        BookInfo bookInfo = BookInfo.builder()
+                .name(createBookDto.name)
+                .isbn(createBookDto.isbn)
                 .build();
 
-        validateDuplicateBook(newBook.getIsbn(),loginUser);
+        try {
+            bookInfoService.createBookInfo(bookInfo);
+        }catch (IllegalStateException e){
+            log.info("bookInfoService = {}",e.toString());
+            BookInfo byIsbn = bookInfoService.findByIsbn(bookInfo.getIsbn());
+            bookInfo = byIsbn;
+        }
+
+        Book newBook = Book.builder()
+                .category(createBookDto.category)
+                .bookInfo(bookInfo)
+                .build();
+
+        validateDuplicateBook(bookInfo.getIsbn(),loginUser);
         Long bookId = bookService.createBook(newBook);
 
         ClubBookUser cbu = ClubBookUser.builder()
@@ -67,7 +78,7 @@ public class BookController {
 
 //        return ResponseEntity.noContent().build().created(uriComponents.toUri()).build();
 
-        return ResponseEntity.created(uriComponents.toUri()).body(bookRequestDto);
+        return ResponseEntity.created(uriComponents.toUri()).body(createBookDto);
     }
 
     private void validateDuplicateBook(String isbn, User loginUser) {
@@ -75,7 +86,7 @@ public class BookController {
 
         Optional<ClubBookUser> any = listByUser.stream()
                 .filter(m->m.getUser().getId().equals(loginUser.getId()))
-                .filter(m -> m.getBook().getIsbn().equals(isbn))
+                .filter(m -> m.getBook().getBookInfo().getIsbn().equals(isbn))
                 .findAny();
 
         if (any.isPresent())
@@ -84,8 +95,8 @@ public class BookController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody BookRequestDto bookRequestDto){
-        Book bookRequest = bookRequestDto.toEntityExceptIdAndPosts(bookRequestDto);
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody UpdateBookDto updateBookDto){
+        Book bookRequest = updateBookDto.toEntityExceptIdAndPosts(updateBookDto);
         bookService.updateBook(id, bookRequest);
 
         return ResponseEntity.noContent().build();
@@ -94,6 +105,15 @@ public class BookController {
     @DeleteMapping("/{bookId}")
     public ResponseEntity<?> deleteBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
         Book bookRequest = bookService.findBook(bookId);
+
+        ClubBookUserSearchCondition clubBookUserSearchCondition = new ClubBookUserSearchCondition();
+        clubBookUserSearchCondition.setBook(bookRequest);
+        List<ClubBookUser> allByCondition = cbuService.findAllByCondition(clubBookUserSearchCondition);
+        cbuService.deleteAll(allByCondition);
+
+        List<Post> postsByBookId = postService.findPostsByBookId(bookId);
+        postService.deleteAllWithCascade(postsByBookId);
+
         bookQueryRepository.deleteByUserAndBook(loginUser, bookRequest);
         bookService.deleteBook(bookId);
 
@@ -149,19 +169,29 @@ public class BookController {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class BookRequestDto {
+    static class CreateBookDto {
         private String name;
         private String isbn;
         private BookCategory category;
+//        public Book toEntityExceptIdAndPosts(CreateBookDto createBookDto){
+//            return Book.builder()
+//                    .name(this.name)
+//                    .isbn(this.isbn)
+//                    .category(this.category)
+//                    .build();
+//        }
+    }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class UpdateBookDto {
+        private BookCategory category;
 
-        public Book toEntityExceptIdAndPosts(BookRequestDto bookRequestDto){
+        public Book toEntityExceptIdAndPosts(UpdateBookDto updateBookDto){
             return Book.builder()
-                    .name(this.name)
-                    .isbn(this.isbn)
                     .category(this.category)
                     .build();
         }
     }
-
 }

@@ -24,10 +24,10 @@ public class BookResponseDto {
 
     public BookResponseDto(Book book) {
         this.id = book.getId();
-        this.name = book.getName();
-        this.isbn = book.getIsbn();
         this.category = book.getCategory();
         this.createdDate = book.getCreatedDate();
         this.modifiedDate = book.getModifiedDate();
+        this.name = book.getBookInfo().getName();
+        this.isbn = book.getBookInfo().getIsbn();
     }
 }

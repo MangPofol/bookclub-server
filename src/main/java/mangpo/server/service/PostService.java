@@ -2,12 +2,8 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.controller.PostController;
-import mangpo.server.entity.Book;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.PostClubScope;
-import mangpo.server.entity.User;
-import mangpo.server.repository.BookRepository;
-import mangpo.server.repository.PostRepository;
+import mangpo.server.entity.*;
+import mangpo.server.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +21,9 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final BookRepository bookRepository;
+    private final LikedRepository likedRepository;
+    private final PostClubScopeRepository pcsRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public Long createPost(Post post){
@@ -46,8 +45,29 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long id){
-        postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
+        Post post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
+
+        List<Liked> likedList = likedRepository.findAllByPost(post);
+        likedRepository.deleteAll(likedList);
+
+        List<PostClubScope> pcsList = pcsRepository.findAllByPost(post);
+        pcsRepository.deleteAll(pcsList);
+
+        List<Comment> commentList = commentRepository.findAllByPost(post);
+        commentRepository.deleteAll(commentList);
+
         postRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteAll(List<Post> posts){
+        postRepository.deleteAll(posts);
+    }
+
+    public void deleteAllWithCascade(List<Post> posts){
+        for (Post post : posts) {
+            deletePost(post.getId());
+        }
     }
 
     public Post findPost(Long id){

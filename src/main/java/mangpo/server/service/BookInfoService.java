@@ -34,7 +34,7 @@ public class BookInfoService {
         Optional<BookInfo> findBookInfo = bookInfoRepository.findByIsbn(isbn);
 
         if (findBookInfo.isPresent()){
-            throw new IllegalStateException("이미 사용중인 이메일입니다.");
+            throw new IllegalStateException("이미 등록된 책 정보입니다.");
         }
     }
 

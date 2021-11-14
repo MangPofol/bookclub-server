@@ -2,7 +2,6 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.ClubBookUserSearchCondition;
-import mangpo.server.entity.Book;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
 import mangpo.server.entity.User;
@@ -36,7 +35,7 @@ public class ClubBookUserService {
     }
 
     @Transactional
-    public void deleteAllClubBookUserByClub(Club club){
+    public void deleteAllByClub(Club club){
         Long delete = cbuRepository.deleteAllByClub(club);
     }
 
@@ -47,8 +46,8 @@ public class ClubBookUserService {
 //    public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
 //        return cbuRepository.findByUserAndBook(user,book);
 //    }
-    public List<ClubBookUser> findByCondition(ClubBookUserSearchCondition cbuSearchCond){
-        return cbuRepository.findBySearchCondition(cbuSearchCond);
+    public List<ClubBookUser> findAllByCondition(ClubBookUserSearchCondition cbuSearchCond){
+        return cbuRepository.findAllBySearchCondition(cbuSearchCond);
     }
 
     public List<User> findUsersByClub(Club club){
@@ -59,5 +58,8 @@ public class ClubBookUserService {
         return cbuRepository.findClubBookUserByClub(club);
     }
 
-
+    @Transactional
+    public void deleteAll(List<ClubBookUser> clubBookUsers){
+        cbuRepository.deleteAll(clubBookUsers);
+    }
 }

@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static mangpo.server.entity.QBook.book;
+import static mangpo.server.entity.QBookInfo.bookInfo;
 import static mangpo.server.entity.QClubBookUser.clubBookUser;
 
 
@@ -34,14 +35,17 @@ public class BookQueryRepository {
 
 
     public List<Book> findByUserAndBook(User userRequest, BookCategory bookCategory) {
-        return queryFactory.
+        List<Book> listBook = queryFactory.
                 selectDistinct(book).
                 from(clubBookUser).
                 join(clubBookUser.book, book).
+//                join(book, book.bookInfo).fetchJoin().
                 where(clubBookUser.user.eq(userRequest),
                         clubBookUser.book.isNotNull(),
                         clubBookUser.book.category.eq(bookCategory)).
                 fetch();
+
+        return listBook;
     }
 
 

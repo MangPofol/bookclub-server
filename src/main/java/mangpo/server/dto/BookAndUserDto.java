@@ -30,8 +30,8 @@ public class BookAndUserDto {
 
         Book book = cbu.getBook();
         this.bookId = book.getId();
-        this.bookName = book.getName();
-        this.isbn = book.getIsbn();
+        this.bookName = book.getBookInfo().getName();
+        this.isbn = book.getBookInfo().getIsbn();
         this.category = book.getCategory();
         this.createdDate = book.getCreatedDate();
         this.modifiedDate = book.getModifiedDate();
