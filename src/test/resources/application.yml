@@ -1,14 +1,14 @@
-#logging.level:
-#  org.hibernate.SQL: debug
-## org.hibernate.type: trace
+logging.level:
+  org.hibernate.SQL: debug
+# org.hibernate.type: trace
 
-#cloud:
-#  aws:
-#    s3:
-#      bucket: elasticbeanstalk-ap-northeast-2-081654662783
-#    region:
-#      static: ap-northeast-2
-#    stack:
-#      auto: false
-#    credentials:
-#      instanceProfile: true
+cloud:
+  aws:
+    s3:
+      bucket: elasticbeanstalk-ap-northeast-2-081654662783
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true
