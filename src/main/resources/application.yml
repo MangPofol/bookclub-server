@@ -15,6 +15,11 @@
 #        #       show_sql: true
 #        format_sql: true
 #
+#  servlet:
+#    multipart:
+#      maxFileSize: 30MB
+#      maxRequestSize: 30MB
+#
 #logging.level:
 #  org.hibernate.SQL: debug
 ## org.hibernate.type: trace
@@ -36,6 +41,11 @@ spring:
       hibernate:
         #       show_sql: true
         format_sql: true
+
+  servlet:
+    multipart:
+      maxFileSize: 30MB
+      maxRequestSize: 30MB
 
 logging.level:
   org.hibernate.SQL: debug
