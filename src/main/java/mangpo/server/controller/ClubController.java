@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.ClubBookUserSearchCondition;
-import mangpo.server.dto.ClubInfoResponseDto;
+import mangpo.server.dto.*;
 import mangpo.server.entity.*;
 import mangpo.server.repository.ClubQueryRepository;
 import mangpo.server.service.*;
@@ -172,49 +171,6 @@ public class ClubController {
     }
 
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Result<T> {
-        private T data;
-    }
-
-
-    @Data
-    static class CreateClubRequestDto {
-        private String name;
-        private ColorSet colorSet;
-        private String description;
-
-        public Club toEntity(User loginUser) {
-            return Club.builder()
-                    .name(this.name)
-                    .colorSet(this.colorSet)
-                    .level(1)
-                    .presidentId(loginUser.getId())
-                    .description(description)
-                    .build();
-        }
-    }
-
-    @Data
-    static class UpdateClubRequestDto {
-        private String name;
-        private ColorSet colorSet;
-        private Integer level;
-        private Long presidentId;
-        private String description;
-
-        public Club toEntity() {
-            return Club.builder()
-                    .name(this.name)
-                    .colorSet(this.colorSet)
-                    .level(this.level)
-                    .presidentId(this.presidentId)
-                    .description(description)
-                    .build();
-        }
-    }
 
 
     @Data
@@ -222,28 +178,7 @@ public class ClubController {
         private Long bookId;
     }
 
-    @Data
-    static class ClubResponseDto {
-        private Long id;
-        private String name;
-        private ColorSet colorSet;
-        private Integer level;
-        private Long presidentId;
-        private String description;
-        private LocalDateTime createdDate;
-        private LocalDateTime modifiedDate;
 
-        public ClubResponseDto(Club clubRequest) {
-            this.id = clubRequest.getId();
-            this.name = clubRequest.getName();
-            this.colorSet = clubRequest.getColorSet();
-            this.level = clubRequest.getLevel();
-            this.presidentId = clubRequest.getPresidentId();
-            this.createdDate = clubRequest.getCreatedDate();
-            this.modifiedDate = clubRequest.getModifiedDate();
-            this.description = clubRequest.getDescription();
-        }
-    }
 
     @Data
     static class addUserToClubRequestDto{

@@ -2,8 +2,7 @@ package mangpo.server.controller;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.BookResponseDto;
-import mangpo.server.dto.ClubBookUserSearchCondition;
+import mangpo.server.dto.*;
 import mangpo.server.entity.*;
 import mangpo.server.repository.BookQueryRepository;
 import mangpo.server.service.*;
@@ -47,8 +46,8 @@ public class BookController {
     public ResponseEntity<CreateBookDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
                                                     @RequestBody CreateBookDto createBookDto, UriComponentsBuilder b){
         BookInfo bookInfo = BookInfo.builder()
-                .name(createBookDto.name)
-                .isbn(createBookDto.isbn)
+                .name(createBookDto.getName())
+                .isbn(createBookDto.getIsbn())
                 .build();
 
         try {
@@ -60,7 +59,7 @@ public class BookController {
         }
 
         Book newBook = Book.builder()
-                .category(createBookDto.category)
+                .category(createBookDto.getCategory())
                 .bookInfo(bookInfo)
                 .build();
 
@@ -149,49 +148,5 @@ public class BookController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Result<T>{
-        private T data;
-    }
 
-
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    static class LikedResponseDto {
-//        private String userNickname;
-//        private Boolean isLiked;
-//    }
-
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class CreateBookDto {
-        private String name;
-        private String isbn;
-        private BookCategory category;
-//        public Book toEntityExceptIdAndPosts(CreateBookDto createBookDto){
-//            return Book.builder()
-//                    .name(this.name)
-//                    .isbn(this.isbn)
-//                    .category(this.category)
-//                    .build();
-//        }
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class UpdateBookDto {
-        private BookCategory category;
-
-        public Book toEntityExceptIdAndPosts(UpdateBookDto updateBookDto){
-            return Book.builder()
-                    .category(this.category)
-                    .build();
-        }
-    }
 }

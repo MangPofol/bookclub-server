@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.CommentRequestDto;
+import mangpo.server.dto.CommentResponseDto;
+import mangpo.server.dto.Result;
 import mangpo.server.entity.Comment;
 import mangpo.server.entity.Post;
 import mangpo.server.entity.User;
@@ -28,9 +31,9 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Result<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto,
-                                                                   UriComponentsBuilder b,
-                                                                   @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
-        Post post = postService.findPost(commentRequestDto.postId);
+                                                                    UriComponentsBuilder b,
+                                                                    @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+        Post post = postService.findPost(commentRequestDto.getPostId());
 
         Comment comment = Comment.builder()
                 .user(loginUser)
@@ -55,39 +58,5 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Result<T>{
-        private T data;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class CommentRequestDto {
-        private Long postId;
-        private String content;
-        private Long parentCommentId;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class CommentResponseDto {
-        private Long postId;
-        private Long parentCommentId;
-        private String content;
-        private LocalDateTime createdDate;
-        private LocalDateTime modifiedDate;
-
-        public CommentResponseDto(Comment comment){
-            this.postId = comment.getPost().getId();
-            this.parentCommentId = comment.getParentCommentId();
-            this.content = comment.getContent();
-            this.createdDate = comment.getCreatedDate();
-            this.modifiedDate = comment.getModifiedDate();
-        }
-    }
 
 }

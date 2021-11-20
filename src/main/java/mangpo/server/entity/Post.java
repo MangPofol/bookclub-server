@@ -37,6 +37,8 @@ public class Post extends BaseTimeEntity {
 
     private String location;
     private String readTime;
+    @Column(name = "hyperlink_title")
+    private String hyperlinkTitle;
     private String hyperlink;
 
     @Builder.Default

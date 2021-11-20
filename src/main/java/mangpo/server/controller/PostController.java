@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.PostRequestDto;
+import mangpo.server.dto.PostResponseDto;
+import mangpo.server.dto.Result;
 import mangpo.server.entity.*;
 import mangpo.server.service.*;
 import mangpo.server.session.SessionConst;
@@ -210,122 +213,6 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Result<T> {
-        private T data;
-    }
 
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PostResponseDto {
-        private Long id;
-        private PostScope scope;
-        private Boolean isIncomplete;
-        private String imgLocation;
-        private String title;
-        private String content;
-        private LocalDateTime createdDate;
-        private LocalDateTime modifiedDate;
-        private String location;
-        private String readTime;
-        private String hyperlink;
-
-        private List<String> postImgLocations;
-        private HashMap<Long, String> postScopeClub = new HashMap<>();
-        private List<LikedResponseDto> likedList;
-        private List<CommentResponseDto> commentsDto;
-
-        //        @QueryProjection
-        public PostResponseDto(Post post) {
-            this.id = post.getId();
-            this.scope = post.getScope();
-            this.isIncomplete = post.getIsIncomplete();
-            this.title = post.getTitle();
-            this.content = post.getContent();
-            this.location = post.getLocation();
-            this.readTime = post.getReadTime();
-            this.hyperlink = post.getHyperlink();
-            this.createdDate = post.getCreatedDate();
-            this.modifiedDate = post.getModifiedDate();
-
-            this.postImgLocations = post.getPostImageLocations().stream()
-                    .map(PostImageLocation::getImgLocation)
-                    .collect(Collectors.toList());
-
-            this.likedList = post.getLikedList()
-                    .stream()
-                    .map(m -> new LikedResponseDto(m.getUser().getNickname(), m.getIsLiked()))
-                    .collect(Collectors.toList());
-
-            this.commentsDto = post.getComments()
-                    .stream()
-                    .map(CommentResponseDto::new)
-                    .collect(Collectors.toList());
-        }
-
-        public void addPostScopeClub(Long id, String clubName) {
-            this.postScopeClub.put(id,clubName);
-        }
-    }
-
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class LikedResponseDto {
-        private String userNickname;
-        private Boolean isLiked;
-    }
-
-    @Data
-    static class PostRequestDto {
-        private Long bookId;
-        private PostScope scope;
-        private Boolean isIncomplete;
-        private String imgLocation;
-        private String title;
-        private String content;
-        private String location;
-        private String readTime;
-        private String hyperlink;
-        private List<Long> clubIdListForScope;
-        private List<String> postImgLocations;
-
-
-        public Post toEntityExceptBook() {
-            return Post.builder()
-                    .scope(this.scope)
-                    .isIncomplete(this.isIncomplete)
-                    .title(this.title)
-                    .content(this.content)
-                    .location(this.location)
-                    .readTime(this.readTime)
-                    .hyperlink(this.hyperlink)
-                    .build();
-        }
-    }
-
-    @Data
-    static class CommentResponseDto {
-        private Long commentId;
-        private Long parentCommentId;
-        private String userNickname;
-        private String content;
-        private LocalDateTime createdDate;
-        private LocalDateTime modifiedDate;
-
-        public CommentResponseDto(Comment comment) {
-            this.commentId = comment.getId();
-            this.parentCommentId = comment.getParentCommentId();
-            this.userNickname = comment.getUser().getNickname();
-            this.content = comment.getContent();
-            this.createdDate = comment.getCreatedDate();
-            this.modifiedDate = comment.getModifiedDate();
-        }
-    }
 
 }
