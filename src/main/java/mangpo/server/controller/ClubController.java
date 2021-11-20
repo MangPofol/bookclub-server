@@ -170,15 +170,10 @@ public class ClubController {
         return ResponseEntity.noContent().build();
     }
 
-
-
-
     @Data
     static class addClubToUserBookRequestDto {
         private Long bookId;
     }
-
-
 
     @Data
     static class addUserToClubRequestDto{

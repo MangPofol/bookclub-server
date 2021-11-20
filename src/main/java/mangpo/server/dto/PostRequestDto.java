@@ -16,6 +16,7 @@ public class PostRequestDto {
     private String content;
     private String location;
     private String readTime;
+    private String hyperlinkTitle;
     private String hyperlink;
     private List<Long> clubIdListForScope;
     private List<String> postImgLocations;
@@ -29,6 +30,7 @@ public class PostRequestDto {
                 .content(this.content)
                 .location(this.location)
                 .readTime(this.readTime)
+                .hyperlinkTitle(this.hyperlinkTitle)
                 .hyperlink(this.hyperlink)
                 .build();
     }

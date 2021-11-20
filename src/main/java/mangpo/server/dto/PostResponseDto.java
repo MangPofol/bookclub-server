@@ -28,6 +28,7 @@ public  class PostResponseDto {
     private LocalDateTime modifiedDate;
     private String location;
     private String readTime;
+    private String hyperlinkTitle;
     private String hyperlink;
 
     private List<String> postImgLocations;
@@ -44,6 +45,7 @@ public  class PostResponseDto {
         this.content = post.getContent();
         this.location = post.getLocation();
         this.readTime = post.getReadTime();
+        this.hyperlinkTitle = post.getHyperlinkTitle();
         this.hyperlink = post.getHyperlink();
         this.createdDate = post.getCreatedDate();
         this.modifiedDate = post.getModifiedDate();
