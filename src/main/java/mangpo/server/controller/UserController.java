@@ -66,15 +66,9 @@ public class UserController {
 //        User user = userService.findUser(id);
 //    }
 
-    @PatchMapping("/{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto) {
         User user = userService.findById(userId);
-//        User userRequest = userRequestDto.toEntityExceptId();
-
-//        for (Genre genre : userRequest.getGenres()) {
-//            genre.addUser(user);
-//        }
-
         userService.updateUser(userId,userRequestDto);
 
         return ResponseEntity.noContent().build();
