@@ -154,9 +154,8 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-//        Post post = postService.findPost(id);
         Post post = postService.findPostFetchJoinImgLoc(id);
         PostScope ogScope = post.getScope();
 
@@ -177,9 +176,7 @@ public class PostController {
         if (requestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(requestDto, post);
 
-
-        Post requestEntity = requestDto.toEntityExceptBook();
-        postService.updatePost(id, requestEntity);
+        postService.updatePost(id, requestDto);
 
         return ResponseEntity.noContent().build();
     }

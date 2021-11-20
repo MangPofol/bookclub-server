@@ -21,7 +21,6 @@ public  class PostResponseDto {
     private Long id;
     private PostScope scope;
     private Boolean isIncomplete;
-    private String imgLocation;
     private String title;
     private String content;
     private LocalDateTime createdDate;

@@ -1,6 +1,7 @@
 package mangpo.server.entity;
 
 import lombok.*;
+import mangpo.server.dto.PostRequestDto;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -64,5 +65,17 @@ public class Post extends BaseTimeEntity {
 
         this.book = book;
         book.getPosts().add(this);
+    }
+
+    //book은 업데이트 하지 않음.
+    public void update(PostRequestDto p){
+        this.scope = p.getScope();
+        this.isIncomplete = p.getIsIncomplete();
+        this.title = p.getTitle();
+        this.content = p.getContent();
+        this.location = p.getLocation();
+        this.readTime = p.getReadTime();
+        this.hyperlinkTitle = p.getHyperlinkTitle();
+        this.hyperlink = p.getHyperlink();
     }
 }

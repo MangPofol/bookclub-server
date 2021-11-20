@@ -2,6 +2,7 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.controller.PostController;
+import mangpo.server.dto.PostRequestDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.*;
 import org.springframework.stereotype.Service;
@@ -32,15 +33,14 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, Post postRequest){
+    public void updatePost(Long postId, PostRequestDto postRequestDto){
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
-        //changeXXX로 변환
-        //TODO bean validation 필요
+        post.update(postRequestDto);
 
-        post.setScope(postRequest.getScope());
-        post.setIsIncomplete(postRequest.getIsIncomplete());
-        post.setTitle(postRequest.getTitle());
-        post.setContent(postRequest.getContent());
+//        post.setScope(postRequest.getScope());
+//        post.setIsIncomplete(postRequest.getIsIncomplete());
+//        post.setTitle(postRequest.getTitle());
+//        post.setContent(postRequest.getContent());
     }
 
     @Transactional

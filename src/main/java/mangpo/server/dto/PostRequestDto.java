@@ -11,7 +11,6 @@ public class PostRequestDto {
     private Long bookId;
     private PostScope scope;
     private Boolean isIncomplete;
-    private String imgLocation;
     private String title;
     private String content;
     private String location;
