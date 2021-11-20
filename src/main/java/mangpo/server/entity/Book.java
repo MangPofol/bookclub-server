@@ -31,11 +31,7 @@ public class Book extends BaseTimeEntity {
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 
-    public void update(Book bookRequest){
-        this.category = bookRequest.category;
-    }
-
-    public void setBookInfo(BookInfo bookInfo) {
-        this.bookInfo = bookInfo;
+    public void changeCategory(BookCategory bookCategory){
+        this.category = bookCategory;
     }
 }

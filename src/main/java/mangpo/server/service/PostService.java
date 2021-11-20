@@ -36,11 +36,6 @@ public class PostService {
     public void updatePost(Long postId, PostRequestDto postRequestDto){
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
         post.update(postRequestDto);
-
-//        post.setScope(postRequest.getScope());
-//        post.setIsIncomplete(postRequest.getIsIncomplete());
-//        post.setTitle(postRequest.getTitle());
-//        post.setContent(postRequest.getContent());
     }
 
     @Transactional

@@ -35,6 +35,7 @@ public class Club extends BaseTimeEntity {
     public void changeColorSet(ColorSet colorSet){ this.colorSet = colorSet;}
     public void changeLevel(int level){ this.level = level;}
     public void changePresident(Long presidentId){ this.presidentId = presidentId;}
+    public void changeDescription(String description){this.description = description;}
 
 
 }

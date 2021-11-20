@@ -36,7 +36,9 @@ public class BookService {
     @Transactional
     public void updateBook(Long id, Book bookRequest){
         Book book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
-        book.update(bookRequest);
+
+        if (bookRequest.getCategory() != null)
+            book.changeCategory(bookRequest.getCategory());
     }
 
     public Book findBook(Long id){
@@ -51,9 +53,4 @@ public class BookService {
         return bookRepository.findByCategory(bookCategory);
     }
 
-    @Transactional
-    public void setBookInfo(Book book, BookInfo bookInfo){
-        Book byId = bookRepository.findById(book.getId()).get();
-        byId.setBookInfo(bookInfo);
-    }
 }

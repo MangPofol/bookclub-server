@@ -55,6 +55,8 @@ public class ClubService {
             club.changeLevel(clubRequest.getLevel());
         if(clubRequest.getPresidentId() != null)
             club.changePresident(clubRequest.getPresidentId());
+        if(clubRequest.getDescription() != null)
+            club.changeDescription(clubRequest.getDescription());
     }
 
     @Transactional

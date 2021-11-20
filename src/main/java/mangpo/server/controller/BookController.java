@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookController {
-//Todo 반환형 전부 Result로 감싸기: CommentController 참고
+
     private final BookService bookService;
     private final ClubBookUserService cbuService;
     private final UserService userService;
