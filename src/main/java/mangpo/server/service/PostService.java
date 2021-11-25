@@ -1,18 +1,15 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.controller.PostController;
 import mangpo.server.dto.PostRequestDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.*;
+import mangpo.server.repository.book.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service

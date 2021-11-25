@@ -1,8 +1,5 @@
 package mangpo.server.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.PostRequestDto;
@@ -10,15 +7,14 @@ import mangpo.server.dto.PostResponseDto;
 import mangpo.server.dto.Result;
 import mangpo.server.entity.*;
 import mangpo.server.service.*;
+import mangpo.server.service.book.BookService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;

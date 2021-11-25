@@ -4,8 +4,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
 import mangpo.server.entity.*;
-import mangpo.server.repository.BookQueryRepository;
-import mangpo.server.service.*;
+import mangpo.server.service.book.BookComplexService;
+import mangpo.server.service.book.BookQueryService;
+import mangpo.server.service.book.BookService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,18 +23,15 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
-    private final ClubBookUserService cbuService;
-    private final UserService userService;
-    private final BookQueryRepository bookQueryRepository;
-    private final BookInfoService bookInfoService;
-    private final PostService postService;
+    private final BookComplexService bookComplexService;
+    private final BookQueryService bookQueryService;
+
 
     @GetMapping//Todo fetchjoin
-    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email , @RequestParam BookCategory category){
-        User userByEmail = userService.findUserByEmail(email);
-        List<Book> byUserAndBook = bookQueryRepository.findByUserAndBook(userByEmail, category);
+    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email, @RequestParam BookCategory category) {
+        List<Book> books = bookQueryService.findBooksByEmailAndBookCategory(email, category);
 
-          List<BookResponseDto> collect = byUserAndBook.stream()
+        List<BookResponseDto> collect = books.stream()
                 .map(BookResponseDto::new)
                 .collect(Collectors.toList());
 
@@ -44,57 +41,16 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<CreateBookDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                                    @RequestBody CreateBookDto createBookDto, UriComponentsBuilder b){
-        BookInfo bookInfo = BookInfo.builder()
-                .name(createBookDto.getName())
-                .isbn(createBookDto.getIsbn())
-                .build();
+                                                    @RequestBody CreateBookDto createBookDto, UriComponentsBuilder b) {
 
-        try {
-            bookInfoService.createBookInfo(bookInfo);
-        }catch (IllegalStateException e){
-            log.info("bookInfoService = {}",e.toString());
-            BookInfo byIsbn = bookInfoService.findByIsbn(bookInfo.getIsbn());
-            bookInfo = byIsbn;
-        }
+        Long bookId = bookComplexService.createBookAndRelated(createBookDto, loginUser.getId());
 
-        Book newBook = Book.builder()
-                .category(createBookDto.getCategory())
-                .bookInfo(bookInfo)
-                .build();
-
-        validateDuplicateBook(bookInfo.getIsbn(),loginUser);
-        Long bookId = bookService.createBook(newBook);
-
-        ClubBookUser cbu = ClubBookUser.builder()
-                .book(newBook)
-                .user(loginUser)
-                .build();
-        cbuService.createClubBookUser(cbu);
-
-        UriComponents uriComponents =
-                b.path("/books/{bookId}").buildAndExpand(bookId);
-
-//        return ResponseEntity.noContent().build().created(uriComponents.toUri()).build();
-
+        UriComponents uriComponents = b.path("/books/{bookId}").buildAndExpand(bookId);
         return ResponseEntity.created(uriComponents.toUri()).body(createBookDto);
     }
 
-    private void validateDuplicateBook(String isbn, User loginUser) {
-        List<ClubBookUser> listByUser = cbuService.findListByUserExceptClub(loginUser);
-
-        Optional<ClubBookUser> any = listByUser.stream()
-                .filter(m->m.getUser().getId().equals(loginUser.getId()))
-                .filter(m -> m.getBook().getBookInfo().getIsbn().equals(isbn))
-                .findAny();
-
-        if (any.isPresent())
-            throw new IllegalStateException("이미 유저가 등록한 책입니다.");
-    }
-
-
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody UpdateBookDto updateBookDto){
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody UpdateBookDto updateBookDto) {
         Book bookRequest = updateBookDto.toEntityExceptIdAndPosts(updateBookDto);
         bookService.updateBook(id, bookRequest);
 
@@ -102,19 +58,8 @@ public class BookController {
     }
 
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
-        Book bookRequest = bookService.findBook(bookId);
-
-        ClubBookUserSearchCondition clubBookUserSearchCondition = new ClubBookUserSearchCondition();
-        clubBookUserSearchCondition.setBook(bookRequest);
-        List<ClubBookUser> allByCondition = cbuService.findAllByCondition(clubBookUserSearchCondition);
-        cbuService.deleteAll(allByCondition);
-
-        List<Post> postsByBookId = postService.findPostsByBookId(bookId);
-        postService.deleteAllWithCascade(postsByBookId);
-
-        bookQueryRepository.deleteByUserAndBook(loginUser, bookRequest);
-        bookService.deleteBook(bookId);
+    public ResponseEntity<?> deleteBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
+        bookComplexService.deleteBookAndRelated(bookId, loginUser.getId());
 
         return ResponseEntity.noContent().build();
     }

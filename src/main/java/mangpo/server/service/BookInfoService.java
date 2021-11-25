@@ -50,4 +50,14 @@ public class BookInfoService {
     public BookInfo findByIsbn(String isbn){
         return bookInfoRepository.findByIsbn(isbn).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책 정보입니다."));
     }
+
+    public BookInfo createOrFindBookInfo(BookInfo bookInfo) {
+        try {
+            createBookInfo(bookInfo);
+        }catch (IllegalStateException e){
+            BookInfo byIsbn = findByIsbn(bookInfo.getIsbn());
+            bookInfo = byIsbn;
+        }
+        return bookInfo;
+    }
 }

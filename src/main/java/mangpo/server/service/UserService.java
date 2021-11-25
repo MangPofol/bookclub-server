@@ -2,7 +2,6 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.UserRequestDto;
-import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
 import mangpo.server.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class UserService {
     public void validateDuplicateUser(String email) {
         if(email == null)
             return;
-        Optional<User> findUser = userRepository.findUserByEmail(email);
+        Optional<User> findUser = userRepository.findByEmail(email);
         if (findUser.isPresent()){
             throw new IllegalStateException("이미 사용중인 이메일입니다.");
         }
@@ -42,7 +41,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email){
-        return userRepository.findUserByEmail(email).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
     }
 
     @Transactional

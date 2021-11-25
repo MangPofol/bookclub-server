@@ -7,6 +7,7 @@ import mangpo.server.dto.*;
 import mangpo.server.entity.User;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.UserService;
+import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -22,10 +23,10 @@ public class UserController {
     private final ClubBookUserService cbuService;
 
     @GetMapping
-    public ResponseEntity<Result<UserResponseDto>> getUserInfo(@RequestParam Long userId) {
+    public ResponseEntity<Result<UserResponseDto>> getUserInfo(@RequestParam Long userId ) {
         User user = userService.findById(userId);
-
         UserResponseDto userResponseDto = new UserResponseDto(user);
+
         return ResponseEntity.ok(new Result<>(userResponseDto));
     }
 

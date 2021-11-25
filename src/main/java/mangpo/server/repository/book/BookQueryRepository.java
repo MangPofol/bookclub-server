@@ -1,4 +1,4 @@
-package mangpo.server.repository;
+package mangpo.server.repository.book;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import mangpo.server.entity.*;
@@ -23,18 +23,7 @@ public class BookQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Long deleteByUserAndBook(User userRequest, Book bookRequest) {
-        Long count = queryFactory
-                .delete(clubBookUser)
-                .where(clubBookUser.user.eq(userRequest),
-                        clubBookUser.book.eq(bookRequest))
-                .execute();
-
-        return count;
-    }
-
-
-    public List<Book> findByUserAndBook(User userRequest, BookCategory bookCategory) {
+    public List<Book> findByUserAndBookCategory(User userRequest, BookCategory bookCategory) {
         List<Book> listBook = queryFactory.
                 selectDistinct(book).
                 from(clubBookUser).
