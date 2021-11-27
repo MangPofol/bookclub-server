@@ -1,11 +1,7 @@
 package mangpo.server.service;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import mangpo.server.entity.Book;
 import mangpo.server.entity.BookInfo;
-import mangpo.server.entity.User;
 import mangpo.server.repository.BookInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +51,7 @@ public class BookInfoService {
         try {
             createBookInfo(bookInfo);
         }catch (IllegalStateException e){
-            BookInfo byIsbn = findByIsbn(bookInfo.getIsbn());
-            bookInfo = byIsbn;
+            bookInfo = findByIsbn(bookInfo.getIsbn());
         }
         return bookInfo;
     }
