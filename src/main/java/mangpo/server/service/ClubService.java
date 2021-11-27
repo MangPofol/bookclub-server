@@ -39,7 +39,6 @@ public class ClubService {
         }
     }
 
-    //TODO 문제 발생 가능성 높음: 나중에 잘 살펴보기
     @Transactional
     public void updateClub(Long id, Club clubRequest){
         Club club = clubRepository.findById(id).orElseThrow(() ->   new EntityNotFoundException("존재하지 않는 클럽입니다."));

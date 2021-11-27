@@ -31,6 +31,7 @@ public class Club extends BaseTimeEntity {
     @Column(name = "club_description")
     private String description;
 
+    //todo: 이거 메소드 하나로 묶고 거기서 널체크
     public void changeName(String name){ this.name = name; }
     public void changeColorSet(ColorSet colorSet){ this.colorSet = colorSet;}
     public void changeLevel(int level){ this.level = level;}
