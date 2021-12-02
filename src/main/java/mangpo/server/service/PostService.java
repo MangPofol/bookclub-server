@@ -1,7 +1,7 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.PostRequestDto;
+import mangpo.server.dto.post.PostRequestDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.*;
 import mangpo.server.repository.book.BookRepository;

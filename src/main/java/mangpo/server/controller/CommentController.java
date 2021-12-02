@@ -1,11 +1,8 @@
 package mangpo.server.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.CommentRequestDto;
-import mangpo.server.dto.CommentResponseDto;
+import mangpo.server.dto.comment.CommentRequestDto;
+import mangpo.server.dto.comment.CommentResponseDto;
 import mangpo.server.dto.Result;
 import mangpo.server.entity.Comment;
 import mangpo.server.entity.Post;
@@ -17,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor

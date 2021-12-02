@@ -2,6 +2,7 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.User;
+import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -2,12 +2,7 @@ package mangpo.server.service;
 
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ClubInfoResponseDto;
 import mangpo.server.entity.Club;
-import mangpo.server.entity.ColorSet;
-import mangpo.server.entity.User;
-import mangpo.server.exeption.NotExistClubException;
-import mangpo.server.exeption.NotExistUserException;
 import mangpo.server.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,8 +2,8 @@ package mangpo.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.PostRequestDto;
-import mangpo.server.dto.PostResponseDto;
+import mangpo.server.dto.post.PostRequestDto;
+import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.Result;
 import mangpo.server.entity.*;
 import mangpo.server.service.*;

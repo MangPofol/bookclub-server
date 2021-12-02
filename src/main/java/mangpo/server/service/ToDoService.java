@@ -2,16 +2,14 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.ToDoCreateDto;
-import mangpo.server.dto.ToDoDeleteDto;
+import mangpo.server.dto.todo.ToDoCreateDto;
+import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
 import mangpo.server.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

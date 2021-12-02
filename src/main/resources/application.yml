@@ -64,3 +64,8 @@ cloud:
     credentials:
       instanceProfile: true
 
+
+jwt:
+  header: Authorization
+  secret: ${JWT_KEY}
+  token-validity-in-seconds: 86400

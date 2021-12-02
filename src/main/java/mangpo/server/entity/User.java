@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mangpo.server.dto.UserRequestDto;
+import mangpo.server.dto.user.UserRequestDto;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -51,6 +52,13 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Boolean isDormant = Boolean.FALSE;//휴면회원
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities = new HashSet<>();
+
     public void update(UserRequestDto userRequest){
         this.email = userRequest.getEmail();
         this.password = userRequest.getPassword();
@@ -82,5 +90,8 @@ public class User extends BaseTimeEntity {
 
     public void changeEmail(String email){
         this.email = email;
+    }
+    public void changeAuthorities(Set<Authority> authorities){
+        this.authorities = authorities;
     }
 }

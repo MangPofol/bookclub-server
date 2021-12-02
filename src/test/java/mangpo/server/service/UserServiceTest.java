@@ -2,6 +2,7 @@ package mangpo.server.service;
 
 import mangpo.server.entity.User;
 import mangpo.server.repository.UserRepository;
+import mangpo.server.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +18,8 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 public class UserServiceTest {
 
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
     @Autowired UserRepository userRepository;
     @Autowired EntityManager em;
 
