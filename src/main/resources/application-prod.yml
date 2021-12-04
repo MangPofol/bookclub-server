@@ -1,31 +1,6 @@
-#spring:
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/mangpo
-#    username: root
-#    password:
-#    driver-class-name: org.h2.Driver
-#
-#  jpa:
-#    database-platform: org.hibernate.dialect.H2Dialect
-#    hibernate:
-#      #      generate-ddl: true
-#      ddl-auto: update
-#    properties:
-#      hibernate:
-#        #       show_sql: true
-#        format_sql: true
-#
-#  servlet:
-#    multipart:
-#      maxFileSize: 30MB
-#      maxRequestSize: 30MB
-#
-#logging.level:
-#  org.hibernate.SQL: debug
-## org.hibernate.type: trace
-
-
 spring:
+  profiles: prod
+
   datasource:
     url: ${RDS_URL}
     username: ${RDS_USERNAME}
