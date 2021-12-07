@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.auth.UserDto;
 import mangpo.server.dto.user.UserRequestDto;
 import mangpo.server.entity.Authority;
 import mangpo.server.entity.User;
+import mangpo.server.entity.UserAuthority;
+import mangpo.server.repository.AuthorityRepository;
+import mangpo.server.repository.UserAuthorityRepository;
 import mangpo.server.repository.UserRepository;
 import mangpo.server.util.SecurityUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +23,13 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final UserAuthorityRepository userAuthorityRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
 //    private final PasswordEncoder passwordEncoder;
 
 //    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -29,22 +37,30 @@ public class UserService {
 //        this.passwordEncoder = passwordEncoder;
 //    }
 
-    public UserDto getUserWithAuthorities(String email) {
-        return UserDto.from(userRepository.findWithAuthoritesByEmail(email).orElse(null));
-    }
-
-    public UserDto getMyUserWithAuthorities() {
-        return UserDto.from(SecurityUtil.getCurrentUsername().flatMap(userRepository::findWithAuthoritesByEmail).orElse(null));
-    }
+//    public UserDto getUserWithAuthorities(String email) {
+//        return UserDto.from(userRepository.findWithAuthByEmail(email).orElse(null));
+//    }
+//
+//    public UserDto getMyUserWithAuthorities() {
+//        return UserDto.from(SecurityUtil.getCurrentUserId().flatMap(userRepository::findWithAuthByEmail).orElse(null));
+//    }
 
     @Transactional
     public Long createUser(User user){
+        user.changePw(passwordEncoder.encode(user.getPassword()));
+
         validateDuplicateUser(user.getEmail());
-
-        Authority authority = new Authority("ROLE_USER");
-        user.changeAuthorities(Collections.singleton(authority));
-
         userRepository.save(user);
+
+
+        Authority role = authorityRepository.findById("ROLE_USER").get();
+
+        UserAuthority userAuthority = UserAuthority.builder()
+                .authority(role)
+                .user(user)
+                .build();
+        userAuthorityRepository.save(userAuthority);
+
         return user.getId();
     }
 

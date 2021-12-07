@@ -49,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/h2-console/**"
                         ,"/favicon.ico"
                         ,"/error"
+
+                        ,"/**"
                 );
     }
 
@@ -78,6 +80,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**").permitAll()
+                .antMatchers("/auth").permitAll()
+                .antMatchers("/users").permitAll()
+                .antMatchers("/clubs").permitAll()
+                .antMatchers("/todos").permitAll()
+                .antMatchers("/associations").permitAll()
+
+
 //                .antMatchers("/api/authenticate").permitAll()
 //                .antMatchers("/api/signup").permitAll()
 

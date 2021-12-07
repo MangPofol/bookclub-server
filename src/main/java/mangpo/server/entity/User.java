@@ -21,7 +21,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class User extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "user_id")
     private Long id;
 
@@ -52,14 +53,10 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Boolean isDormant = Boolean.FALSE;//휴면회원
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_authority",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
-    private Set<Authority> authorities = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserAuthority> userAuthorityList = new ArrayList<>();
 
-    public void update(UserRequestDto userRequest){
+    public void update(UserRequestDto userRequest) {
         this.email = userRequest.getEmail();
         this.password = userRequest.getPassword();
         this.sex = userRequest.getSex();
@@ -80,7 +77,7 @@ public class User extends BaseTimeEntity {
         }
     }
 
-    public void changeIsDormant(){
+    public void changeIsDormant() {
         if (isDormant) {
             this.isDormant = Boolean.FALSE;
             return;
@@ -88,10 +85,15 @@ public class User extends BaseTimeEntity {
         this.isDormant = Boolean.TRUE;
     }
 
-    public void changeEmail(String email){
+    public void changeEmail(String email) {
         this.email = email;
     }
-    public void changeAuthorities(Set<Authority> authorities){
-        this.authorities = authorities;
+
+    //    public void changeAuthorities(Set<Authority> authorities){
+//        this.authorities = authorities;
+//    }
+    public void changePw(String password) {
+        this.password = password;
     }
+
 }

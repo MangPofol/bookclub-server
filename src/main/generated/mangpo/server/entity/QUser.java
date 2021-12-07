@@ -22,8 +22,6 @@ public class QUser extends EntityPathBase<User> {
 
     public final mangpo.server.entity.common.QBaseTimeEntity _super = new mangpo.server.entity.common.QBaseTimeEntity(this);
 
-    public final SetPath<Authority, QAuthority> authorities = this.<Authority, QAuthority>createSet("authorities", Authority.class, QAuthority.class, PathInits.DIRECT2);
-
     public final DateTimePath<java.time.LocalDateTime> birthdate = createDateTime("birthdate", java.time.LocalDateTime.class);
 
     //inherited
@@ -55,6 +53,8 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath style = createString("style");
 
     public final ListPath<ToDo, QToDo> todos = this.<ToDo, QToDo>createList("todos", ToDo.class, QToDo.class, PathInits.DIRECT2);
+
+    public final ListPath<UserAuthority, QUserAuthority> userAuthorityList = this.<UserAuthority, QUserAuthority>createList("userAuthorityList", UserAuthority.class, QUserAuthority.class, PathInits.DIRECT2);
 
     public QUser(String variable) {
         super(User.class, forVariable(variable));
