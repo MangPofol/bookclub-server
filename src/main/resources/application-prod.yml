@@ -1,3 +1,6 @@
+server:
+  port : 5000
+
 spring:
   profiles: prod
 
@@ -38,6 +41,8 @@ cloud:
       auto: false
     credentials:
       instanceProfile: true
+      accessKey: ${AWS_ACCESS}
+      secretKey: ${AWS_SECRET}
 
 
 jwt:
