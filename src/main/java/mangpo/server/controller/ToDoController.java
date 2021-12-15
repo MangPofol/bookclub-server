@@ -3,16 +3,17 @@ package mangpo.server.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
-import mangpo.server.dto.todo.ToDoCreateDto;
+import mangpo.server.dto.todo.ToDoListCreateDto;
 import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.dto.todo.ToDoResponseDto;
 import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
 import mangpo.server.service.ToDoService;
 import mangpo.server.service.user.UserService;
-import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,23 +40,41 @@ public class ToDoController {
         return new Result<>(collect);
     }
 
-    //복수의 리소스 생성
-    @PostMapping("/create-todos")
-    public ResponseEntity<?> createToDos(@RequestBody ToDoCreateDto toDoCreateDto){
+    @PostMapping
+    public ResponseEntity<?> createToDo(@RequestBody ToDoDto toDoDto, UriComponentsBuilder b){
         User user = userService.findUserFromToken();
+        Long toDoId = toDoService.createToDo(user, toDoDto);
 
-        User initProxy = userService.findById(user.getId());
-        toDoService.createToDos(initProxy, toDoCreateDto);
+        UriComponents uriComponents =
+                b.path("/todos/{toDoId}").buildAndExpand(toDoId);
+
+        ToDoResponseDto toDoResponseDto = new ToDoResponseDto(toDoService.findById(toDoId));
+        return ResponseEntity.created(uriComponents.toUri()).body(toDoResponseDto);
+    }
+
+    @PutMapping("/{toDoId}")
+    public ResponseEntity<?> updateTodo(@PathVariable Long toDoId, @RequestBody ToDoDto toDoDto){
+        toDoService.updateTodo(toDoId,toDoDto);
 
         return ResponseEntity.noContent().build();
     }
+
+    //복수의 리소스 생성
+    @PostMapping("/create-todos")
+    public ResponseEntity<?> createToDoList(@RequestBody ToDoListCreateDto toDoListCreateDto){
+        User user = userService.findUserFromToken();
+
+        toDoService.createToDoList(user, toDoListCreateDto);
+
+        return ResponseEntity.noContent().build();
+    }
+
     //복수의 리소스 삭제
     @PostMapping("/delete-todos")
     public ResponseEntity<?> deleteToDos(@RequestBody ToDoDeleteDto toDoDeleteDto){
         User user = userService.findUserFromToken();
 
-        User initProxy = userService.findById(user.getId());
-        toDoService.deleteToDos(initProxy,toDoDeleteDto);
+        toDoService.deleteToDos(user,toDoDeleteDto);
 
         return ResponseEntity.noContent().build();
     }

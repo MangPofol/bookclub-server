@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ToDoCreateDto {
+public class ToDoListCreateDto {
 
     private List<String> contents;
 

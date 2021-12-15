@@ -35,7 +35,7 @@ public class UserResponseDto {
         this.birthdate = user.getBirthdate();
         this.nickname = user.getNickname();
         this.introduce = user.getIntroduce();
-        this.style = user.getIntroduce();
+        this.style = user.getStyle();
         this.goal = user.getGoal();
         this.profileImgLocation = user.getProfileImgLocation();
         this.isDormant = user.getIsDormant();
