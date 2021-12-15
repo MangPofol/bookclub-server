@@ -41,12 +41,10 @@ public class BookController {
         return new Result(collect);
     }
 
-
     @PostMapping
-    public ResponseEntity<CreateBookDto> createBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                                    @RequestBody CreateBookDto createBookDto, UriComponentsBuilder b) {
+    public ResponseEntity<CreateBookDto> createBook(@RequestBody CreateBookDto createBookDto, UriComponentsBuilder b) {
 
-        Long bookId = bookComplexService.createBookAndRelated(createBookDto, loginUser.getId());
+        Long bookId = bookComplexService.createBookAndRelated(createBookDto);
 
         UriComponents uriComponents = b.path("/books/{bookId}").buildAndExpand(bookId);
         return ResponseEntity.created(uriComponents.toUri()).body(createBookDto);
@@ -61,8 +59,8 @@ public class BookController {
     }
 
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
-        bookComplexService.deleteBookAndRelated(bookId, loginUser.getId());
+    public ResponseEntity<?> deleteBook(@PathVariable Long bookId) {
+        bookComplexService.deleteBookAndRelated(bookId);
 
         return ResponseEntity.noContent().build();
     }

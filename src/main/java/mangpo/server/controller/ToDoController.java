@@ -27,8 +27,10 @@ public class ToDoController {
     private final UserService userService;
 
     @GetMapping
-    public Result<List<ToDoResponseDto>> getToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
-        List<ToDo> toDos = toDoService.findToDos(loginUser);
+    public Result<List<ToDoResponseDto>> getToDos() {
+        User user = userService.findUserFromToken();
+
+        List<ToDo> toDos = toDoService.findToDos(user);
 
         List<ToDoResponseDto> collect = toDos.stream()
                 .map(ToDoResponseDto::new)
@@ -39,16 +41,20 @@ public class ToDoController {
 
     //복수의 리소스 생성
     @PostMapping("/create-todos")
-    public ResponseEntity<?> createToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser , @RequestBody ToDoCreateDto toDoCreateDto){
-        User initProxy = userService.findById(loginUser.getId());
+    public ResponseEntity<?> createToDos(@RequestBody ToDoCreateDto toDoCreateDto){
+        User user = userService.findUserFromToken();
+
+        User initProxy = userService.findById(user.getId());
         toDoService.createToDos(initProxy, toDoCreateDto);
 
         return ResponseEntity.noContent().build();
     }
     //복수의 리소스 삭제
     @PostMapping("/delete-todos")
-    public ResponseEntity<?> deleteToDos(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser , @RequestBody ToDoDeleteDto toDoDeleteDto){
-        User initProxy = userService.findById(loginUser.getId());
+    public ResponseEntity<?> deleteToDos(@RequestBody ToDoDeleteDto toDoDeleteDto){
+        User user = userService.findUserFromToken();
+
+        User initProxy = userService.findById(user.getId());
         toDoService.deleteToDos(initProxy,toDoDeleteDto);
 
         return ResponseEntity.noContent().build();

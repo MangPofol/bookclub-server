@@ -66,8 +66,10 @@ public class ClubController {
     }
 
     @GetMapping
-    public Result<List<ClubResponseDto>> getClubsByUser(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
-        List<Club> distinctClub = clubQueryRepository.findDistinctClub(loginUser);
+    public Result<List<ClubResponseDto>> getClubsByUser(@RequestParam Long userId) {
+        User user = userService.findById(userId);
+
+        List<Club> distinctClub = clubQueryRepository.findDistinctClub(user);
         List<ClubResponseDto> collect = distinctClub.stream()
                 .map(ClubResponseDto::new)
                 .collect(Collectors.toList());
@@ -76,15 +78,15 @@ public class ClubController {
     }
 
     @PostMapping
-    public ResponseEntity<ClubResponseDto> createClub(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                                      @RequestBody CreateClubRequestDto createClubRequestDto, UriComponentsBuilder builder) {
+    public ResponseEntity<ClubResponseDto> createClub(@RequestBody CreateClubRequestDto createClubRequestDto, UriComponentsBuilder builder) {
+        User user = userService.findUserFromToken();
 
-        Club club = createClubRequestDto.toEntity(loginUser);
+        Club club = createClubRequestDto.toEntity(user);
         Long clubId = clubService.createClub(club);
 
         ClubBookUser cbu = ClubBookUser.builder()
                 .club(club)
-                .user(loginUser)
+                .user(user)
                 .build();
 
         cbuService.createClubBookUser(cbu);
@@ -101,13 +103,13 @@ public class ClubController {
     //클럽화면에서 클럽에 책 추가하는 기능
     //user,book만이 존재하는 ClubBookUser 엔티티의 정보를 이용해 새로운 ClubBookUser 엔티티를 만든다
     @PostMapping("/{clubId}/add-book")
-    public ResponseEntity<?> addClubToUserBook(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                               @PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto) {
+    public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto) {
+        User user = userService.findUserFromToken();
 
         Book book = bookService.findBook(requestDto.bookId);
 //        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
         ClubBookUserSearchCondition cbuSearchCond = new ClubBookUserSearchCondition();
-        cbuSearchCond.setUser(loginUser);
+        cbuSearchCond.setUser(user);
         cbuSearchCond.setBook(book);
 
         ClubBookUser byUserAndBook = cbuService.findAllByCondition(cbuSearchCond).get(0);
@@ -125,13 +127,13 @@ public class ClubController {
     }
 
     @PostMapping("/{clubId}/add-user")
-    public ResponseEntity<?> addUserToClub(@SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser,
-                                               @PathVariable Long clubId, @RequestBody addUserToClubRequestDto requestDto) {
+    public ResponseEntity<?> addUserToClub(@PathVariable Long clubId, @RequestBody addUserToClubRequestDto requestDto) {
+        User user = userService.findUserFromToken();
 
         Club club = clubService.findClub(clubId);
         Long presidentId = club.getPresidentId();
 
-        if (loginUser.getId() != presidentId){
+        if (user.getId() != presidentId){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

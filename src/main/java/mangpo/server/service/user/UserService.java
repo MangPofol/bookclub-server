@@ -1,6 +1,5 @@
 package mangpo.server.service.user;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +43,11 @@ public class UserService {
 //    public UserDto getMyUserWithAuthorities() {
 //        return UserDto.from(SecurityUtil.getCurrentUserId().flatMap(userRepository::findWithAuthByEmail).orElse(null));
 //    }
+
+    public User findUserFromToken(){
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+        return findById(currentUserId);
+    }
 
     @Transactional
     public Long createUser(User user){

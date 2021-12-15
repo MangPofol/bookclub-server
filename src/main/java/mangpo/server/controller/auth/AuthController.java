@@ -1,10 +1,16 @@
 package mangpo.server.controller.auth;
 
 
+import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.Result;
 import mangpo.server.dto.auth.LoginDto;
 import mangpo.server.dto.auth.TokenDto;
+import mangpo.server.dto.user.UserRequestDto;
+import mangpo.server.dto.user.UserResponseDto;
+import mangpo.server.entity.User;
 import mangpo.server.jwt.JwtFilter;
 import mangpo.server.jwt.TokenProvider;
+import mangpo.server.service.user.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +22,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final UserService userService;
 
-    public AuthController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
-        this.tokenProvider = tokenProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
+    @PostMapping("/signup")
+    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
+
+        User user = userRequestDto.toEntityExceptId();
+
+        Long userId = userService.createUser(user);
+
+        UriComponents uriComponents =
+                b.path("/users/{userId}").buildAndExpand(userId);
+
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+        Result<UserResponseDto> result = new Result<>(userResponseDto);
+
+        return ResponseEntity.created(uriComponents.toUri()).body(result);
     }
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =

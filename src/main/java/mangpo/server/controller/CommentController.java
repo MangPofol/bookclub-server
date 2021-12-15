@@ -9,6 +9,7 @@ import mangpo.server.entity.Post;
 import mangpo.server.entity.User;
 import mangpo.server.service.CommentService;
 import mangpo.server.service.PostService;
+import mangpo.server.service.user.UserService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +23,16 @@ public class CommentController {
 
     private final CommentService commentService;
     private final PostService postService;
-
+    private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Result<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto,
-                                                                    UriComponentsBuilder b,
-                                                                    @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
+    public ResponseEntity<Result<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto, UriComponentsBuilder b){
+        User user = userService.findUserFromToken();
+
         Post post = postService.findPost(commentRequestDto.getPostId());
 
         Comment comment = Comment.builder()
-                .user(loginUser)
+                .user(user)
                 .content(commentRequestDto.getContent())
                 .parentCommentId(commentRequestDto.getParentCommentId())
                 .build();

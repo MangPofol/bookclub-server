@@ -8,6 +8,7 @@ import mangpo.server.dto.Result;
 import mangpo.server.entity.*;
 import mangpo.server.service.*;
 import mangpo.server.service.book.BookService;
+import mangpo.server.service.user.UserService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class PostController {
     private final LikedService likedService;
     private final CommentService commentService;
     private final PostClubScopeService pcsService;
+    private final UserService userService;
 
     //Todo dto로 직접 조회 고려
 //    @GetMapping
@@ -178,11 +180,12 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/do-like")
-    public ResponseEntity<?> doLikePost(@PathVariable Long postId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
+    public ResponseEntity<?> doLikePost(@PathVariable Long postId) {
+        User user = userService.findUserFromToken();
         Post post = postService.findPost(postId);
 
         Liked liked = Liked.builder()
-                .user(loginUser)
+                .user(user)
                 .isLiked(true)
                 .build();
         liked.doLikeToPost(post);
@@ -192,11 +195,12 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/undo-like")
-    public ResponseEntity<?> undoLikeBook(@PathVariable Long postId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser) {
+    public ResponseEntity<?> undoLikeBook(@PathVariable Long postId) {
+        User user = userService.findUserFromToken();
         Post post = postService.findPost(postId);
 
         List<Liked> collect = post.getLikedList().stream()
-                .filter(l -> l.getUser().getId().equals(loginUser.getId()))
+                .filter(l -> l.getUser().getId().equals(user.getId()))
                 .collect(Collectors.toList());
 
         Liked liked = collect.get(0);

@@ -26,7 +26,9 @@ public class BookComplexService {
     private final PostService postService;
 
     @Transactional
-    public Long createBookAndRelated(CreateBookDto createBookDto, Long userId) {
+    public Long createBookAndRelated(CreateBookDto createBookDto) {
+        User user = userService.findUserFromToken();
+
         BookInfo bookInfo = BookInfo.builder()
                 .name(createBookDto.getName())
                 .isbn(createBookDto.getIsbn())
@@ -37,9 +39,7 @@ public class BookComplexService {
                 .category(createBookDto.getCategory())
                 .bookInfo(bookInfo)
                 .build();
-        Long bookId = bookService.createBookWithValidation(newBook, bookInfo.getIsbn(), userId);
-
-        User user = userService.findById(userId);
+        Long bookId = bookService.createBookWithValidation(newBook, bookInfo.getIsbn(), user.getId());
 
         ClubBookUser cbu = ClubBookUser.builder()
                 .book(newBook)
@@ -51,7 +51,7 @@ public class BookComplexService {
     }
 
     @Transactional
-    public void deleteBookAndRelated(Long bookId, Long userId) {
+    public void deleteBookAndRelated(Long bookId) {
         Book deleteBook = bookService.findBook(bookId);
 
         ClubBookUserSearchCondition clubBookUserSearchCondition = new ClubBookUserSearchCondition();

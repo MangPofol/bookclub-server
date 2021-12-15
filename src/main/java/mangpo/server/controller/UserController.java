@@ -50,22 +50,22 @@ public class UserController {
 
         return ResponseEntity.ok(new Result<>(userResponseDto));
     }
-
-    @PostMapping
-    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
-
-        User user = userRequestDto.toEntityExceptId();
-
-        Long userId = userService.createUser(user);
-
-        UriComponents uriComponents =
-                b.path("/users/{userId}").buildAndExpand(userId);
-
-        UserResponseDto userResponseDto = new UserResponseDto(user);
-        Result<UserResponseDto> result = new Result<>(userResponseDto);
-
-        return ResponseEntity.created(uriComponents.toUri()).body(result);
-    }
+//
+//    @PostMapping
+//    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
+//
+//        User user = userRequestDto.toEntityExceptId();
+//
+//        Long userId = userService.createUser(user);
+//
+//        UriComponents uriComponents =
+//                b.path("/users/{userId}").buildAndExpand(userId);
+//
+//        UserResponseDto userResponseDto = new UserResponseDto(user);
+//        Result<UserResponseDto> result = new Result<>(userResponseDto);
+//
+//        return ResponseEntity.created(uriComponents.toUri()).body(result);
+//    }
 
 
     @PostMapping("/{userId}/change-dormant")
