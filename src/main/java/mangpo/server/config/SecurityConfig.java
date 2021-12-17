@@ -80,9 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 .antMatchers("/auth/**").permitAll()
-//                .antMatchers("/users").permitAll()
+                .antMatchers("/users/validate-duplicate").permitAll()
 
-                .antMatchers("/health").permitAll()
+                .antMatchers("/health/**").permitAll()
 
 
 //                .antMatchers("/auth").permitAll()
