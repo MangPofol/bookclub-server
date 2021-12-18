@@ -27,22 +27,12 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Result<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto, UriComponentsBuilder b){
-        User user = userService.findUserFromToken();
-
-        Post post = postService.findPost(commentRequestDto.getPostId());
-
-        Comment comment = Comment.builder()
-                .user(user)
-                .content(commentRequestDto.getContent())
-                .parentCommentId(commentRequestDto.getParentCommentId())
-                .build();
-        comment.addComment(post);
-        Long commentId = commentService.createComment(comment);
+        Long commentId = commentService.createComment(commentRequestDto);
 
         UriComponents uriComponents =
                 b.path("/comments/{commentId}").buildAndExpand(commentId);
 
-        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+        CommentResponseDto commentResponseDto = new CommentResponseDto(commentService.findById(commentId));
         Result<CommentResponseDto> result= new Result(commentResponseDto);
 
         return ResponseEntity.created(uriComponents.toUri()).body(result);

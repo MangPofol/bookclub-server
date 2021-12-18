@@ -39,4 +39,8 @@ public class Comment extends BaseTimeEntity {
         post.getComments().add(this);
     }
 
+    public void createWithUserAndPost(User user, Post post){
+
+    }
+
 }
