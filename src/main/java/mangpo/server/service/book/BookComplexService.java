@@ -35,7 +35,7 @@ public class BookComplexService {
         bookInfo = bookInfoService.createOrFindBookInfo(bookInfo);
 
         Book newBook = Book.builder()
-                .category(createBookDto.getCategory())
+                .bookCategory(createBookDto.getCategory())
                 .bookInfo(bookInfo)
                 .build();
         Long bookId = bookService.createBookWithValidation(newBook, bookInfo.getIsbn(), user.getId());

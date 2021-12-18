@@ -25,13 +25,13 @@ public class Book extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "book_category")
-    private BookCategory category;
+    private BookCategory bookCategory;
 
     @Builder.Default
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 
     public void changeCategory(BookCategory bookCategory){
-        this.category = bookCategory;
+        this.bookCategory = bookCategory;
     }
 }

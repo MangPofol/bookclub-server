@@ -196,16 +196,9 @@ public class PostService {
                 .collect(Collectors.toList());
 
         int sum = 0;
-        for (Book book : books) {
+        for (Book book : books)
             sum += postRepository.countByBook(book);
-
-        }
         return sum;
-//
-//        ClubBookUserSearchCondition
-//        cbuService.findAllByCondition()
-//
-//        return postRepository.countByUser(user);
     }
 
     private Liked likedUserFromPost(User user, Post post) {

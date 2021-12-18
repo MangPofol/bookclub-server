@@ -7,8 +7,6 @@ import mangpo.server.entity.ClubBookUser;
 import mangpo.server.entity.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class BookAndUserDto {
@@ -32,7 +30,7 @@ public class BookAndUserDto {
         this.bookId = book.getId();
         this.bookName = book.getBookInfo().getName();
         this.isbn = book.getBookInfo().getIsbn();
-        this.category = book.getCategory();
+        this.category = book.getBookCategory();
         this.createdDate = book.getCreatedDate();
         this.modifiedDate = book.getModifiedDate();
     }

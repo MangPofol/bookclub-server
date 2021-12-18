@@ -15,7 +15,7 @@ public class UpdateBookDto {
 
     public Book toEntityExceptIdAndPosts(UpdateBookDto updateBookDto){
         return Book.builder()
-                .category(this.category)
+                .bookCategory(this.category)
                 .build();
     }
 }

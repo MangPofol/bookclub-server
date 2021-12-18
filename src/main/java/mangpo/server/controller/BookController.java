@@ -8,7 +8,6 @@ import mangpo.server.dto.book.CreateBookDto;
 import mangpo.server.dto.book.UpdateBookDto;
 import mangpo.server.entity.*;
 import mangpo.server.service.book.BookComplexService;
-import mangpo.server.service.book.BookQueryService;
 import mangpo.server.service.book.BookService;
 import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,12 +27,22 @@ public class BookController {
 
     private final BookService bookService;
     private final BookComplexService bookComplexService;
-    private final BookQueryService bookQueryService;
 
 
-    @GetMapping//Todo fetchjoin
-    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email, @RequestParam BookCategory category) {
-        List<Book> books = bookQueryService.findBooksByEmailAndBookCategory(email, category);
+//    @GetMapping//Todo fetchjoin
+//    public Result<List<BookResponseDto>> getBooksByEmailAndCategory(@RequestParam String email, @RequestParam BookCategory category) {
+//        List<Book> books = bookQueryService.findBooksByEmailAndBookCategory(email, category);
+//
+//        List<BookResponseDto> collect = books.stream()
+//                .map(BookResponseDto::new)
+//                .collect(Collectors.toList());
+//
+//        return new Result(collect);
+//    }
+
+    @GetMapping
+    public Result<List<BookResponseDto>> getBooksByCurrentUserAndBookCategory(@RequestParam BookCategory category) {
+        Set<Book> books = bookService.findBooksByCurrentUserAndBookCategory(category);
 
         List<BookResponseDto> collect = books.stream()
                 .map(BookResponseDto::new)

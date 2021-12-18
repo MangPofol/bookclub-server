@@ -8,12 +8,16 @@ import mangpo.server.repository.BookInfoRepository;
 import mangpo.server.repository.book.BookRepository;
 import mangpo.server.repository.ClubBookUserRepository;
 import mangpo.server.repository.UserRepository;
+import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +28,9 @@ public class BookService {
     private final BookInfoRepository bookInfoRepository;
     private final ClubBookUserRepository cbuRepository;
     private final UserRepository userRepository;
+
+    private final ClubBookUserService cbuService;
+    private final UserService userService;
 
     @Transactional
     public Long createBookWithValidation(Book book, String isbn, Long userId) {
@@ -93,8 +100,8 @@ public class BookService {
     public void updateBook(Long id, Book bookRequest) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
 
-        if (bookRequest.getCategory() != null)
-            book.changeCategory(bookRequest.getCategory());
+        if (bookRequest.getBookCategory() != null)
+            book.changeCategory(bookRequest.getBookCategory());
     }
 
     public Book findBookById(Long id) {
@@ -106,7 +113,20 @@ public class BookService {
     }
 
     public List<Book> findByCategory(BookCategory bookCategory) {
-        return bookRepository.findByCategory(bookCategory);
+        return bookRepository.findByBookCategory(bookCategory);
     }
 
+
+    public Set<Book> findBooksByCurrentUserAndBookCategory(BookCategory category) {
+        User user = userService.findUserFromToken();
+//        Set<Book> books = cbuService.findByUserAndClubIsNull(user).stream()
+//                .map(m -> m.getBook())
+//                .collect(Collectors.toSet());
+        Set<Book> books = cbuService.findByUserAndClubIsNull(user).stream()
+                .map(m -> m.getBook())
+                .filter(m -> m.getBookCategory() == category)
+                .collect(Collectors.toSet());
+
+       return books;
+    }
 }

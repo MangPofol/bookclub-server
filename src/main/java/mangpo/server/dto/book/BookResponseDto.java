@@ -3,13 +3,10 @@ package mangpo.server.dto.book;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mangpo.server.controller.BookController;
 import mangpo.server.entity.Book;
 import mangpo.server.entity.BookCategory;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +21,7 @@ public class BookResponseDto {
 
     public BookResponseDto(Book book) {
         this.id = book.getId();
-        this.category = book.getCategory();
+        this.category = book.getBookCategory();
         this.createdDate = book.getCreatedDate();
         this.modifiedDate = book.getModifiedDate();
         this.name = book.getBookInfo().getName();
