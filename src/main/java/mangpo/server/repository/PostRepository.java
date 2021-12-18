@@ -15,4 +15,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     @EntityGraph(attributePaths = ("postImageLocations"))
     Optional<Post> findFetchById(Long id);
+
+    long count();
 }

@@ -185,6 +185,11 @@ public class PostService {
         likedService.deleteLiked(liked);
     }
 
+    public Long findTotalCount(){
+        User user = userService.findUserFromToken();
+        return postRepository.count();
+    }
+
     private Liked likedUserFromPost(User user, Post post) {
         List<Liked> collect = post.getLikedList().stream()
                 .filter(l -> l.getUser().getId().equals(user.getId()))

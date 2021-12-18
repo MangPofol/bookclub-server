@@ -109,6 +109,11 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/total-count")
+    public Result<?> getTotalCount() {
+        Long totalCount = postService.findTotalCount();
+        return new Result<>(totalCount);
+    }
 
 
 }
