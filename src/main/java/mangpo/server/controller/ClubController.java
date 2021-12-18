@@ -48,16 +48,8 @@ public class ClubController {
 
         ClubInfoResponseDto clubInfoResponseDto = new ClubInfoResponseDto();
 
-////        log.info("@@@@@메모 시작@@@@@@@@@@");
-//        List<Post> hotMemo = clubQueryRepository.findTrendingPostByClub(club,memberSize);
-////        log.info("@@@@@메모 끝@@@@@@@@@@");
-//        List<Post> hotTopic = clubQueryRepository.findHotTopicByClub(club,memberSize);
-
         List<Post> trendingPostByClub = clubQueryRepository.findTrendingPostByClub(club, memberSize);
 
-
-//        clubInfoResponseDto.setHotMemo(hotMemo);
-//        clubInfoResponseDto.setTrendingPost(hotTopic);
         clubInfoResponseDto.setTrendingPost(trendingPostByClub);
         clubInfoResponseDto.setClubInfo(club);
         clubInfoResponseDto.setUsersInClubDtoList(usersInClub);

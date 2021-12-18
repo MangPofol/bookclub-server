@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/health")
 public class HealthController {
     @GetMapping
-
     public ResponseEntity<?> getPostsByBookIdAndClubScope() {
 
         return ResponseEntity.ok().build();

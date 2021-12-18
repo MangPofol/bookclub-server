@@ -92,7 +92,8 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() ->  new EntityNotFoundException("존재하지 않는 유저입니다."));
         if (!userRequest.getEmail().equals(user.getEmail()))
             validateDuplicateUser(userRequest.getEmail());
-
+        if(userRequest.getPassword() != null)
+            userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.update(userRequest);
     }
 

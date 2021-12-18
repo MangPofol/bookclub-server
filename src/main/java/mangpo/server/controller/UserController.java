@@ -102,9 +102,6 @@ public class UserController {
 //        User user = userService.findUser(id);
 //    }
 
-
-
-
     @Data
     static class UserValidationDto {
         String email;
