@@ -6,15 +6,12 @@ import mangpo.server.entity.Comment;
 import mangpo.server.entity.Post;
 import mangpo.server.entity.User;
 import mangpo.server.repository.CommentRepository;
+import mangpo.server.service.post.PostService;
 import mangpo.server.service.user.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,7 +26,7 @@ public class CommentService {
     @Transactional
     public Long createComment(CommentRequestDto commentRequestDto){
         User user = userService.findUserFromToken();
-        Post post = postService.findPost(commentRequestDto.getPostId());
+        Post post = postService.findPostById(commentRequestDto.getPostId());
 
         Comment comment = Comment.builder()
                 .user(user)

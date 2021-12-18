@@ -28,8 +28,6 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
-    private final ClubBookUserService cbuService;
-
 
 //    @GetMapping("/user")
 //    @PreAuthorize("hasAnyRole('USER','ADMIN')")

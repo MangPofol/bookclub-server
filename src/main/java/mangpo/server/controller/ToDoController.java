@@ -8,7 +8,7 @@ import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.dto.todo.ToDoResponseDto;
 import mangpo.server.entity.ToDo;
 import mangpo.server.entity.User;
-import mangpo.server.service.ToDoService;
+import mangpo.server.service.user.ToDoService;
 import mangpo.server.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

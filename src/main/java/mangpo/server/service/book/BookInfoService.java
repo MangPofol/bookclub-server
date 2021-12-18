@@ -1,4 +1,4 @@
-package mangpo.server.service;
+package mangpo.server.service.book;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.BookInfo;

@@ -1,4 +1,4 @@
-package mangpo.server.service;
+package mangpo.server.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

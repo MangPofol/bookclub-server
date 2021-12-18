@@ -1,4 +1,4 @@
-package mangpo.server.service;
+package mangpo.server.service.post;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Club;

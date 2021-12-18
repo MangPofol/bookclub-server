@@ -1,4 +1,4 @@
-package mangpo.server.service;
+package mangpo.server.service.club;
 
 
 import lombok.RequiredArgsConstructor;

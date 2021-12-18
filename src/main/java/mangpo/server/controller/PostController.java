@@ -6,10 +6,9 @@ import mangpo.server.dto.post.PostRequestDto;
 import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.Result;
 import mangpo.server.entity.*;
-import mangpo.server.service.*;
-import mangpo.server.service.book.BookService;
-import mangpo.server.service.user.UserService;
-import mangpo.server.session.SessionConst;
+import mangpo.server.service.club.ClubService;
+import mangpo.server.service.post.PostClubScopeService;
+import mangpo.server.service.post.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -18,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -26,13 +24,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/posts")
 public class PostController {
 
+//    private final PostComplexService postComplexService;
+
     private final PostService postService;
-    private final BookService bookService;
-    private final ClubService clubService;
-    private final LikedService likedService;
-    private final CommentService commentService;
     private final PostClubScopeService pcsService;
-    private final UserService userService;
 
     //Todo dto로 직접 조회 고려
 //    @GetMapping
@@ -48,19 +43,16 @@ public class PostController {
 
     @GetMapping
     public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(defaultValue = "-1") Long clubId) {
-        List<Post> posts = postService.findPostsByBookId(bookId);
-//        log.info("posts={}", posts);
+        List<Post> posts = postService.findPostsByBookIdAndClubScope(bookId, clubId);
 
-        if (clubId != -1)
-            excludePostByClubScope(clubId, posts);
+        List<PostResponseDto> postResponseDtoList = createPostResponseDtoList(posts);
 
-        List<PostResponseDto> collect = new ArrayList<>();
-        createPostResponseDto(posts, collect);
-
-        return new Result<>(collect);
+        return new Result<>(postResponseDtoList);
     }
 
-    private void createPostResponseDto(List<Post> posts, List<PostResponseDto> collect) {
+    private  List<PostResponseDto> createPostResponseDtoList(List<Post> posts ) {
+        List<PostResponseDto> collect = new ArrayList<>();
+
         for (Post post : posts) {
             PostResponseDto postResponseDto = new PostResponseDto(post);
             PostScope scope = post.getScope();
@@ -74,106 +66,32 @@ public class PostController {
             }
             collect.add(postResponseDto);
         }
+        return collect;
     }
 
-    private void excludePostByClubScope(Long clubId, List<Post> posts) {
-        Club clubRequest = clubService.findClub(clubId);
-
-        Iterator<Post> iter = posts.iterator();
-
-        while(iter.hasNext()){
-            Post p = iter.next();
-            if (p.getScope() == PostScope.CLUB) {
-                List<PostClubScope> listByPost = pcsService.findListByPost(p);
-
-                boolean present = listByPost.stream()
-                        .anyMatch(m -> m.getClub() == clubRequest);
-
-                if (!present)
-                    iter.remove();
-            }
-        }
-    }
 
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, UriComponentsBuilder b) {
-        Book requestBook = bookService.findBook(requestDto.getBookId());
-        Post post = requestDto.toEntityExceptBook();
-        post.changeBook(requestBook);
-
-        for (String imgLoc : requestDto.getPostImgLocations()) {
-            PostImageLocation postImageLocation = PostImageLocation.builder()
-                    .post(post)
-                    .imgLocation(imgLoc)
-                    .build();
-
-            post.getPostImageLocations().add(postImageLocation);
-        }
-
-        Long postId = postService.createPost(post);
-
-        if (requestDto.getScope() == PostScope.CLUB)
-            createAndPersistPostClubScope(requestDto, post);
+        Long postId = postService.createPost(requestDto);
 
         UriComponents uriComponents =
                 b.path("/posts/{postId}").buildAndExpand(postId);
 
-        PostResponseDto postResponseDto = new PostResponseDto(post);
+        PostResponseDto postResponseDto = new PostResponseDto(postService.findPostById(postId));
 
         return ResponseEntity.created(uriComponents.toUri()).body(postResponseDto);
     }
 
-    private void createAndPersistPostClubScope(PostRequestDto requestDto, Post post) {
-
-        List<Long> clubIdListForScope = requestDto.getClubIdListForScope();
-
-        for (Long clubId : clubIdListForScope) {
-            Club club = clubService.findClub(clubId);
-
-            PostClubScope pcs = PostClubScope.builder()
-                    .post(post)
-                    .club(club)
-                    .clubName(club.getName())
-                    .build();
-
-            Long pcsId = pcsService.createPCS(pcs);
-        }
-
-
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        Post post = postService.findPost(id);
-        pcsService.deleteAllPcsByPost(post);
-        likedService.deleteByPost(post);
-        postService.deletePost(id);
+        postService.deletePostById(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        Post post = postService.findPostFetchJoinImgLoc(id);
-        PostScope ogScope = post.getScope();
-
-        post.getPostImageLocations().clear();
-
-        for (String s:  requestDto.getPostImgLocations()) {
-            PostImageLocation p = PostImageLocation.builder()
-                    .post(post)
-                    .imgLocation(s)
-                    .build();
-
-            post.getPostImageLocations().add(p);
-        }
-
-        if (ogScope == PostScope.CLUB) {
-            pcsService.deleteAllPcsByPost(post);
-        }
-        if (requestDto.getScope() == PostScope.CLUB)
-            createAndPersistPostClubScope(requestDto, post);
-
         postService.updatePost(id, requestDto);
 
         return ResponseEntity.noContent().build();
@@ -181,32 +99,13 @@ public class PostController {
 
     @PostMapping("/{postId}/do-like")
     public ResponseEntity<?> doLikePost(@PathVariable Long postId) {
-        User user = userService.findUserFromToken();
-        Post post = postService.findPost(postId);
-
-        Liked liked = Liked.builder()
-                .user(user)
-                .isLiked(true)
-                .build();
-        liked.doLikeToPost(post);
-        likedService.createLiked(liked);
-
+        postService.doLikePost(postId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{postId}/undo-like")
-    public ResponseEntity<?> undoLikeBook(@PathVariable Long postId) {
-        User user = userService.findUserFromToken();
-        Post post = postService.findPost(postId);
-
-        List<Liked> collect = post.getLikedList().stream()
-                .filter(l -> l.getUser().getId().equals(user.getId()))
-                .collect(Collectors.toList());
-
-        Liked liked = collect.get(0);
-        liked.undoLikeToPost(post);
-        likedService.deleteLiked(liked);
-
+    public ResponseEntity<?> undoLikePost(@PathVariable Long postId) {
+        postService.undoLikePost(postId);
         return ResponseEntity.noContent().build();
     }
 
