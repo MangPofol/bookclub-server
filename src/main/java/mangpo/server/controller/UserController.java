@@ -50,6 +50,22 @@ public class UserController {
 
         return ResponseEntity.ok(new Result<>(userResponseDto));
     }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto) {
+        User user = userService.findById(userId);
+        userService.updateUser(userId, userRequestDto);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<Result<UserResponseDto>> getCurrentUserInfo() {
+        User user = userService.findUserFromToken();
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+
+        return ResponseEntity.ok(new Result<>(userResponseDto));
+    }
 //
 //    @PostMapping
 //    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
@@ -88,13 +104,7 @@ public class UserController {
 //        User user = userService.findUser(id);
 //    }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto) {
-        User user = userService.findById(userId);
-        userService.updateUser(userId, userRequestDto);
 
-        return ResponseEntity.noContent().build();
-    }
 
 
     @Data
