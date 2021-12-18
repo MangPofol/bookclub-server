@@ -97,7 +97,7 @@ public class BookService {
             book.changeCategory(bookRequest.getCategory());
     }
 
-    public Book findBook(Long id) {
+    public Book findBookById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
     }
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.post.PostRequestDto;
 import mangpo.server.entity.*;
 import mangpo.server.repository.*;
+import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.LikedService;
 import mangpo.server.service.book.BookService;
 import mangpo.server.service.club.ClubService;
@@ -28,6 +29,7 @@ public class PostService {
     private final PostClubScopeRepository pcsRepository;
     private final CommentRepository commentRepository;
 
+    private final ClubBookUserService cbuService;
     private final ClubService clubService;
     private final PostClubScopeService pcsService;
     private final BookService bookService;
@@ -42,7 +44,7 @@ public class PostService {
 
     @Transactional
     public Long createPost(PostRequestDto postRequestDto){
-        Book requestBook = bookService.findBook(postRequestDto.getBookId());
+        Book requestBook = bookService.findBookById(postRequestDto.getBookId());
         Post post = postRequestDto.toEntityExceptBook();
         post.changeBook(requestBook);
 
@@ -153,7 +155,7 @@ public class PostService {
     }
 
     public List<Post> findPostsByBookId(Long bookId){
-        Book book = bookService.findBook(bookId);
+        Book book = bookService.findBookById(bookId);
 
         List<Post> byBook = postRepository.findByBook(book);
 
@@ -185,9 +187,25 @@ public class PostService {
         likedService.deleteLiked(liked);
     }
 
-    public Long findTotalCount(){
+    public Integer findTotalCount(){
         User user = userService.findUserFromToken();
-        return postRepository.count();
+
+        List<ClubBookUser> cbuList = cbuService.findByUserAndClubIsNull(user);
+        List<Book> books = cbuList.stream()
+                .map(m -> m.getBook())
+                .collect(Collectors.toList());
+
+        int sum = 0;
+        for (Book book : books) {
+            sum += postRepository.countByBook(book);
+
+        }
+        return sum;
+//
+//        ClubBookUserSearchCondition
+//        cbuService.findAllByCondition()
+//
+//        return postRepository.countByUser(user);
     }
 
     private Liked likedUserFromPost(User user, Post post) {

@@ -2,21 +2,18 @@
 //
 //
 //import com.querydsl.jpa.impl.JPAQueryFactory;
-//import mangpo.server.controller.PostController;
-//import mangpo.server.controller.QPostController_PostResponseDto;
 //import mangpo.server.entity.*;
 //import org.springframework.stereotype.Repository;
-//import org.springframework.transaction.annotation.Transactional;
 //
 //import javax.persistence.EntityManager;
 //import java.util.List;
 //
 //import static mangpo.server.entity.QBook.book;
+//import static mangpo.server.entity.QClub.club;
 //import static mangpo.server.entity.QClubBookUser.clubBookUser;
-//import static mangpo.server.entity.QLiked.liked;
-//import static mangpo.server.entity.QPost.post;
 //
 //@Repository
+////@RequiredArgsConstructor
 //public class PostQueryRepository {
 //
 //
@@ -27,13 +24,13 @@
 //    }
 //
 //
-//
-//    public List<PostController.PostResponseDto> findPostsByBookId(Long bookId) {
-//        return queryFactory.
-//                select(new QPostController_PostResponseDto(post)).
-//                from(post).
-//                rightJoin(liked).on(liked.post.eq(post)).
-//                where().
-//                fetch();
+//    public List<Book> findListByUser(User user) {
+//        return queryFactory
+//                .selectDistinct(book)
+//                .from(clubBookUser)
+//                .join(clubBookUser.book, book)
+//                .where(QUser.user.eq(user),
+//                        club.isNull())
+//                .fetch();
 //    }
 //}

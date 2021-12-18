@@ -89,7 +89,7 @@ public class UserService {
 
     @Transactional
     public void updateUser(Long id, UserRequestDto userRequest){
-        User user = userRepository.findById(id).orElseThrow(() ->  new EntityNotFoundException("존재하지 않는 유저입니다."));
+        User user = this.findById(id);
         if (!userRequest.getEmail().equals(user.getEmail()))
             validateDuplicateUser(userRequest.getEmail());
         if(userRequest.getPassword() != null)

@@ -99,7 +99,7 @@ public class ClubController {
     public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto) {
         User user = userService.findUserFromToken();
 
-        Book book = bookService.findBook(requestDto.bookId);
+        Book book = bookService.findBookById(requestDto.bookId);
 //        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
         ClubBookUserSearchCondition cbuSearchCond = new ClubBookUserSearchCondition();
         cbuSearchCond.setUser(user);

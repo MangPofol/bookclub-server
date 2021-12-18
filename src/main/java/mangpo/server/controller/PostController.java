@@ -111,7 +111,7 @@ public class PostController {
 
     @GetMapping("/total-count")
     public Result<?> getTotalCount() {
-        Long totalCount = postService.findTotalCount();
+        Integer totalCount = postService.findTotalCount();
         return new Result<>(totalCount);
     }
 

@@ -62,4 +62,8 @@ public class ClubBookUserService {
     public void deleteAll(List<ClubBookUser> clubBookUsers){
         cbuRepository.deleteAll(clubBookUsers);
     }
+
+    public List<ClubBookUser> findByUserAndClubIsNull(User user){
+         return cbuRepository.findByUserAndClubIsNull(user);
+    }
 }

@@ -51,7 +51,7 @@ public class BookComplexService {
 
     @Transactional
     public void deleteBookAndRelated(Long bookId) {
-        Book deleteBook = bookService.findBook(bookId);
+        Book deleteBook = bookService.findBookById(bookId);
 
         ClubBookUserSearchCondition clubBookUserSearchCondition = new ClubBookUserSearchCondition();
         clubBookUserSearchCondition.setBook(deleteBook);
