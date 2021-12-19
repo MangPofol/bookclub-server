@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mangpo.server.dto.user.UserRequestDto;
+import mangpo.server.dto.UpdateUserDto;
+import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -55,20 +56,19 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<UserAuthority> userAuthorityList = new ArrayList<>();
 
-    public void update(UserRequestDto userRequest) {
-        this.email = userRequest.getEmail();
-        this.password = userRequest.getPassword();
-        this.sex = userRequest.getSex();
-        this.birthdate = userRequest.getBirthdate();
-        this.nickname = userRequest.getNickname();
-        this.introduce = userRequest.getIntroduce();
-        this.style = userRequest.getStyle();
-        this.goal = userRequest.getGoal();
-        this.profileImgLocation = userRequest.getProfileImgLocation();
+    public void update(UpdateUserDto updateUserDto) {
+        this.email = updateUserDto.getEmail();
+        this.sex = updateUserDto.getSex();
+        this.birthdate = updateUserDto.getBirthdate();
+        this.nickname = updateUserDto.getNickname();
+        this.introduce = updateUserDto.getIntroduce();
+        this.style = updateUserDto.getStyle();
+        this.goal = updateUserDto.getGoal();
+        this.profileImgLocation = updateUserDto.getProfileImgLocation();
 
         this.genres.clear();
 
-        for (String s : userRequest.getGenres()) {
+        for (String s : updateUserDto.getGenres()) {
             Genre genre = Genre.builder()
                     .type(s)
                     .build();

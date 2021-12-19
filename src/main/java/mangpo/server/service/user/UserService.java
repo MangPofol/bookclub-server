@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.user.UserRequestDto;
+import mangpo.server.dto.ChangePwDto;
+import mangpo.server.dto.UpdateUserDto;
+import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.entity.user.Authority;
 import mangpo.server.entity.user.User;
 import mangpo.server.entity.user.UserAuthority;
@@ -88,13 +90,12 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long id, UserRequestDto userRequest){
+    public void updateUser(Long id, UpdateUserDto updateUserDto){
         User user = this.findById(id);
-        if (!userRequest.getEmail().equals(user.getEmail()))
-            validateDuplicateUser(userRequest.getEmail());
-        if(userRequest.getPassword() != null)
-            userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        user.update(userRequest);
+        if (!updateUserDto.getEmail().equals(user.getEmail()))
+            validateDuplicateUser(updateUserDto.getEmail());
+
+        user.update(updateUserDto);
     }
 
     @Transactional
@@ -107,5 +108,13 @@ public class UserService {
     @Transactional
     public void changeDormant(User user){
         user.changeIsDormant();
+    }
+
+    @Transactional
+    public void changePassword(ChangePwDto changePwDto){
+        User user = this.findUserFromToken();
+
+        if(changePwDto.getPassword() != null)
+            user.changePw(passwordEncoder.encode(changePwDto.getPassword()));
     }
 }

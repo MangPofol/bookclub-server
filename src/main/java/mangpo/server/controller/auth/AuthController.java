@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.Result;
 import mangpo.server.dto.auth.LoginDto;
 import mangpo.server.dto.auth.TokenDto;
-import mangpo.server.dto.user.UserRequestDto;
+import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.user.User;
 import mangpo.server.jwt.JwtFilter;
@@ -36,9 +36,9 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
+    public ResponseEntity<Result<UserResponseDto>> createUser(@RequestBody CreateUserDto createUserDto, UriComponentsBuilder b) {
 
-        User user = userRequestDto.toEntityExceptId();
+        User user = createUserDto.toEntityExceptId();
 
         Long userId = userService.createUser(user);
 

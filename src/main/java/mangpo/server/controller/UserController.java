@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
-import mangpo.server.dto.user.UserRequestDto;
+import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.user.User;
 
@@ -41,9 +41,9 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UpdateUserDto updateUserDto) {
         User user = userService.findById(userId);
-        userService.updateUser(userId, userRequestDto);
+        userService.updateUser(userId, updateUserDto);
 
         return ResponseEntity.noContent().build();
     }
@@ -85,6 +85,13 @@ public class UserController {
     public ResponseEntity<?> validateDuplicate(@RequestBody UserValidationDto userValidationDto) {
         userService.validateDuplicateUser(userValidationDto.getEmail());
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/change-pw")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePwDto changePwDto) {
+        userService.changePassword(changePwDto);
+        //추후 메일링 관련 로직 추가
         return ResponseEntity.noContent().build();
     }
 
