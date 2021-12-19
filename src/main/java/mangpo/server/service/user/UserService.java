@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.user.UserRequestDto;
-import mangpo.server.entity.Authority;
-import mangpo.server.entity.User;
-import mangpo.server.entity.UserAuthority;
+import mangpo.server.entity.user.Authority;
+import mangpo.server.entity.user.User;
+import mangpo.server.entity.user.UserAuthority;
 import mangpo.server.repository.AuthorityRepository;
 import mangpo.server.repository.UserAuthorityRepository;
 import mangpo.server.repository.UserRepository;

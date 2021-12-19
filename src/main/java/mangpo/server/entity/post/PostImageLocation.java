@@ -1,7 +1,7 @@
-package mangpo.server.entity;
+package mangpo.server.entity.post;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
+import mangpo.server.entity.post.Post;
 
 import javax.persistence.*;
 

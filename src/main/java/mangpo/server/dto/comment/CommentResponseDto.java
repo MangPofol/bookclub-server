@@ -2,7 +2,7 @@ package mangpo.server.dto.comment;
 
 
 import lombok.Data;
-import mangpo.server.entity.Comment;
+import mangpo.server.entity.post.Comment;
 
 import java.time.LocalDateTime;
 

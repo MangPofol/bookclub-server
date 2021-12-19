@@ -1,6 +1,8 @@
 package mangpo.server.entity;
 
 import lombok.*;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 

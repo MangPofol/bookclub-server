@@ -1,7 +1,9 @@
 package mangpo.server.entity;
 
 import lombok.*;
+import mangpo.server.entity.book.Book;
 import mangpo.server.entity.common.BaseTimeEntity;
+import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 

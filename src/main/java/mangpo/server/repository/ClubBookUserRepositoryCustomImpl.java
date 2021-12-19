@@ -4,15 +4,15 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.*;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.user.User;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static mangpo.server.entity.QBook.book;
 import static mangpo.server.entity.QClubBookUser.clubBookUser;
-import static mangpo.server.entity.QUser.user;
+import static mangpo.server.entity.book.QBook.book;
+import static mangpo.server.entity.user.QUser.user;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryCustom {

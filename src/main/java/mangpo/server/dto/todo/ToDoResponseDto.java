@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mangpo.server.entity.ToDo;
+import mangpo.server.entity.user.ToDo;
 
 import java.time.LocalDateTime;
 

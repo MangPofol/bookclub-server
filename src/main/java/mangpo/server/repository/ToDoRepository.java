@@ -1,7 +1,7 @@
 package mangpo.server.repository;
 
-import mangpo.server.entity.ToDo;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.ToDo;
+import mangpo.server.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

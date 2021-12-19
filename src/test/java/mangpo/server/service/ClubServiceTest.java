@@ -32,7 +32,7 @@ class ClubServiceTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         club = Club.builder().build();
     }

@@ -1,28 +1,28 @@
 package mangpo.server.repository;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.entity.*;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.user.User;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.beans.Expression;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mangpo.server.entity.QBook.book;
 import static mangpo.server.entity.QClubBookUser.clubBookUser;
-import static mangpo.server.entity.QComment.comment;
 import static mangpo.server.entity.QLiked.liked;
-import static mangpo.server.entity.QPost.post;
+import static mangpo.server.entity.book.QBook.book;
+import static mangpo.server.entity.post.QComment.comment;
+import static mangpo.server.entity.post.QPost.post;
 
 @Slf4j
 @Repository

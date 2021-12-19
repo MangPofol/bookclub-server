@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mangpo.server.entity.Sex;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.Sex;
+import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;
 

@@ -4,7 +4,7 @@
 //import lombok.Data;
 //import lombok.NoArgsConstructor;
 //import lombok.RequiredArgsConstructor;
-//import mangpo.server.entity.User;
+//import mangpo.server.entity.user.User;
 //import mangpo.server.service.LoginService;
 //import mangpo.server.session.SessionConst;
 //import org.springframework.http.HttpStatus;

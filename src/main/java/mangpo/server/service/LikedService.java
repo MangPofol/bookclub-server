@@ -3,12 +3,10 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Liked;
-import mangpo.server.entity.Post;
+import mangpo.server.entity.post.Post;
 import mangpo.server.repository.LikedRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = true)

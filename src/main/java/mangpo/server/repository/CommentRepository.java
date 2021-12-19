@@ -1,7 +1,7 @@
 package mangpo.server.repository;
 
-import mangpo.server.entity.Comment;
-import mangpo.server.entity.Post;
+import mangpo.server.entity.post.Comment;
+import mangpo.server.entity.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package mangpo.server.entity;
+package mangpo.server.entity.book;
 
 import lombok.*;
 

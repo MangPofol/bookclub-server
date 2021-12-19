@@ -6,10 +6,10 @@ import mangpo.server.dto.*;
 import mangpo.server.dto.book.BookResponseDto;
 import mangpo.server.dto.book.CreateBookDto;
 import mangpo.server.dto.book.UpdateBookDto;
-import mangpo.server.entity.*;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.book.BookCategory;
 import mangpo.server.service.book.BookComplexService;
 import mangpo.server.service.book.BookService;
-import mangpo.server.session.SessionConst;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -48,7 +48,7 @@ public class BookController {
                 .map(BookResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new Result(collect);
+        return new Result<List<BookResponseDto>>(collect);
     }
 
     @PostMapping

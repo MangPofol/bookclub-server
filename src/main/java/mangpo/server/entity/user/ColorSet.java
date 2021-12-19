@@ -1,4 +1,4 @@
-package mangpo.server.entity;
+package mangpo.server.entity.user;
 
 //클럽의 고유 컬러 세트
 public enum ColorSet {

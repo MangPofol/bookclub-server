@@ -2,8 +2,8 @@ package mangpo.server.service.post;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Club;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.PostClubScope;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
 import mangpo.server.repository.PostClubScopeRepository;
 import mangpo.server.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import java.util.List;
 public class PostClubScopeService {
 
     private final PostClubScopeRepository pcsRepository;
-    private final PostRepository postRepository;
 
     @Transactional
     public Long createPCS(PostClubScope pcs){
@@ -28,13 +27,11 @@ public class PostClubScopeService {
 
     @Transactional
     public void deleteAllPcsByPost(Post post){
-//        pcsRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 공개범위입니다."));
         pcsRepository.deleteAllByPost(post);
     }
 
     @Transactional
     public void deleteAllPcsByClub(Club club){
-//        pcsRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 공개범위입니다."));
         pcsRepository.deleteAllByClub(club);
     }
 

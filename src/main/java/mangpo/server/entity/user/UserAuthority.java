@@ -1,6 +1,8 @@
-package mangpo.server.entity;
+package mangpo.server.entity.user;
 
 import lombok.*;
+import mangpo.server.entity.user.Authority;
+import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 

@@ -1,8 +1,8 @@
 package mangpo.server.dto.post;
 
 import lombok.Data;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.PostScope;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostScope;
 
 import java.util.List;
 

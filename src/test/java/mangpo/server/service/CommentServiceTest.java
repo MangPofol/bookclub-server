@@ -1,8 +1,8 @@
 //package mangpo.server.service;
 //
-//import mangpo.server.entity.Book;
-//import mangpo.server.entity.BookCategory;
-//import mangpo.server.entity.Comment;
+//import mangpo.server.entity.book.Book;
+//import mangpo.server.entity.book.BookCategory;
+//import mangpo.server.entity.post.Comment;
 //import mangpo.server.repository.CommentRepository;
 //import org.assertj.core.api.Assertions;
 //import org.junit.jupiter.api.Test;

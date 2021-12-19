@@ -1,8 +1,8 @@
 package mangpo.server.repository;
 
 import mangpo.server.entity.Club;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.PostClubScope;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -6,10 +6,8 @@ import mangpo.server.dto.*;
 import mangpo.server.dto.todo.ToDoListCreateDto;
 import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.dto.todo.ToDoResponseDto;
-import mangpo.server.entity.ToDo;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.ToDo;
 import mangpo.server.service.user.ToDoService;
-import mangpo.server.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -25,13 +23,10 @@ import java.util.stream.Collectors;
 public class ToDoController {
 
     private final ToDoService toDoService;
-    private final UserService userService;
 
     @GetMapping
     public Result<List<ToDoResponseDto>> getToDos() {
-        User user = userService.findUserFromToken();
-
-        List<ToDo> toDos = toDoService.findToDos(user);
+        List<ToDo> toDos = toDoService.findToDos();
 
         List<ToDoResponseDto> collect = toDos.stream()
                 .map(ToDoResponseDto::new)
@@ -42,8 +37,7 @@ public class ToDoController {
 
     @PostMapping
     public ResponseEntity<?> createToDo(@RequestBody ToDoDto toDoDto, UriComponentsBuilder b){
-        User user = userService.findUserFromToken();
-        Long toDoId = toDoService.createToDo(user, toDoDto);
+        Long toDoId = toDoService.createToDo(toDoDto);
 
         UriComponents uriComponents =
                 b.path("/todos/{toDoId}").buildAndExpand(toDoId);
@@ -62,9 +56,7 @@ public class ToDoController {
     //복수의 리소스 생성
     @PostMapping("/create-todos")
     public ResponseEntity<?> createToDoList(@RequestBody ToDoListCreateDto toDoListCreateDto){
-        User user = userService.findUserFromToken();
-
-        toDoService.createToDoList(user, toDoListCreateDto);
+        toDoService.createToDoList(toDoListCreateDto);
 
         return ResponseEntity.noContent().build();
     }
@@ -72,9 +64,7 @@ public class ToDoController {
     //복수의 리소스 삭제
     @PostMapping("/delete-todos")
     public ResponseEntity<?> deleteToDos(@RequestBody ToDoDeleteDto toDoDeleteDto){
-        User user = userService.findUserFromToken();
-
-        toDoService.deleteToDos(user,toDoDeleteDto);
+        toDoService.deleteToDos(toDoDeleteDto);
 
         return ResponseEntity.noContent().build();
     }

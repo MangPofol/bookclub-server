@@ -2,7 +2,7 @@
 //
 //import com.fasterxml.jackson.annotation.JsonProperty;
 //import lombok.*;
-//import mangpo.server.entity.User;
+//import mangpo.server.entity.user.User;
 //
 //import javax.validation.constraints.NotNull;
 //import javax.validation.constraints.Size;

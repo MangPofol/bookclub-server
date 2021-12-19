@@ -10,6 +10,10 @@ import mangpo.server.dto.club.ClubResponseDto;
 import mangpo.server.dto.club.CreateClubRequestDto;
 import mangpo.server.dto.club.UpdateClubRequestDto;
 import mangpo.server.entity.*;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
+import mangpo.server.entity.user.User;
 import mangpo.server.repository.ClubQueryRepository;
 import mangpo.server.service.*;
 import mangpo.server.service.book.BookService;
@@ -38,7 +42,7 @@ public class ClubController {
     private final UserService userService;
     private final PostClubScopeService pscService;
 
-    @GetMapping("{clubId}")
+    @GetMapping("/{clubId}")
     public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId) {
         Club club = clubService.findClub(clubId);
         List<User> usersInClub = cbuService.findUsersByClub(club);
@@ -67,7 +71,7 @@ public class ClubController {
                 .map(ClubResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new Result(collect);
+        return new Result<List<ClubResponseDto>>(collect);
     }
 
     @PostMapping

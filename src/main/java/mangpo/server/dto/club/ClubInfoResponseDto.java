@@ -4,6 +4,9 @@ import lombok.Data;
 import mangpo.server.dto.book.BookAndUserDto;
 import mangpo.server.dto.user.UsersInClubDto;
 import mangpo.server.entity.*;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.user.ColorSet;
+import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

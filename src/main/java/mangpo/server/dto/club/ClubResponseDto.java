@@ -2,7 +2,7 @@ package mangpo.server.dto.club;
 
 import lombok.Data;
 import mangpo.server.entity.Club;
-import mangpo.server.entity.ColorSet;
+import mangpo.server.entity.user.ColorSet;
 
 import java.time.LocalDateTime;
 

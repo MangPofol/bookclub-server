@@ -18,8 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class CommentController {
 
     private final CommentService commentService;
-    private final PostService postService;
-    private final UserService userService;
+
 
     @PostMapping
     public ResponseEntity<Result<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto, UriComponentsBuilder b){

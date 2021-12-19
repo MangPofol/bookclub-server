@@ -4,6 +4,9 @@ package mangpo.server.service.book;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.*;
 
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.book.BookCategory;
+import mangpo.server.entity.user.User;
 import mangpo.server.repository.BookInfoRepository;
 import mangpo.server.repository.book.BookRepository;
 import mangpo.server.repository.ClubBookUserRepository;
@@ -25,16 +28,13 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final BookInfoRepository bookInfoRepository;
-    private final ClubBookUserRepository cbuRepository;
-    private final UserRepository userRepository;
 
     private final ClubBookUserService cbuService;
     private final UserService userService;
 
     @Transactional
     public Long createBookWithValidation(Book book, String isbn, Long userId) {
-        User loginUser = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("잘못된 유저 정보입니다."));
+        User loginUser = userService.findById(userId);
         validateDuplicateBook(isbn, loginUser);
 
         bookRepository.save(book);
@@ -72,7 +72,8 @@ public class BookService {
 //    }
 
     private void validateDuplicateBook(String isbn, User loginUser) {
-        List<ClubBookUser> listByUser = cbuRepository.findListByUserExceptClub(loginUser);
+        List<ClubBookUser> listByUser = cbuService.findListByUserExceptClub(loginUser);
+//        List<ClubBookUser> listByUser = cbuRepository.findListByUserExceptClub(loginUser);
 
         Optional<ClubBookUser> any = listByUser.stream()
                 .filter(m -> m.getUser().getId().equals(loginUser.getId()))
@@ -85,7 +86,7 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
+        Book book = this.findBookById(id);
         bookRepository.delete(book);
     }
 
@@ -98,7 +99,7 @@ public class BookService {
 
     @Transactional
     public void updateBook(Long id, Book bookRequest) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
+        Book book = this.findBookById(id);
 
         if (bookRequest.getBookCategory() != null)
             book.changeCategory(bookRequest.getBookCategory());
@@ -119,9 +120,7 @@ public class BookService {
 
     public Set<Book> findBooksByCurrentUserAndBookCategory(BookCategory category) {
         User user = userService.findUserFromToken();
-//        Set<Book> books = cbuService.findByUserAndClubIsNull(user).stream()
-//                .map(m -> m.getBook())
-//                .collect(Collectors.toSet());
+
         Set<Book> books = cbuService.findByUserAndClubIsNull(user).stream()
                 .map(m -> m.getBook())
                 .filter(m -> m.getBookCategory() == category)

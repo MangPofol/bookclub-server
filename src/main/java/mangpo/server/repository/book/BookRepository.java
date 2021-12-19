@@ -1,7 +1,7 @@
 package mangpo.server.repository.book;
 
-import mangpo.server.entity.Book;
-import mangpo.server.entity.BookCategory;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.book.BookCategory;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

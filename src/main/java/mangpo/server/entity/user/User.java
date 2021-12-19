@@ -1,4 +1,4 @@
-package mangpo.server.entity;
+package mangpo.server.entity.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,7 @@ import mangpo.server.entity.common.BaseTimeEntity;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter

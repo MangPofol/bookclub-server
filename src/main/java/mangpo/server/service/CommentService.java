@@ -2,9 +2,9 @@ package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.comment.CommentRequestDto;
-import mangpo.server.entity.Comment;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.User;
+import mangpo.server.entity.post.Comment;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.user.User;
 import mangpo.server.repository.CommentRepository;
 import mangpo.server.service.post.PostService;
 import mangpo.server.service.user.UserService;

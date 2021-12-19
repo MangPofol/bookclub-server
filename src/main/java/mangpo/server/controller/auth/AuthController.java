@@ -7,7 +7,7 @@ import mangpo.server.dto.auth.LoginDto;
 import mangpo.server.dto.auth.TokenDto;
 import mangpo.server.dto.user.UserRequestDto;
 import mangpo.server.dto.user.UserResponseDto;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.User;
 import mangpo.server.jwt.JwtFilter;
 import mangpo.server.jwt.TokenProvider;
 import mangpo.server.service.user.UserService;

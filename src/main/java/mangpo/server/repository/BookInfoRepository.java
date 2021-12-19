@@ -1,6 +1,6 @@
 package mangpo.server.repository;
 
-import mangpo.server.entity.BookInfo;
+import mangpo.server.entity.book.BookInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

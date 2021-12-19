@@ -1,6 +1,6 @@
 //package mangpo.server.service;
 //
-//import mangpo.server.entity.User;
+//import mangpo.server.entity.user.User;
 //import mangpo.server.repository.UserRepository;
 //import mangpo.server.service.user.UserService;
 //import org.junit.jupiter.api.Test;

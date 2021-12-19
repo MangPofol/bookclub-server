@@ -4,9 +4,9 @@ package mangpo.server.dto.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mangpo.server.entity.Genre;
-import mangpo.server.entity.Sex;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.Genre;
+import mangpo.server.entity.user.Sex;
+import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

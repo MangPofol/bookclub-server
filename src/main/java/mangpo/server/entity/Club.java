@@ -2,6 +2,7 @@ package mangpo.server.entity;
 
 import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
+import mangpo.server.entity.user.ColorSet;
 
 import javax.persistence.*;
 

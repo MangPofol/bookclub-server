@@ -2,7 +2,7 @@ package mangpo.server.service;
 
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.User;
 import mangpo.server.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,11 +18,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
-   private final UserRepository userRepository;
 
-//   public CustomUserDetailsService(UserRepository userRepository) {
-//      this.userRepository = userRepository;
-//   }
+   private final UserRepository userRepository;
 
    @Override
    @Transactional

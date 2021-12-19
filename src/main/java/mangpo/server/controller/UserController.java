@@ -6,20 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
 import mangpo.server.dto.user.UserRequestDto;
 import mangpo.server.dto.user.UserResponseDto;
-import mangpo.server.entity.Authority;
-import mangpo.server.entity.User;
-import mangpo.server.service.ClubBookUserService;
+import mangpo.server.entity.user.User;
 
 import mangpo.server.service.user.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.Collections;
 
 @RestController
 @Slf4j

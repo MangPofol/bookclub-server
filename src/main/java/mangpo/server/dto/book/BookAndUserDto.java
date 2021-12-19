@@ -1,10 +1,10 @@
 package mangpo.server.dto.book;
 
 import lombok.Data;
-import mangpo.server.entity.Book;
-import mangpo.server.entity.BookCategory;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.book.BookCategory;
 import mangpo.server.entity.ClubBookUser;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;
 

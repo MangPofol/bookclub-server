@@ -1,9 +1,9 @@
 //package mangpo.server.service.book;
 //
 //import lombok.RequiredArgsConstructor;
-//import mangpo.server.entity.Book;
-//import mangpo.server.entity.BookCategory;
-//import mangpo.server.entity.User;
+//import mangpo.server.entity.book.Book;
+//import mangpo.server.entity.book.BookCategory;
+//import mangpo.server.entity.user.User;
 //import mangpo.server.repository.book.BookQueryRepository;
 //import mangpo.server.repository.UserRepository;
 //import org.springframework.stereotype.Service;

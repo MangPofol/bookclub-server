@@ -5,8 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.post.PostRequestDto;
 import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.Result;
-import mangpo.server.entity.*;
-import mangpo.server.service.club.ClubService;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
+import mangpo.server.entity.post.PostScope;
 import mangpo.server.service.post.PostClubScopeService;
 import mangpo.server.service.post.PostService;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j

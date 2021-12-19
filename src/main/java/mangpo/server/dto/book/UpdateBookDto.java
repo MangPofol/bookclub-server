@@ -4,8 +4,8 @@ package mangpo.server.dto.book;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mangpo.server.entity.Book;
-import mangpo.server.entity.BookCategory;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.book.BookCategory;
 
 @Data
 @AllArgsConstructor

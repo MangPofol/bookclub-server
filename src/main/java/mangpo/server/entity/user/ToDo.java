@@ -1,12 +1,11 @@
-package mangpo.server.entity;
+package mangpo.server.entity.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mangpo.server.entity.common.BaseTimeEntity;
-import org.joda.time.base.BaseDateTime;
-import org.springframework.transaction.annotation.Transactional;
+import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 

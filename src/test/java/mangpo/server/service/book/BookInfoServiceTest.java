@@ -1,6 +1,6 @@
-package mangpo.server.service;
+package mangpo.server.service.book;
 
-import mangpo.server.entity.BookInfo;
+import mangpo.server.entity.book.BookInfo;
 import mangpo.server.repository.BookInfoRepository;
 import mangpo.server.service.book.BookInfoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class BookInfoServiceTest{
 
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         Long id = 1L;
         String name = "bookInfo_1";

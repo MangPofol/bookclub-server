@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mangpo.server.dto.LikedResponseDto;
 import mangpo.server.dto.comment.CommentResponseDto;
-import mangpo.server.entity.Post;
-import mangpo.server.entity.PostImageLocation;
-import mangpo.server.entity.PostScope;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostImageLocation;
+import mangpo.server.entity.post.PostScope;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

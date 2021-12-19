@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
-import mangpo.server.entity.User;
+import mangpo.server.entity.user.User;
 import mangpo.server.repository.ClubBookUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
