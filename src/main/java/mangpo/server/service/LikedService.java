@@ -8,6 +8,8 @@ import mangpo.server.repository.LikedRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -30,5 +32,15 @@ public class LikedService {
     public void deleteByPost(Post post){
         likedRepository.deleteByPost(post);
     }
+
+    public List<Liked> findAllByPost(Post post){
+        return likedRepository.findAllByPost(post);
+    }
+
+    @Transactional
+    public void deleteAll(List<Liked> likedList){
+        likedRepository.deleteAll(likedList);
+    }
+
 
 }

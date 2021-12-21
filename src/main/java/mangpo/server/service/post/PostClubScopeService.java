@@ -2,6 +2,7 @@ package mangpo.server.service.post;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.Club;
+import mangpo.server.entity.Liked;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.post.PostClubScope;
 import mangpo.server.repository.PostClubScopeRepository;
@@ -47,4 +48,12 @@ public class PostClubScopeService {
         return pcsRepository.findAllByClub(club);
     }
 
+    public List<PostClubScope> findAllByPost(Post post){
+        return pcsRepository.findAllByPost(post);
+    }
+
+    @Transactional
+    public void deleteAll(List<PostClubScope> pcsList){
+        pcsRepository.deleteAll(pcsList);
+    }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.comment.CommentRequestDto;
 import mangpo.server.entity.post.Comment;
 import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.CommentRepository;
 import mangpo.server.service.post.PostService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -56,4 +58,12 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+    public List<Comment> findAllByPost(Post post){
+        return commentRepository.findAllByPost(post);
+    }
+
+    @Transactional
+    public void deleteAll(List<Comment> comments){
+        commentRepository.deleteAll(comments);
+    }
 }

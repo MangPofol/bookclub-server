@@ -8,6 +8,7 @@ import mangpo.server.entity.post.*;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.*;
 import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.CommentService;
 import mangpo.server.service.LikedService;
 import mangpo.server.service.book.BookService;
 import mangpo.server.service.club.ClubService;
@@ -27,11 +28,8 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-//    private final BookRepository bookRepository;
-    private final LikedRepository likedRepository;
-    private final PostClubScopeRepository pcsRepository;
-    private final CommentRepository commentRepository;
 
+    private final CommentService commentService;
     private final ClubBookUserService cbuService;
     private final ClubService clubService;
     private final PostClubScopeService pcsService;
@@ -39,11 +37,10 @@ public class PostService {
     private final UserService userService;
     private final LikedService likedService;
 
-//    @Transactional
-//    public Long createPost(Post post){
-//        postRepository.save(post);
-//        return post.getId();
-//    }
+    //TODO:
+    // 이렇게 의존성이 많은 서비스는 어떻게 테스트를 작성해야 하지?
+    // 이걸 다 mocking 할 수 있는건가?
+    // 애초에 이렇게 많이 가져다 쓰는게 틀린건가?
 
     @Transactional
     public Long createPost(PostRequestDto postRequestDto){
@@ -114,7 +111,7 @@ public class PostService {
                     .clubName(club.getName())
                     .build();
 
-            Long pcsId = pcsService.createPCS(pcs);
+            pcsService.createPCS(pcs);
         }
     }
 
@@ -125,15 +122,14 @@ public class PostService {
 //        pcsService.deleteAllPcsByPost(post);
 //        likedService.deleteByPost(post);
 
+        List<Liked> likedList = likedService.findAllByPost(post);
+        likedService.deleteAll(likedList);
 
-        List<Liked> likedList = likedRepository.findAllByPost(post);
-        likedRepository.deleteAll(likedList);
+        List<PostClubScope> pcsList = pcsService.findAllByPost(post);
+        pcsService.deleteAll(pcsList);
 
-        List<PostClubScope> pcsList = pcsRepository.findAllByPost(post);
-        pcsRepository.deleteAll(pcsList);
-
-        List<Comment> commentList = commentRepository.findAllByPost(post);
-        commentRepository.deleteAll(commentList);
+        List<Comment> commentList = commentService.findAllByPost(post);
+        commentService.deleteAll(commentList);
 
         postRepository.deleteById(postId);
     }

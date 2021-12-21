@@ -26,6 +26,7 @@ class BookInfoServiceTest{
 
     @Mock
     private BookInfoRepository mockedBookInfoRepository;
+
     private BookInfo bookInfo;
 
     @BeforeEach

@@ -48,4 +48,4 @@ cloud:
 jwt:
   header: Authorization
   secret: ${JWT_KEY}
-  token-validity-in-seconds: 86400
+  token-validity-in-seconds: 864000
