@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-
-    private final CommentService commentService;
+    private final CommentRepository commentRepository;
+//    private final CommentService commentService;
     private final ClubBookUserService cbuService;
     private final ClubService clubService;
     private final PostClubScopeService pcsService;
@@ -128,8 +128,8 @@ public class PostService {
         List<PostClubScope> pcsList = pcsService.findAllByPost(post);
         pcsService.deleteAll(pcsList);
 
-        List<Comment> commentList = commentService.findAllByPost(post);
-        commentService.deleteAll(commentList);
+        List<Comment> commentList = commentRepository.findAllByPost(post);
+        commentRepository.deleteAll(commentList);
 
         postRepository.deleteById(postId);
     }

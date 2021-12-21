@@ -2,6 +2,7 @@ package mangpo.server.controller;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.DeleteFilesDto;
 import mangpo.server.service.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class FileController {
     }
 
 
-    @PutMapping("/upload-multiple-files")
+    @PostMapping("/upload-multiple-files")
     public List<String> uploadMultipleFiles(@RequestParam("data") MultipartFile[] files) throws IOException {
         List<String> result = new ArrayList<>();
 
@@ -56,9 +57,13 @@ public class FileController {
         return ResponseEntity.noContent().build();
 
     }
+//    @RequestParam String[] imageLocations
+//@RequestBody DeleteFilesDto deleteFilesDto
+    @PostMapping("/delete-multiple-files")
+    public ResponseEntity<?> deleteMultipleFiles(@RequestBody String[] imageLocations ){
+//        String[] imageLocations = (String[]) deleteFilesDto.getImgLocations().toArray();
+//        String[] imageLocations = (String[])imgLocations.toArray();
 
-    @DeleteMapping("/delete-multiple-files")
-    public ResponseEntity<?> deleteMultipleFiles(@RequestParam String[] imageLocations){
         String[] fileNames = Arrays.stream(imageLocations)
                 .map(m -> m.split("/"))
                 .map(m -> m[m.length - 1])
