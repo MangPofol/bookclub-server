@@ -14,7 +14,10 @@ public interface PostClubScopeRepository extends JpaRepository<PostClubScope,Lon
     void deleteAllByClub(Club club);
 
     @EntityGraph(attributePaths = "club")
-    List<PostClubScope> findAllByPost(Post post);
+    List<PostClubScope> findListWithClubByPost(Post post);
+
+    @EntityGraph(attributePaths = "post")
+    List<PostClubScope> findListWithPostByPost(Post post);
 
     @EntityGraph(attributePaths = "club")
     List<PostClubScope> findAllByClub(Club club);

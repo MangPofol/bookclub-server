@@ -11,15 +11,15 @@ import mangpo.server.entity.post.PostImageLocation;
 import mangpo.server.entity.post.PostScope;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public  class PostResponseDto {
-    private Long id;
+public class PostResponseDto {
+    private Long postId;
     private PostScope scope;
     private Boolean isIncomplete;
     private String title;
@@ -31,14 +31,16 @@ public  class PostResponseDto {
     private String hyperlinkTitle;
     private String hyperlink;
 
-    private List<String> postImgLocations;
-    private HashMap<Long, String> postScopeClub = new HashMap<>();
-    private List<LikedResponseDto> likedList;
-    private List<CommentResponseDto> commentsDto;
+    private List<String> postImgLocations = new ArrayList<>();
+//    private HashMap<Long, String> postScopeClub = new HashMap<>();
+    private List<Long> clubIdListForScope = new ArrayList<>();
+
+    private List<LikedResponseDto> likedList = new ArrayList<>();
+    private List<CommentResponseDto> commentsDto = new ArrayList<>();
 
     //        @QueryProjection
     public PostResponseDto(Post post) {
-        this.id = post.getId();
+        this.postId = post.getId();
         this.scope = post.getScope();
         this.isIncomplete = post.getIsIncomplete();
         this.title = post.getTitle();
@@ -65,7 +67,7 @@ public  class PostResponseDto {
                 .collect(Collectors.toList());
     }
 
-    public void addPostScopeClub(Long id, String clubName) {
-        this.postScopeClub.put(id,clubName);
+    public void addClubIdListForScope(Long clubId) {
+        this.clubIdListForScope.add(clubId);
     }
 }

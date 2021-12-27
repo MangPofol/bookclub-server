@@ -45,29 +45,29 @@ public class PostController {
     public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(defaultValue = "-1") Long clubId) {
         List<Post> posts = postService.findPostsByBookIdAndClubScope(bookId, clubId);
 
-        List<PostResponseDto> postResponseDtoList = createPostResponseDtoList(posts);
+        List<PostResponseDto> postResponseDtoList = pcsService.createPostResponseDtoList(posts);
 
         return new Result<>(postResponseDtoList);
     }
-
-    private  List<PostResponseDto> createPostResponseDtoList(List<Post> posts ) {
-        List<PostResponseDto> collect = new ArrayList<>();
-
-        for (Post post : posts) {
-            PostResponseDto postResponseDto = new PostResponseDto(post);
-            PostScope scope = post.getScope();
-
-            if (scope.equals(PostScope.CLUB)){
-                List<PostClubScope> listByPost = pcsService.findListByPost(post);
-
-                for (PostClubScope pcs : listByPost) {
-                    postResponseDto.addPostScopeClub(pcs.getId(), pcs.getClubName());
-                }
-            }
-            collect.add(postResponseDto);
-        }
-        return collect;
-    }
+//
+//    private  List<PostResponseDto> createPostResponseDtoList(List<Post> posts ) {
+//        List<PostResponseDto> collect = new ArrayList<>();
+//
+//        for (Post post : posts) {
+//            PostResponseDto postResponseDto = new PostResponseDto(post);
+//            PostScope scope = post.getScope();
+//
+//            if (scope.equals(PostScope.CLUB)){
+//                List<PostClubScope> listByPost = pcsService.findListWithClubByPost(post);
+//
+//                for (PostClubScope pcs : listByPost) {
+//                    postResponseDto.addClubIdListForScope(pcs.getClub().getId());
+//                }
+//            }
+//            collect.add(postResponseDto);
+//        }
+//        return collect;
+//    }
 
 
     @PostMapping
@@ -77,7 +77,9 @@ public class PostController {
         UriComponents uriComponents =
                 b.path("/posts/{postId}").buildAndExpand(postId);
 
-        PostResponseDto postResponseDto = new PostResponseDto(postService.findPostById(postId));
+        PostResponseDto postResponseDto = pcsService.createPostResponseDto(postService.findPostById(postId));
+
+//        PostResponseDto postResponseDto = new PostResponseDto(postService.findPostById(postId));
 
         return ResponseEntity.created(uriComponents.toUri()).body(postResponseDto);
     }

@@ -8,7 +8,6 @@ import mangpo.server.entity.post.*;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.*;
 import mangpo.server.service.ClubBookUserService;
-import mangpo.server.service.CommentService;
 import mangpo.server.service.LikedService;
 import mangpo.server.service.book.BookService;
 import mangpo.server.service.club.ClubService;
@@ -226,7 +225,7 @@ public class PostService {
         while(iter.hasNext()){
             Post p = iter.next();
             if (p.getScope() == PostScope.CLUB) {
-                List<PostClubScope> listByPost = pcsService.findListByPost(p);
+                List<PostClubScope> listByPost = pcsService.findListWithClubByPost(p);
 
                 boolean present = listByPost.stream()
                         .anyMatch(m -> m.getClub() == clubRequest);
