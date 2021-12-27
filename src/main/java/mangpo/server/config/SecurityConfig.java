@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/users/validate-duplicate").permitAll()
+                .antMatchers("/files/upload").permitAll()
 
                 .antMatchers("/health/**").permitAll()
 

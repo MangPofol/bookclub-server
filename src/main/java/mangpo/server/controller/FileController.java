@@ -57,13 +57,9 @@ public class FileController {
         return ResponseEntity.noContent().build();
 
     }
-//    @RequestParam String[] imageLocations
-//@RequestBody DeleteFilesDto deleteFilesDto
+
     @PostMapping("/delete-multiple-files")
     public ResponseEntity<?> deleteMultipleFiles(@RequestBody String[] imageLocations ){
-//        String[] imageLocations = (String[]) deleteFilesDto.getImgLocations().toArray();
-//        String[] imageLocations = (String[])imgLocations.toArray();
-
         String[] fileNames = Arrays.stream(imageLocations)
                 .map(m -> m.split("/"))
                 .map(m -> m[m.length - 1])

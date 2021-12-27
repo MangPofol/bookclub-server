@@ -127,7 +127,7 @@ public class PostService {
 
         List<PostClubScope> pcsList = pcsService.findAllByPost(post);
         pcsService.deleteAll(pcsList);
-
+        //순환참조
         List<Comment> commentList = commentRepository.findAllByPost(post);
         commentRepository.deleteAll(commentList);
 

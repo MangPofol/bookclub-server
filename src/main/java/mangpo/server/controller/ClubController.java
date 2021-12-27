@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/clubs")
 public class ClubController {
 
+    //리팩토링 하기
+
     private final ClubService clubService;
     private final ClubBookUserService cbuService;
     private final BookService bookService;
