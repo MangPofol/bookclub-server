@@ -78,9 +78,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/users/validate-duplicate").permitAll()
+                .antMatchers("/users/lost-pw").permitAll()
+
                 .antMatchers("/files/upload").permitAll()
 
                 .antMatchers("/health/**").permitAll()

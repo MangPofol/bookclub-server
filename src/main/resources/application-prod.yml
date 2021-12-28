@@ -25,6 +25,20 @@ spring:
       maxFileSize: 30MB
       maxRequestSize: 30MB
 
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_ADDRESS}
+    password: ${MAIL_PW}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 logging.level:
   org.hibernate.SQL: debug
 # org.hibernate.type: trace

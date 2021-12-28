@@ -88,6 +88,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/lost-pw")
+    public ResponseEntity<?> lostPassword(@RequestParam String userEmail) {
+        userService.lostPassword(userEmail);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/change-pw")
     public ResponseEntity<?> changePassword(@RequestBody ChangePwDto changePwDto) {
         userService.changePassword(changePwDto);
