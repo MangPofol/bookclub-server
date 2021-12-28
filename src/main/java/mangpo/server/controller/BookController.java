@@ -52,12 +52,14 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateBookDto> createBook(@RequestBody CreateBookDto createBookDto, UriComponentsBuilder b) {
+    public ResponseEntity<BookResponseDto> createBook(@RequestBody CreateBookDto createBookDto, UriComponentsBuilder b) {
 
         Long bookId = bookComplexService.createBookAndRelated(createBookDto);
 
         UriComponents uriComponents = b.path("/books/{bookId}").buildAndExpand(bookId);
-        return ResponseEntity.created(uriComponents.toUri()).body(createBookDto);
+
+        BookResponseDto bookResponseDto = new BookResponseDto(bookService.findBookById(bookId));
+        return ResponseEntity.created(uriComponents.toUri()).body(bookResponseDto);
     }
 
     @PatchMapping("/{id}")
