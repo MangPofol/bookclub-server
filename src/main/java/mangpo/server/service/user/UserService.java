@@ -2,12 +2,10 @@ package mangpo.server.service.user;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.ChangePwDto;
 import mangpo.server.dto.UpdateUserDto;
-import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.entity.user.Authority;
 import mangpo.server.entity.user.User;
 import mangpo.server.entity.user.UserAuthority;
@@ -65,7 +63,8 @@ public class UserService {
         userRepository.save(user);
 
 
-        Authority role = authorityRepository.findById("ROLE_USER").get();
+//        Authority role = authorityRepository.findById("ROLE_USER").get();
+        Authority role = authorityRepository.findById("ROLE_NEED_EMAIL").get();
 
         UserAuthority userAuthority = UserAuthority.builder()
                 .authority(role)
@@ -127,19 +126,52 @@ public class UserService {
     @Transactional
     public void lostPassword(String userEmail){
         //generate random password
-        String randomNum = generateRandomNum();
+        String randomPw = generateRandomPw();
 
         //send mail
-        mailService.sendMail(userEmail, randomNum);
+        mailService.lostPw(userEmail, randomPw);
 
         //change user's pw to new random password
         User user = findUserByEmail(userEmail);
-        user.changePw(passwordEncoder.encode(randomNum));
+        user.changePw(passwordEncoder.encode(randomPw));
     }
 
-    private String generateRandomNum() {
+    @Transactional
+    public void validateEmail(){
+        String randomValidCode = generateRandomValidCode();
+
+        User user = findUserFromToken();
+        user.changeEmailValidCode(randomValidCode);
+
+        //send mail
+        String userEmail = user.getEmail();
+        mailService.validateEmail(userEmail,randomValidCode);
+    }
+
+    @Transactional
+    public void validateEmailSendCode(String emailValidCode){
+        User user = findUserFromToken();
+
+        if (!user.getEmailValidCode().equals(emailValidCode))
+            throw new IllegalStateException("잘못된 인증 코드를 입력했습니다.");
+
+        user.changeEmailValidCode(null);
+
+        Authority role = authorityRepository.findById("ROLE_USER").get();
+        UserAuthority userAuthority = userAuthorityRepository.findByUser(user);
+        userAuthority.changeAuthority(role);
+    }
+
+    private String generateRandomPw() {
         int max = 9999999;
         int min = 1000000;
+        int randomNum = (int) ((Math.random() * (max - min)) + min);
+        return String.valueOf(randomNum);
+    }
+
+    private String generateRandomValidCode() {
+        int max = 99;
+        int min = 10;
         int randomNum = (int) ((Math.random() * (max - min)) + min);
         return String.valueOf(randomNum);
     }

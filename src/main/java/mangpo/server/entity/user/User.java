@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mangpo.server.dto.UpdateUserDto;
-import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
@@ -52,6 +51,9 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Boolean isDormant = Boolean.FALSE;//휴면회원
 
+    private String emailValidCode;
+
+
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserAuthority> userAuthorityList = new ArrayList<>();
@@ -93,6 +95,9 @@ public class User extends BaseTimeEntity {
 //    }
     public void changePw(String password) {
         this.password = password;
+    }
+    public void changeEmailValidCode(String emailValidCode) {
+        this.emailValidCode = emailValidCode;
     }
 
 }
