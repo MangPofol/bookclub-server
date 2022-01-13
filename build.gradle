@@ -9,6 +9,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.7'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'jacoco'
 }
 
 jar {
@@ -78,4 +79,105 @@ sourceSets {
 
 test {
     useJUnitPlatform()
+}
+
+//jacocoTestReport {
+//    dependsOn test // tests are required to run before generating the report
+//
+//    afterEvaluate {
+//        classDirectories.setFrom(files(classDirectories.files.collect {
+//            fileTree(dir: it, exclude: [
+//                    "mangpo/server/dto/*",
+//                    "**/Q*.class"
+//            ])
+//        }))
+//    }
+//}
+
+jacocoTestReport {
+    dependsOn test
+//    reports {
+//        html.enabled true
+//        xml.enabled true
+//        csv.enabled true
+//
+//        html.destination file("src/jacoco/jacoco.html")
+//        xml.destination file("src/jacoco/jacoco.xml")
+//    }
+
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            "mangpo/server/config/*",
+                            "mangpo/server/dto/*",
+                            "mangpo/server/exeption/*",
+                            "mangpo/server/exhandler/*",
+                            "mangpo/server/interceptor/*",
+                            "mangpo/server/jwt/*",
+                            "mangpo/server/session/*",
+                            "mangpo/server/util/*",
+
+                            "**/*Application*",
+                            "**/*Config*",
+                            "**/*Dto*",
+                            "**/*Request*",
+                            "**/*Response*",
+                            "**/*Interceptor*",
+                            "**/*Exception*"
+                    ] + Qdomains)
+                })
+        )
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    def Qdomains = []
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+    violationRules {
+        rule {
+            element = 'CLASS'
+            enabled = true
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+//                minimum = 0.60
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+//                minimum = 0.60
+            }
+
+            excludes = [
+                    "mangpo/server/config/*",
+                    "mangpo/server/dto/*",
+                    "mangpo/server/exeption/*",
+                    "mangpo/server/exhandler/*",
+                    "mangpo/server/interceptor/*",
+                    "mangpo/server/jwt/*",
+                    "mangpo/server/session/*",
+                    "mangpo/server/util/*",
+
+                    "**/*Application*",
+                    "**/*Config*",
+                    "**/*Dto*",
+                    "**/*Request*",
+                    "**/*Response*",
+                    "**/*Interceptor*",
+                    "**/*Exception*"
+            ] + Qdomains
+        }
+    }
 }

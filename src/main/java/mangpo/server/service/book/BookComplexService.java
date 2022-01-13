@@ -27,7 +27,7 @@ public class BookComplexService {
     private final ClubBookUserService cbuService;
     private final UserService userService;
     private final PostService postService;
-
+//Todo: 테스트 작성시 mcok 해서 하는게 의미 있나? 그냥 통합 테스트 하는게 맞는거 아닌가?
     @Transactional
     public Long createBookAndRelated(CreateBookDto createBookDto) {
         User user = userService.findUserFromToken();

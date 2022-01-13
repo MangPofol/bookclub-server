@@ -43,7 +43,6 @@ class BookServiceTest {
     @Mock
     private UserService mockUserService;
 
-
     private User user1;
     private User user2;
 

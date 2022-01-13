@@ -84,7 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/files/upload").permitAll()
 
-                .antMatchers("/health/**").permitAll()
+                .antMatchers("/health").permitAll()
 
 
 //                .antMatchers("/auth").permitAll()

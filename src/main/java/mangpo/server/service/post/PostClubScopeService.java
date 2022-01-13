@@ -90,7 +90,6 @@ public class PostClubScopeService {
 
             if (scope.equals(PostScope.CLUB)){
                 List<PostClubScope> listByPost = findListWithClubByPost(post);
-                log.info("listByPost={}", listByPost.get(0).getClub());
                 for (PostClubScope pcs : listByPost) {
                     postResponseDto.addClubIdListForScope(pcs.getClub().getId());
                 }

@@ -36,14 +36,14 @@ public class BookInfoService {
 
     @Transactional
     public void deleteBookInfo(Long id){
-        BookInfo bookInfo = bookInfoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책 정보입니다."));
+        BookInfo bookInfo = this.findBookInfoById(id);
         bookInfoRepository.delete(bookInfo);
     }
 
-    public BookInfo findById(Long id){
+    public BookInfo findBookInfoById(Long id){
         return bookInfoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책 정보입니다."));
     }
-    public BookInfo findByIsbn(String isbn){
+    public BookInfo findBookInfoByIsbn(String isbn){
         return bookInfoRepository.findByIsbn(isbn).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책 정보입니다."));
     }
 
@@ -51,7 +51,7 @@ public class BookInfoService {
         try {
             createBookInfo(bookInfo);
         }catch (IllegalStateException e){
-            bookInfo = findByIsbn(bookInfo.getIsbn());
+            bookInfo = this.findBookInfoByIsbn(bookInfo.getIsbn());
         }
         return bookInfo;
     }

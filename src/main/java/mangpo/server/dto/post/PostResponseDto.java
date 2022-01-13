@@ -67,6 +67,7 @@ public class PostResponseDto {
                 .collect(Collectors.toList());
     }
 
+
     public void addClubIdListForScope(Long clubId) {
         this.clubIdListForScope.add(clubId);
     }
