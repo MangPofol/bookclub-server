@@ -2,8 +2,6 @@ package mangpo.server.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
-import com.amazonaws.util.IOUtils;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,11 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -98,5 +95,13 @@ public class S3Service {
         }
 
         return Optional.empty();
+    }
+
+
+
+    public InputStream getObjectInputStream(String fileName) {
+        S3Object object = amazonS3Client.getObject(new GetObjectRequest(bucket, fileName));
+
+        return object.getObjectContent();
     }
 }
