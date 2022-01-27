@@ -50,6 +50,9 @@ public class PostService {
         addPostImageLocations(postRequestDto, post);
 
 //        Long postId = postService.createPost(post);
+        User user = userService.findUserFromToken();
+        post.addUser(user);
+
         postRepository.save(post);
 
         if (postRequestDto.getScope() == PostScope.CLUB)

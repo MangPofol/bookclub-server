@@ -84,7 +84,6 @@ public class PostController {
         return ResponseEntity.created(uriComponents.toUri()).body(postResponseDto);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePostById(id);

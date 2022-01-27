@@ -5,6 +5,7 @@ import mangpo.server.dto.post.PostRequestDto;
 import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.common.BaseTimeEntity;
+import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,6 +26,10 @@ public class Post extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "post_scope")
@@ -68,6 +73,11 @@ public class Post extends BaseTimeEntity {
         this.book = book;
         book.getPosts().add(this);
     }
+
+    public void addUser(User user){
+        this.user = user;
+    }
+
 
     //book은 업데이트 하지 않음.
     public void update(PostRequestDto p){
