@@ -34,22 +34,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-
-//    private final PasswordEncoder passwordEncoder;
-
-//    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
-//    public UserDto getUserWithAuthorities(String email) {
-//        return UserDto.from(userRepository.findWithAuthByEmail(email).orElse(null));
-//    }
-//
-//    public UserDto getMyUserWithAuthorities() {
-//        return UserDto.from(SecurityUtil.getCurrentUserId().flatMap(userRepository::findWithAuthByEmail).orElse(null));
-//    }
-
     public User findUserFromToken(){
         Long currentUserId = SecurityUtil.getCurrentUserId();
         return findById(currentUserId);
@@ -103,12 +87,12 @@ public class UserService {
         user.update(updateUserDto);
     }
 
-    @Transactional
-    public void deleteUser(Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
-
-        userRepository.delete(user);
-    }
+//    @Transactional
+//    public void deleteUser(Long id){
+//        User user = findById(id);
+//
+//        userRepository.delete(user);
+//    }
 
     @Transactional
     public void changeDormant(User user){

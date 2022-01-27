@@ -1,19 +1,25 @@
-//package mangpo.server.controller;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RequiredArgsConstructor
-//@Controller
-//@RequestMapping(path = "/admin")
-//public class AdminController {
-//
-//    @GetMapping
-//    public String adminHome(Model model){
-//
-//        return "form/admin";
-//    }
-//}
+package mangpo.server.controller;
+
+import lombok.RequiredArgsConstructor;
+import mangpo.server.service.AdminService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(path = "/admin")
+public class AdminController {
+
+    private final AdminService adminService;
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @DeleteMapping("/users")
+    public ResponseEntity<?> deleteUserByEmail(@RequestParam String email){
+        adminService.deleteUserByEmail(email);
+        return ResponseEntity.noContent().build();
+    }
+}

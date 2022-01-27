@@ -2,6 +2,7 @@ package mangpo.server.repository;
 
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.post.Post;
+import mangpo.server.entity.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,4 +18,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     Optional<Post> findFetchById(Long id);
 
     long countByBook(Book book);
+    Post findByUser(User user);
+    void deleteAllByUser(User user);
+
 }
