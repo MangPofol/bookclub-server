@@ -50,6 +50,11 @@ public class ToDoService {
     }
 
     @Transactional
+    public void deleteById(Long toDoId){
+        toDoRepository.deleteById(toDoId);
+    }
+
+    @Transactional
     public void createToDoList(ToDoListCreateDto toDoListCreateDto){
         User user = userService.findUserFromToken();
         List<String> contents = toDoListCreateDto.getContents();

@@ -53,6 +53,13 @@ public class ToDoController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteToDo(@PathVariable Long id){
+        toDoService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     //복수의 리소스 생성
     @PostMapping("/create-todos")
     public ResponseEntity<?> createToDoList(@RequestBody ToDoListCreateDto toDoListCreateDto){
@@ -68,4 +75,6 @@ public class ToDoController {
 
         return ResponseEntity.noContent().build();
     }
+
+
 }
