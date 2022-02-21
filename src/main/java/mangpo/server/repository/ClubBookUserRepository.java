@@ -19,4 +19,7 @@ public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>
     List<ClubBookUser> findListByUserAndClubIsNull(User user);
 
     void deleteAllByUser(User user);
+
+    Long countByUserAndClubIsNull(User user);
+
 }

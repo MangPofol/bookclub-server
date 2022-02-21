@@ -77,6 +77,12 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/total-book")
+    public Result<?> getTotalBook() {
+        Long totalBook = bookService.findTotalBook();
+        return new Result<>(totalBook);
+    }
+
 //    @PostMapping("/{bookId}/do-like")
 //    public ResponseEntity<?> doLikeBook(@PathVariable Long bookId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser){
 //        Book book = bookService.findBook(bookId);

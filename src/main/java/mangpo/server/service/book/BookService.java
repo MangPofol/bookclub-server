@@ -128,4 +128,8 @@ public class BookService {
 
        return books;
     }
+
+    public Long findTotalBook() {
+        return cbuService.countByUserAndClubIsNull(userService.findUserFromToken());
+    }
 }

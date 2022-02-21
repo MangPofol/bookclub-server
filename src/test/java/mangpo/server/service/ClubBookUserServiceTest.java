@@ -1,7 +1,9 @@
 package mangpo.server.service;
 
 import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.user.User;
 import mangpo.server.repository.ClubBookUserRepository;
+import mangpo.server.service.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,14 +26,20 @@ class ClubBookUserServiceTest {
 
     @Mock
     private ClubBookUserRepository mockCbuRepository;
+    @Mock
+    private UserService mockUserService;
 
     private ClubBookUser cbu;
-
+    private User user;
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
 
         cbu = ClubBookUser.builder()
+                .id(1L)
+                .build();
+
+        user = User.builder()
                 .id(1L)
                 .build();
     }
@@ -61,5 +69,11 @@ class ClubBookUserServiceTest {
                 .hasMessageContaining("이미 존재하는 정보입니다");
     }
 
+//    @Test
+//    void countByUserAndClubIsNull() {
+//        //given
+//        given(mockUserService.findUserFromToken()).willReturn(user);
+//
+//    }
 
 }
