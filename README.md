@@ -3,8 +3,15 @@
   <br>  
 </p>
 
-<p align="center">"생각을 이어나가는 독서"<br> 독서/북클럽 어플 OurPage의 서버입니다</p>
+
+<p align="center">책 읽는 순간을 담아내는,<br> 독서 기록 어플리케이션 Ourpage📚의 서버입니다</p>
 <p align="center">배타 서비스 중입니다!</p>
+<br>
+
+### 홈페이지: https://litt.ly/ourpage
+### 인스타그램: https://www.instagram.com/ourpage_app/
+### 다운로드 AOS: https://play.google.com/store/apps/details?id=com.mangpo.bookclub
+### 다운로드 IOS: 예정 
 <br>
 
 ### 서버 구조도
@@ -32,13 +39,7 @@
 
 ### UI
 
-* UI 2/3 가량 Figma에서 발췌
-
-<p align="center">
-  <div align="center"><img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/example.png" width="100%"/></div>
-  <br>  
-</p>
-
+* 인스타그램을 참조해 주세요
 
 ### 기타 자료 & TMI 모음
 
