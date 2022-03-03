@@ -75,7 +75,9 @@ public class PostController {
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
         postService.updatePost(id, requestDto);
 
-        return ResponseEntity.noContent().build();
+        PostResponseDto postResponseDto = pcsService.createPostResponseDto(postService.findPostById(id));
+
+        return ResponseEntity.ok().body(postResponseDto);
     }
 
     @PostMapping("/{postId}/do-like")

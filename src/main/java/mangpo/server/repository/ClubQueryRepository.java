@@ -44,6 +44,9 @@ public class ClubQueryRepository {
 
     }
 
+
+    //갈아엎기
+    //기준:좋아요 과반 + 댓글 클럽원수*2, 만족하는거 없으면 비워두기
     public List<Post> findTrendingPostByClub(Club clubRequest, int memberSize) {
 
 //        List<Book> books = queryFactory
