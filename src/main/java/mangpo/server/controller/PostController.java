@@ -49,26 +49,6 @@ public class PostController {
 
         return new Result<>(postResponseDtoList);
     }
-//
-//    private  List<PostResponseDto> createPostResponseDtoList(List<Post> posts ) {
-//        List<PostResponseDto> collect = new ArrayList<>();
-//
-//        for (Post post : posts) {
-//            PostResponseDto postResponseDto = new PostResponseDto(post);
-//            PostScope scope = post.getScope();
-//
-//            if (scope.equals(PostScope.CLUB)){
-//                List<PostClubScope> listByPost = pcsService.findListWithClubByPost(post);
-//
-//                for (PostClubScope pcs : listByPost) {
-//                    postResponseDto.addClubIdListForScope(pcs.getClub().getId());
-//                }
-//            }
-//            collect.add(postResponseDto);
-//        }
-//        return collect;
-//    }
-
 
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, UriComponentsBuilder b) {

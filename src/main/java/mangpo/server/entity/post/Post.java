@@ -45,9 +45,6 @@ public class Post extends BaseTimeEntity {
 
     private String location;
     private String readTime;
-    @Column(name = "hyperlink_title")
-    private String hyperlinkTitle;
-    private String hyperlink;
 
     @Builder.Default
     @OneToMany(mappedBy = "post")
@@ -60,6 +57,10 @@ public class Post extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImageLocation> postImageLocations = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Link> links = new ArrayList<>();
 
     public void changeBook(Book book){
         this.book = book;
@@ -87,7 +88,10 @@ public class Post extends BaseTimeEntity {
         this.content = p.getContent();
         this.location = p.getLocation();
         this.readTime = p.getReadTime();
-        this.hyperlinkTitle = p.getHyperlinkTitle();
-        this.hyperlink = p.getHyperlink();
+    }
+
+    public void addLink(Link link){
+        this.links.add(link);
+        link.addPost(this);
     }
 }

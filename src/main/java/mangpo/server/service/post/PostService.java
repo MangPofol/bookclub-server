@@ -1,6 +1,7 @@
 package mangpo.server.service.post;
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.post.LinkRequestDto;
 import mangpo.server.dto.post.PostRequestDto;
 import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
@@ -44,9 +45,12 @@ public class PostService {
     @Transactional
     public Long createPost(PostRequestDto postRequestDto){
         Book requestBook = bookService.findBookById(postRequestDto.getBookId());
-        Post post = postRequestDto.toEntityExceptBook();
+        Post post = postRequestDto.toEntityExceptBookAndUser();
         post.changeBook(requestBook);
 
+
+        addLinks(postRequestDto, post);
+//        post.addLink(postRequestDto.get)
         addPostImageLocations(postRequestDto, post);
 
 //        Long postId = postService.createPost(post);
@@ -60,6 +64,18 @@ public class PostService {
 
 //        postRepository.save(post);
         return post.getId();
+    }
+
+    private void addLinks(PostRequestDto postRequestDto, Post post) {
+        for(LinkRequestDto l : postRequestDto.getLinkRequestDtos()){
+            Link link = Link.builder()
+                    .post(post)
+                    .hyperlinkTitle(l.getHyperlinkTitle())
+                    .hyperlink(l.getHyperlink())
+                    .build();
+
+            post.addLink(link);
+        }
     }
 
     private void addPostImageLocations(PostRequestDto postRequestDto, Post post) {
@@ -77,16 +93,10 @@ public class PostService {
     public void updatePost(Long postId, PostRequestDto postRequestDto){
         Post post = findPostFetchJoinImgLoc(postId);
         PostScope ogScope = post.getScope();
+
+        //remove all postImageLoc, then add all
         post.getPostImageLocations().clear();
-
-        for (String s:  postRequestDto.getPostImgLocations()) {
-            PostImageLocation p = PostImageLocation.builder()
-                    .post(post)
-                    .imgLocation(s)
-                    .build();
-
-            post.getPostImageLocations().add(p);
-        }
+        addPostImageLocations(postRequestDto, post);
 
         if (ogScope == PostScope.CLUB) {
             pcsService.deleteAllPcsByPost(post);
@@ -94,10 +104,11 @@ public class PostService {
         if (postRequestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(postRequestDto, post);
 
-        post.update(postRequestDto);
+        //remove all links, then add all
+        post.getLinks().clear();
+        addLinks(postRequestDto, post);
 
-//        Post post = findById(postId);
-//        post.update(postRequestDto);
+        post.update(postRequestDto);
     }
 
     private void createAndPersistPostClubScope(PostRequestDto requestDto, Post post) {
@@ -129,7 +140,7 @@ public class PostService {
 
         List<PostClubScope> pcsList = pcsService.findAllByPost(post);
         pcsService.deleteAll(pcsList);
-        //순환참조
+        //순환참조 방지용  repository 호출
         List<Comment> commentList = commentRepository.findAllByPost(post);
         commentRepository.deleteAll(commentList);
 

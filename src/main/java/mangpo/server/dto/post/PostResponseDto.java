@@ -28,8 +28,8 @@ public class PostResponseDto {
     private LocalDateTime modifiedDate;
     private String location;
     private String readTime;
-    private String hyperlinkTitle;
-    private String hyperlink;
+
+    private List<LinkResponseDto> linkResponseDtos = new ArrayList<>();
 
     private List<String> postImgLocations = new ArrayList<>();
 //    private HashMap<Long, String> postScopeClub = new HashMap<>();
@@ -47,8 +47,6 @@ public class PostResponseDto {
         this.content = post.getContent();
         this.location = post.getLocation();
         this.readTime = post.getReadTime();
-        this.hyperlinkTitle = post.getHyperlinkTitle();
-        this.hyperlink = post.getHyperlink();
         this.createdDate = post.getCreatedDate();
         this.modifiedDate = post.getModifiedDate();
 
@@ -65,6 +63,12 @@ public class PostResponseDto {
                 .stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
+
+        this.linkResponseDtos = post.getLinks()
+                .stream()
+                .map(LinkResponseDto::new)
+                .collect(Collectors.toList());
+
     }
 
 
