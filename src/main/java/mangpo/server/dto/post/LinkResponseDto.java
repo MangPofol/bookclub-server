@@ -7,12 +7,12 @@ import mangpo.server.entity.post.Link;
 public class LinkResponseDto {
 
     private Long linkId;
-    private String hyperLink;
+    private String hyperlink;
     private String hyperlinkTitle;
 
     public LinkResponseDto(Link link){
         this.linkId = link.getId();
-        this.hyperLink = link.getHyperlink();
+        this.hyperlink = link.getHyperlink();
         this.hyperlinkTitle = link.getHyperlinkTitle();
     }
 }
