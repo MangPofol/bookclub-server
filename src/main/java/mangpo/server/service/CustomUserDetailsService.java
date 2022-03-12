@@ -2,6 +2,8 @@ package mangpo.server.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
@@ -30,9 +33,10 @@ public class CustomUserDetailsService implements UserDetailsService {
    }
 
    private org.springframework.security.core.userdetails.User createUser(String username, User user) {
-      if (user.getIsDormant()) {
-         throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
-      }
+//      if (user.getIsDormant()) {
+//         log.info("비활성 상태 유저 : {}", username);
+//         throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
+//      }
       List<GrantedAuthority> grantedAuthorities = user.getUserAuthorityList().stream()
               .map(authority -> new SimpleGrantedAuthority(authority.getAuthority().getAuthorityName()))
               .collect(Collectors.toList());
