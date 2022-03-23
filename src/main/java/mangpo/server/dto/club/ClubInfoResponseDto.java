@@ -5,7 +5,6 @@ import mangpo.server.dto.book.BookAndUserDto;
 import mangpo.server.dto.user.UsersInClubDto;
 import mangpo.server.entity.*;
 import mangpo.server.entity.post.Post;
-import mangpo.server.entity.user.ColorSet;
 import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,6 @@ public class ClubInfoResponseDto {
 
     private Long id;
     private String name;
-    private ColorSet colorSet;
     private Integer level;
     private Long presidentId;
     private String description;
@@ -34,7 +32,6 @@ public class ClubInfoResponseDto {
     public void setClubInfo(Club club) {
         this.id = club.getId();
         this.name = club.getName();
-        this.colorSet = club.getColorSet();
         this.level = club.getLevel();
         this.presidentId = club.getPresidentId();
         this.description = club.getDescription();
