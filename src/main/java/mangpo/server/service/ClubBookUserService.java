@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.book.Book;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.ClubBookUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -69,5 +71,13 @@ public class ClubBookUserService {
 
     public Long countByUserAndClubIsNull(User user){
         return cbuRepository.countByUserAndClubIsNull(user);
+    }
+
+    public ClubBookUser findByUserAndBookAndClubIsNull(User user, Book book){
+        return cbuRepository.findByUserAndBookAndClubIsNull(user,book);
+    }
+
+    public List<ClubBookUser> findDistinctByUserAndBookIsNull(User user){
+        return cbuRepository.findDistinctByUserAndBookIsNull(user);
     }
 }

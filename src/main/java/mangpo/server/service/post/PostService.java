@@ -116,7 +116,7 @@ public class PostService {
         List<Long> clubIdListForScope = requestDto.getClubIdListForScope();
 
         for (Long clubId : clubIdListForScope) {
-            Club club = clubService.findClub(clubId);
+            Club club = clubService.findById(clubId);
 
             PostClubScope pcs = PostClubScope.builder()
                     .post(post)
@@ -232,7 +232,7 @@ public class PostService {
     }
 
     private void excludePostByClubScope(Long clubId, List<Post> posts) {
-        Club clubRequest = clubService.findClub(clubId);
+        Club clubRequest = clubService.findById(clubId);
 
         Iterator<Post> iter = posts.iterator();
 

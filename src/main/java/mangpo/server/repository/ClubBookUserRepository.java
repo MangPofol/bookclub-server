@@ -2,11 +2,13 @@ package mangpo.server.repository;
 
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.book.Book;
 import mangpo.server.entity.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>, ClubBookUserRepositoryCustom {
 
@@ -21,5 +23,9 @@ public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>
     void deleteAllByUser(User user);
 
     Long countByUserAndClubIsNull(User user);
+
+    ClubBookUser findByUserAndBookAndClubIsNull(User user, Book book);
+
+    List<ClubBookUser> findDistinctByUserAndBookIsNull(User user);
 
 }

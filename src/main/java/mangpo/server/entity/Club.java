@@ -27,11 +27,14 @@ public class Club extends BaseTimeEntity {
     @Column(name = "club_description")
     private String description;
 
-    //todo: 이거 메소드 하나로 묶고 거기서 널체크
-    public void changeName(String name){ this.name = name; }
-    public void changeLevel(int level){ this.level = level;}
-    public void changePresident(Long presidentId){ this.presidentId = presidentId;}
-    public void changeDescription(String description){this.description = description;}
-
-
+    public void update(Club request) {
+        if(request.getName() != null)
+            this.name = request.name;
+        if(request.getLevel() != null)
+            this.level = request.level;
+        if(request.getPresidentId() != null)
+            this.presidentId = request.presidentId;
+        if(request.getDescription() != null)
+            this.description = request.description;
+    }
 }

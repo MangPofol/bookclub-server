@@ -3,7 +3,7 @@ import lombok.Data;
 import mangpo.server.entity.Club;
 
 @Data
-public class UpdateClubRequestDto {
+public class UpdateClubDto {
     private String name;
     private Integer level;
     private Long presidentId;
