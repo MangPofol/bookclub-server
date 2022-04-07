@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -79,5 +78,13 @@ public class ClubBookUserService {
 
     public List<ClubBookUser> findDistinctByUserAndBookIsNull(User user){
         return cbuRepository.findDistinctByUserAndBookIsNull(user);
+    }
+
+    public List<ClubBookUser> findByUserAndClubAndBookIsNotNull(User user, Club club){
+        return cbuRepository.findByUserAndClubAndBookIsNotNull(user,club);
+    }
+
+    public List<ClubBookUser> findListByClubAndUserIsNotNullAndBookIsNotNull(Club club) {
+        return cbuRepository.findListByClubAndUserIsNotNullAndBookIsNotNull(club);
     }
 }

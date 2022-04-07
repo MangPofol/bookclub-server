@@ -1,6 +1,5 @@
 package mangpo.server.controller;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,14 +9,8 @@ import mangpo.server.dto.club.ClubResponseDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;
 import mangpo.server.entity.*;
-import mangpo.server.entity.book.Book;
-import mangpo.server.entity.post.Post;
-import mangpo.server.entity.user.User;
 import mangpo.server.service.*;
-import mangpo.server.service.book.BookService;
 import mangpo.server.service.club.ClubService;
-import mangpo.server.service.post.PostClubScopeService;
-import mangpo.server.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -34,11 +27,11 @@ public class ClubController {
 
 
     private final ClubService clubService;
-    private final ClubComplexService clubComplexService;
+    private final ClubComplexViewService clubComplexViewService;
 
     @GetMapping("/{clubId}")
     public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId) {
-        ClubInfoResponseDto clubInfoResponseDto = clubComplexService.getClubInfoByClubId(clubId);
+        ClubInfoResponseDto clubInfoResponseDto = clubComplexViewService.getClubInfoByClubId(clubId);
         return new Result<>(clubInfoResponseDto);
     }
 
@@ -76,14 +69,12 @@ public class ClubController {
     @PostMapping("/{clubId}/add-user")
     public ResponseEntity<?> addUserToClub(@PathVariable Long clubId, @RequestBody AddUserToClubRequestDto requestDto) {
         clubService.addUserToClub(clubId, requestDto);
-
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{clubId}")
     public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubDto updateClubDto) {
         clubService.updateClub(clubId, updateClubDto);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -92,6 +83,12 @@ public class ClubController {
         clubService.deleteClubAndRelated(clubId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{clubId}/users/{userId}/info")
+    public Result<ClubUserCountInfoDto> getClubUserCountInfo(@PathVariable Long clubId, @PathVariable Long userId){
+        ClubUserCountInfoDto res = clubComplexViewService.findClubUserCountInfo(clubId, userId);
+        return new Result<>(res);
     }
 
 

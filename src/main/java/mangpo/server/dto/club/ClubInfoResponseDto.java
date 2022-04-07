@@ -3,7 +3,7 @@ package mangpo.server.dto.club;
 import lombok.Data;
 import mangpo.server.dto.book.BookAndUserDto;
 import mangpo.server.dto.post.PostResponseDto;
-import mangpo.server.dto.user.UsersInClubDto;
+import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.*;
 import mangpo.server.entity.user.User;
 
@@ -23,10 +23,16 @@ public class ClubInfoResponseDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    private Integer totalUser;
-    private Integer totalPosts;
-    private List<UsersInClubDto> usersInfo;
-    private List<BookAndUserDto> bookAndUserInfo;//userId,bookId,isbn
+    //클럽 내부 전체 카운드
+    private Integer totalUser = 0;
+    private Integer totalPosts = 0;
+    private Integer totalBooks = 0;
+    private Integer totalComments = 0;
+    private Integer totalLikes = 0;
+
+
+    private List<UserResponseDto> userResponseDtos;
+    private List<BookAndUserDto> bookAndUserDtos;//userId,bookId,isbn
     private List<PostResponseDto> trendingPosts = new ArrayList<>();
 
     public void setClubInfo(Club club) {
@@ -54,15 +60,22 @@ public class ClubInfoResponseDto {
 //    }
 
     public void setUsersInfo(List<User> user) {
-        usersInfo = user.stream()
-                .map(UsersInClubDto::new)
+        this.userResponseDtos = user.stream()
+                .map(UserResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public void setBookAndUserInfo(List<ClubBookUser> cbuList) {
-        bookAndUserInfo = cbuList.stream()
+    public void setBookAndUserDtos(List<ClubBookUser> cbuList) {
+        this.bookAndUserDtos = cbuList.stream()
                 .map(BookAndUserDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public void addLike(int cnt){
+        this.totalLikes += cnt;
+    }
+    public void addComment(int cnt){
+        this.totalComments += cnt;
     }
 
 }

@@ -4,6 +4,7 @@ package mangpo.server.service.club;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.AddClubToUserBookRequestDto;
 import mangpo.server.dto.AddUserToClubRequestDto;
+import mangpo.server.dto.ClubUserCountInfoDto;
 import mangpo.server.dto.club.ClubInfoResponseDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;

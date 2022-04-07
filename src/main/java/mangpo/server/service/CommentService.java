@@ -67,7 +67,7 @@ public class CommentService {
         commentRepository.deleteAll(comments);
     }
 
-    public Long countByPost(Post post){
+    public Integer countByPost(Post post){
         return commentRepository.countByPost(post);
     }
 }

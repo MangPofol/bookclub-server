@@ -20,5 +20,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     long countByBook(Book book);
     Post findByUser(User user);
     void deleteAllByUser(User user);
-
+    
+    List<Post> findListByBook(Book b);
 }

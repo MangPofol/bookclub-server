@@ -249,4 +249,9 @@ public class PostService {
             }
         }
     }
+
+    public List<Post> findListByBook(Book b){
+        return postRepository.findListByBook(b);
+    }
+
 }
