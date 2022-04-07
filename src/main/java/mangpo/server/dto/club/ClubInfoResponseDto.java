@@ -23,10 +23,11 @@ public class ClubInfoResponseDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    private Integer totalUser;
+    private Integer totalPosts;
     private List<UsersInClubDto> usersInfo;
     private List<BookAndUserDto> bookAndUserInfo;//userId,bookId,isbn
     private List<PostResponseDto> trendingPosts = new ArrayList<>();
-
 
     public void setClubInfo(Club club) {
         this.id = club.getId();
@@ -63,4 +64,5 @@ public class ClubInfoResponseDto {
                 .map(BookAndUserDto::new)
                 .collect(Collectors.toList());
     }
+
 }
