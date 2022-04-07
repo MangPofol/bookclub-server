@@ -66,4 +66,8 @@ public class CommentService {
     public void deleteAll(List<Comment> comments){
         commentRepository.deleteAll(comments);
     }
+
+    public Long countByPost(Post post){
+        return commentRepository.countByPost(post);
+    }
 }

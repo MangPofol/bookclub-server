@@ -42,5 +42,8 @@ public class LikedService {
         likedRepository.deleteAll(likedList);
     }
 
+    public Long countByPost(Post post){
+        return likedRepository.countByPost(post);
+    }
 
 }

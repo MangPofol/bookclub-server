@@ -17,7 +17,6 @@ public class UsersInClubDto {
 
     private Long id;
     private String email;
-    private String password;
     private String nickname;
     private Sex sex;
     private LocalDateTime birthdate;
@@ -26,7 +25,6 @@ public class UsersInClubDto {
     public UsersInClubDto(User user){
         this.id = user.getId();
         this.email = user.getEmail();
-        this.password = user.getPassword();
         this.nickname = user.getNickname();
         this.sex = user.getSex();
         this.birthdate = user.getBirthdate();

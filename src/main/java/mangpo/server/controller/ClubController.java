@@ -13,7 +13,6 @@ import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.user.User;
-import mangpo.server.repository.ClubQueryRepository;
 import mangpo.server.service.*;
 import mangpo.server.service.book.BookService;
 import mangpo.server.service.club.ClubService;
@@ -35,34 +34,12 @@ public class ClubController {
 
 
     private final ClubService clubService;
-    private final ClubBookUserService cbuService;
-    private final BookService bookService;
-
-    private final ClubQueryRepository clubQueryRepository;
-
-    private final UserService userService;
-    private final PostClubScopeService pcsService;
+    private final ClubComplexService clubComplexService;
 
     @GetMapping("/{clubId}")
     public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId) {
-
-
-
-        Club club = clubService.findById(clubId);
-        List<User> usersInClub = cbuService.findUsersByClub(club);
-
-        List<ClubBookUser> cbuByClub = cbuService.findClubBookUserByClub(club);
-
-        ClubInfoResponseDto clubInfoResponseDto = new ClubInfoResponseDto();
-
-        List<Post> trendingPostByClub = clubQueryRepository.findTrendingPostByClub(club, usersInClub.size());
-
-        clubInfoResponseDto.setTrendingPost(trendingPostByClub);
-        clubInfoResponseDto.setClubInfo(club);
-        clubInfoResponseDto.setUsersInClubDtoList(usersInClub);
-        clubInfoResponseDto.setBookAndUserDtoList(cbuByClub);
-
-        return new Result<ClubInfoResponseDto>(clubInfoResponseDto);
+        ClubInfoResponseDto clubInfoResponseDto = clubComplexService.getClubInfoByClubId(clubId);
+        return new Result<>(clubInfoResponseDto);
     }
 
     @GetMapping
@@ -93,26 +70,6 @@ public class ClubController {
     @PostMapping("/{clubId}/add-book")
     public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @RequestBody AddClubToUserBookRequestDto requestDto) {
         clubService.addClubToUserBook(clubId, requestDto);
-
-//        User user = userService.findUserFromToken();
-//
-//        Book book = bookService.findBookById(requestDto.bookId);
-////        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
-//        ClubBookUserSearchCondition cbuSearchCond = new ClubBookUserSearchCondition();
-//        cbuSearchCond.setUser(user);
-//        cbuSearchCond.setBook(book);
-//
-//        ClubBookUser byUserAndBook = cbuService.findAllByCondition(cbuSearchCond).get(0);
-//        Club byId = clubService.findById(clubId);
-//
-//        ClubBookUser build = ClubBookUser.builder()
-//                .user(byUserAndBook.getUser())
-//                .book(byUserAndBook.getBook())
-//                .club(byId)
-//                .build();
-//
-//        cbuService.createClubBookUser(build);
-
         return ResponseEntity.noContent().build();
     }
 

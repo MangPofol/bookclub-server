@@ -2,13 +2,13 @@ package mangpo.server.dto.club;
 
 import lombok.Data;
 import mangpo.server.dto.book.BookAndUserDto;
+import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.user.UsersInClubDto;
 import mangpo.server.entity.*;
-import mangpo.server.entity.post.Post;
 import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +23,10 @@ public class ClubInfoResponseDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    private HashMap<Long, String> hotMemo = new HashMap<>();//id,title
-    private HashMap<Long, String> hotTopic = new HashMap<>();//id,title
-
-    private List<UsersInClubDto> userInfo;
+    private List<UsersInClubDto> usersInfo;
     private List<BookAndUserDto> bookAndUserInfo;//userId,bookId,isbn
+    private List<PostResponseDto> trendingPosts = new ArrayList<>();
+
 
     public void setClubInfo(Club club) {
         this.id = club.getId();
@@ -39,11 +38,7 @@ public class ClubInfoResponseDto {
         this.modifiedDate = club.getModifiedDate();
     }
 
-    public void setTrendingPost(List<Post> posts) {
-        for (Post p : posts) {
-            hotTopic.put(p.getId(), p.getTitle());
-        }
-    }
+
 //    public void setHotMemo(List<Post> posts) {
 //        for (Post p : posts) {
 //            hotMemo.put(p.getId(), p.getTitle());
@@ -57,19 +52,15 @@ public class ClubInfoResponseDto {
 //        }
 //    }
 
-    public void setUsersInClubDtoList(List<User> user) {
-        List<UsersInClubDto> collect = user.stream()
+    public void setUsersInfo(List<User> user) {
+        usersInfo = user.stream()
                 .map(UsersInClubDto::new)
                 .collect(Collectors.toList());
-
-        userInfo = collect;
     }
 
-    public void setBookAndUserDtoList(List<ClubBookUser> cbuList) {
-        List<BookAndUserDto> collect = cbuList.stream()
+    public void setBookAndUserInfo(List<ClubBookUser> cbuList) {
+        bookAndUserInfo = cbuList.stream()
                 .map(BookAndUserDto::new)
                 .collect(Collectors.toList());
-
-        bookAndUserInfo = collect;
     }
 }

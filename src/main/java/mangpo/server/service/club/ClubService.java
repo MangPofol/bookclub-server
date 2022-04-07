@@ -4,7 +4,7 @@ package mangpo.server.service.club;
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.AddClubToUserBookRequestDto;
 import mangpo.server.dto.AddUserToClubRequestDto;
-import mangpo.server.dto.ClubBookUserSearchCondition;
+import mangpo.server.dto.club.ClubInfoResponseDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;
 import mangpo.server.entity.Club;
@@ -17,14 +17,10 @@ import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.book.BookService;
 import mangpo.server.service.post.PostClubScopeService;
 import mangpo.server.service.user.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -111,21 +107,7 @@ public class ClubService {
     public void addClubToUserBook(Long clubId, AddClubToUserBookRequestDto requestDto) {
         User user = userService.findUserFromToken();
         Book book = bookService.findBookById(requestDto.getBookId());
-
-//        ClubBookUserSearchCondition cbuSearchCond = new ClubBookUserSearchCondition();
-//        cbuSearchCond.setUser(user);
-//        cbuSearchCond.setBook(book);
-//        ClubBookUser byUserAndBook = cbuService.findAllByCondition(cbuSearchCond).get(0);
-
         Club club = findById(clubId);
-
-//        ClubBookUser cbu = cbuService.findByUserAndBookAndClubIsNull(user, book);
-
-//        ClubBookUser build = ClubBookUser.builder()
-//                .user(cbu.getUser())
-//                .book(cbu.getBook())
-//                .club(club)
-//                .build();
 
         ClubBookUser build = ClubBookUser.builder()
                 .user(user)
@@ -144,18 +126,17 @@ public class ClubService {
         Club club = findById(clubId);
         Long presidentId = club.getPresidentId();
 
-        if (user.getId() != presidentId) {
+        if (!presidentId.equals(user.getId())) {
             throw new IllegalStateException("해당 유저는 클럽장이 아닙니다.");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        String email = requestDto.getEmail();
-        User userByEmail = userService.findUserByEmail(email);
+        User userByEmail = userService.findUserByEmail(requestDto.getEmail());
 
         ClubBookUser clubBookUser = ClubBookUser.builder()
                 .club(club)
                 .user(userByEmail)
                 .build();
+
         cbuService.createClubBookUser(clubBookUser);
     }
 
@@ -166,10 +147,7 @@ public class ClubService {
         return cbuService.findDistinctByUserAndBookIsNull(user).stream()
                 .map(m -> m.getClub())
                 .collect(Collectors.toList());
-//
-//        List<Club> distinctClub = clubQueryRepository.findDistinctClub(user);
-//        List<ClubResponseDto> collect = distinctClub.stream()
-//                .map(ClubResponseDto::new)
-//                .collect(Collectors.toList());
     }
+
+
 }
