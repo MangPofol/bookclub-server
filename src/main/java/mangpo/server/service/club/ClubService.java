@@ -44,7 +44,14 @@ public class ClubService {
         validateDuplicateClubName(createClubDto.getName());
 
         User user = userService.findUserFromToken();
-        Club club = createClubDto.toEntity(user);
+        validateClubMaxExceed(user);
+
+        Club club = Club.builder()
+                .name(createClubDto.getName())
+                .description(createClubDto.getDescription())
+                .level(1)
+                .presidentId(user.getId())
+                .build();
         clubRepository.save(club);
 
         ClubBookUser cbu = ClubBookUser.builder()
@@ -124,6 +131,9 @@ public class ClubService {
     public void addUserToClub(Long clubId, AddUserToClubRequestDto requestDto) {
         User user = userService.findUserFromToken();
 
+        User userToInvite = userService.findUserByEmail(requestDto.getEmail());
+        validateClubMaxExceed(userToInvite);
+
         Club club = findById(clubId);
         Long presidentId = club.getPresidentId();
 
@@ -131,11 +141,11 @@ public class ClubService {
             throw new IllegalStateException("해당 유저는 클럽장이 아닙니다.");
         }
 
-        User userByEmail = userService.findUserByEmail(requestDto.getEmail());
+//        User userByEmail = userService.findUserByEmail(requestDto.getEmail());
 
         ClubBookUser clubBookUser = ClubBookUser.builder()
                 .club(club)
-                .user(userByEmail)
+                .user(userToInvite)
                 .build();
 
         cbuService.createClubBookUser(clubBookUser);
@@ -150,5 +160,12 @@ public class ClubService {
                 .collect(Collectors.toList());
     }
 
+    //클럽 가입 3개까지만 가능
+    public void validateClubMaxExceed(User user){
+        Integer cnt = cbuService.countByUserAndClubIsNotNullAndBookIsNull(user);
+
+        if(cnt >= 3)
+            throw new IllegalStateException("클럽 가입은 3개까지만 가능합니다");
+    }
 
 }

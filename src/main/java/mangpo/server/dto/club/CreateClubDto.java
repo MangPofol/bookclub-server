@@ -9,13 +9,4 @@ import mangpo.server.entity.user.User;
 public class CreateClubDto {
     private String name;
     private String description;
-
-    public Club toEntity(User loginUser) {
-        return Club.builder()
-                .name(this.name)
-                .level(1)
-                .presidentId(loginUser.getId())
-                .description(description)
-                .build();
-    }
 }

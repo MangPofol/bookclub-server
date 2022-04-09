@@ -87,4 +87,8 @@ public class ClubBookUserService {
     public List<ClubBookUser> findListByClubAndUserIsNotNullAndBookIsNotNull(Club club) {
         return cbuRepository.findListByClubAndUserIsNotNullAndBookIsNotNull(club);
     }
+
+    public Integer countByUserAndClubIsNotNullAndBookIsNull(User user){
+        return cbuRepository.countByUserAndClubIsNotNullAndBookIsNull(user);
+    }
 }
