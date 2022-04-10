@@ -57,12 +57,11 @@ public class ClubController {
         return ResponseEntity.created(uriComponents.toUri()).body(clubResponseDto);
     }
 
-    //컨트롤 uri
     //클럽화면에서 클럽에 책 추가하는 기능
     //user,book만이 존재하는 ClubBookUser 엔티티의 정보를 이용해 새로운 ClubBookUser 엔티티를 만든다
-    @PostMapping("/{clubId}/add-book")
-    public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @RequestBody AddClubToUserBookRequestDto requestDto) {
-        clubService.addClubToUserBook(clubId, requestDto);
+    @PostMapping("/{clubId}/books/{bookId}")
+    public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @PathVariable Long bookId) {
+        clubService.addClubToUserBook(clubId, bookId);
         return ResponseEntity.noContent().build();
     }
 
@@ -88,7 +87,7 @@ public class ClubController {
 
 
     //invite
-    @PostMapping("/{clubId}/add-user")
+    @PostMapping("/{clubId}/users")
     public ResponseEntity<?> addUserToClub(@PathVariable Long clubId) {
         clubService.addUserToClub(clubId);
         return ResponseEntity.noContent().build();

@@ -1,9 +1,9 @@
-package mangpo.server.dto;
-
-import lombok.Data;
-
-@Data
-public class AddClubToUserBookRequestDto {
-    private Long bookId;
-
-}
+//package mangpo.server.dto;
+//
+//import lombok.Data;
+//
+//@Data
+//public class AddClubToUserBookRequestDto {
+//    private Long bookId;
+//
+//}

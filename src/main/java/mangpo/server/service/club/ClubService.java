@@ -2,7 +2,7 @@ package mangpo.server.service.club;
 
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.AddClubToUserBookRequestDto;
+//import mangpo.server.dto.AddClubToUserBookRequestDto;
 import mangpo.server.dto.InviteRequestDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;
@@ -113,9 +113,9 @@ public class ClubService {
     }
 
     @Transactional
-    public void addClubToUserBook(Long clubId, AddClubToUserBookRequestDto requestDto) {
+    public void addClubToUserBook(Long clubId, Long bookId) {
         User user = userService.findUserFromToken();
-        Book book = bookService.findBookById(requestDto.getBookId());
+        Book book = bookService.findBookById(bookId);
         Club club = findById(clubId);
 
         ClubBookUser build = ClubBookUser.builder()
