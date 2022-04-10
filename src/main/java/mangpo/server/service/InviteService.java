@@ -30,8 +30,11 @@ public class InviteService {
     public Long createInvite(InviteRequestDto inviteRequestDto){
 //        User user = userRepository.findByEmail(inviteRequestDto.getUserEmailToInvite()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
         User user = userService.findUserByEmail(inviteRequestDto.getUserEmailToInvite());
-
         Club club = clubRepository.findById(inviteRequestDto.getClubId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
+
+        if(inviteRepository.findByUserAndClub(user, club).isPresent())
+            throw new IllegalStateException("이미 초대한 클럽원 입니다");
+
 
         Invite invite = Invite.builder()
                 .user(user)
