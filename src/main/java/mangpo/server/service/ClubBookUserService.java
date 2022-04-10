@@ -10,6 +10,7 @@ import mangpo.server.repository.ClubBookUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -90,5 +91,18 @@ public class ClubBookUserService {
 
     public Integer countByUserAndClubIsNotNullAndBookIsNull(User user){
         return cbuRepository.countByUserAndClubIsNotNullAndBookIsNull(user);
+    }
+
+    @Transactional
+    public void deleteByClubAndBookAndUser(Club club, Book book, User user) {
+        cbuRepository.deleteByClubAndBookAndUser(club,book,user);
+    }
+
+    public ClubBookUser findByClubAndBookAndUser(Club club, Book book, User user) {
+        return cbuRepository.findByClubAndBookAndUser(club,book,user).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 ClubBookUser 정보입니다."));
+    }
+
+    public void deleteCbu(ClubBookUser cbu){
+        cbuRepository.delete(cbu);
     }
 }

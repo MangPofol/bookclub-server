@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>, ClubBookUserRepositoryCustom {
 
@@ -33,4 +34,7 @@ public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>
 
     Integer countByUserAndClubIsNotNullAndBookIsNull(User user);
 
+    void deleteByClubAndBookAndUser(Club club, Book book, User user);
+
+    Optional<ClubBookUser> findByClubAndBookAndUser(Club club, Book book, User user);
 }

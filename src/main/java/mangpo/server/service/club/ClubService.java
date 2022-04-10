@@ -163,4 +163,13 @@ public class ClubService {
         inviteService.deleteById(invite.getId());
     }
 
+    @Transactional
+    public void deleteBookFromClub(Long clubId, Long bookId) {
+        User user = userService.findUserFromToken();
+        Club club = findById(clubId);
+        Book book = bookService.findBookById(bookId);
+
+        ClubBookUser cbu = cbuService.findByClubAndBookAndUser(club, book, user);
+        cbuService.deleteCbu(cbu);
+    }
 }

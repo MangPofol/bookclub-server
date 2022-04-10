@@ -65,6 +65,13 @@ public class ClubController {
         return ResponseEntity.noContent().build();
     }
 
+    //ClubBook 삭제
+    @DeleteMapping("{clubId}/books/{bookId}")
+    public ResponseEntity<?> deleteBookFromClub(@PathVariable Long clubId, @PathVariable Long bookId){
+        clubService.deleteBookFromClub(clubId,bookId);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PatchMapping("/{clubId}")
     public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubDto updateClubDto) {
