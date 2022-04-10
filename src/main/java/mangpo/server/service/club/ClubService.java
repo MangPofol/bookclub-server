@@ -3,18 +3,18 @@ package mangpo.server.service.club;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.AddClubToUserBookRequestDto;
-import mangpo.server.dto.AddUserToClubRequestDto;
-import mangpo.server.dto.ClubUserCountInfoDto;
-import mangpo.server.dto.club.ClubInfoResponseDto;
+import mangpo.server.dto.InviteRequestDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.Invite;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.post.PostClubScope;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.ClubRepository;
 import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.InviteService;
 import mangpo.server.service.book.BookService;
 import mangpo.server.service.post.PostClubScopeService;
 import mangpo.server.service.user.UserService;
@@ -38,6 +38,7 @@ public class ClubService {
     private final ClubBookUserService cbuService;
     private final PostClubScopeService pcsService;
     private final BookService bookService;
+    private final InviteService inviteService;
 
     @Transactional
     public Long createClub(CreateClubDto createClubDto) {
@@ -126,32 +127,6 @@ public class ClubService {
         cbuService.createClubBookUser(build);
     }
 
-    //클럽장이 클럽원 클럽에 추가하는 기능
-    @Transactional
-    public void addUserToClub(Long clubId, AddUserToClubRequestDto requestDto) {
-        User user = userService.findUserFromToken();
-
-        User userToInvite = userService.findUserByEmail(requestDto.getEmail());
-        validateClubMaxExceed(userToInvite);
-
-        Club club = findById(clubId);
-        Long presidentId = club.getPresidentId();
-
-        if (!presidentId.equals(user.getId())) {
-            throw new IllegalStateException("해당 유저는 클럽장이 아닙니다.");
-        }
-
-//        User userByEmail = userService.findUserByEmail(requestDto.getEmail());
-
-        ClubBookUser clubBookUser = ClubBookUser.builder()
-                .club(club)
-                .user(userToInvite)
-                .build();
-
-        cbuService.createClubBookUser(clubBookUser);
-    }
-
-
     public List<Club> getClubsByUser(Long userId) {
         User user = userService.findById(userId);
 
@@ -166,6 +141,26 @@ public class ClubService {
 
         if(cnt >= 3)
             throw new IllegalStateException("클럽 가입은 3개까지만 가능합니다");
+    }
+
+
+    //예비 클럽원이 수락하면 사용
+    //클럽원 클럽에 추가하는 기능
+    @Transactional
+    public void addUserToClub(Long clubId) {
+        User user = userService.findUserFromToken();
+        validateClubMaxExceed(user);
+
+        Club club = findById(clubId);
+        ClubBookUser clubBookUser = ClubBookUser.builder()
+                .club(club)
+                .user(user)
+                .build();
+
+        cbuService.createClubBookUser(clubBookUser);
+
+        Invite invite = inviteService.findByUserAndClub(user, club);
+        inviteService.deleteById(invite.getId());
     }
 
 }

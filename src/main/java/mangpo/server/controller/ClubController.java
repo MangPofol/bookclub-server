@@ -66,11 +66,6 @@ public class ClubController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{clubId}/add-user")
-    public ResponseEntity<?> addUserToClub(@PathVariable Long clubId, @RequestBody AddUserToClubRequestDto requestDto) {
-        clubService.addUserToClub(clubId, requestDto);
-        return ResponseEntity.noContent().build();
-    }
 
     @PatchMapping("/{clubId}")
     public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody UpdateClubDto updateClubDto) {
@@ -91,5 +86,12 @@ public class ClubController {
         return new Result<>(res);
     }
 
+
+    //invite
+    @PostMapping("/{clubId}/add-user")
+    public ResponseEntity<?> addUserToClub(@PathVariable Long clubId) {
+        clubService.addUserToClub(clubId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

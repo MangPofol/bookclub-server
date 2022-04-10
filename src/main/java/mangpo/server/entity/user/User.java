@@ -100,4 +100,5 @@ public class User extends BaseTimeEntity {
         this.emailValidCode = emailValidCode;
     }
 
+
 }

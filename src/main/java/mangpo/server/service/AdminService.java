@@ -27,10 +27,14 @@ public class AdminService {
     private final PostRepository postRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final InviteRepository inviteRepository;
+
 
     @Transactional
     public void deleteUserByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+
+        inviteRepository.deleteByUser(user);
 
         commentRepository.deleteAllByUser(user);
         likedRepository.deleteAllByUser(user);
