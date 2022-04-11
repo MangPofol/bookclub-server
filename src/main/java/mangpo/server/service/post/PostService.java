@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class PostService {
         postRepository.save(post);
 
         if (postRequestDto.getScope() == PostScope.CLUB)
-            createAndPersistPostClubScope(postRequestDto, post);
+            createAndPersistPostClubScope(postRequestDto.getClubIdListForScope(), post);
 
 //        postRepository.save(post);
         return post.getId();
@@ -98,11 +99,15 @@ public class PostService {
         post.getPostImageLocations().clear();
         addPostImageLocations(postRequestDto, post);
 
+
+
         if (ogScope == PostScope.CLUB) {
             pcsService.deleteAllPcsByPost(post);
         }
         if (postRequestDto.getScope() == PostScope.CLUB)
-            createAndPersistPostClubScope(postRequestDto, post);
+            createAndPersistPostClubScope(postRequestDto.getClubIdListForScope(), post);
+
+
 
         //remove all links, then add all
         post.getLinks().clear();
@@ -111,12 +116,11 @@ public class PostService {
         post.update(postRequestDto);
     }
 
-    private void createAndPersistPostClubScope(PostRequestDto requestDto, Post post) {
-
-        List<Long> clubIdListForScope = requestDto.getClubIdListForScope();
-
+    private void createAndPersistPostClubScope( List<Long> clubIdListForScope, Post post) {
         for (Long clubId : clubIdListForScope) {
             Club club = clubService.findById(clubId);
+
+            club.updateLastAddBookDate();
 
             PostClubScope pcs = PostClubScope.builder()
                     .post(post)
@@ -238,7 +242,10 @@ public class PostService {
 
         while(iter.hasNext()){
             Post p = iter.next();
-            if (p.getScope() == PostScope.CLUB) {
+
+            if(p.getScope() == PostScope.PRIVATE)
+                iter.remove();
+            else if (p.getScope() == PostScope.CLUB) {
                 List<PostClubScope> listByPost = pcsService.findListWithClubByPost(p);
 
                 boolean present = listByPost.stream()

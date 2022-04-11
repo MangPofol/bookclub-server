@@ -8,6 +8,7 @@ import mangpo.server.entity.common.BaseTimeEntity;
 import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,4 +95,6 @@ public class Post extends BaseTimeEntity {
         this.links.add(link);
         link.addPost(this);
     }
+
+
 }

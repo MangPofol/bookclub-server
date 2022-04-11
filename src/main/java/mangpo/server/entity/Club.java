@@ -4,6 +4,7 @@ import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,6 +28,8 @@ public class Club extends BaseTimeEntity {
     @Column(name = "club_description")
     private String description;
 
+    private LocalDateTime lastAddBookDate;
+
     public void update(Club request) {
         if(request.getName() != null)
             this.name = request.name;
@@ -36,5 +39,9 @@ public class Club extends BaseTimeEntity {
             this.presidentId = request.presidentId;
         if(request.getDescription() != null)
             this.description = request.description;
+    }
+
+    public void updateLastAddBookDate(){
+        this.lastAddBookDate = LocalDateTime.now();
     }
 }

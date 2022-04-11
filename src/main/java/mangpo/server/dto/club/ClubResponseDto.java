@@ -12,6 +12,7 @@ public class ClubResponseDto {
     private Integer level;
     private Long presidentId;
     private String description;
+    private LocalDateTime lastAddBookDate;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -21,6 +22,7 @@ public class ClubResponseDto {
         this.level = clubRequest.getLevel();
         this.presidentId = clubRequest.getPresidentId();
         this.createdDate = clubRequest.getCreatedDate();
+        this.lastAddBookDate = clubRequest.getLastAddBookDate();
         this.modifiedDate = clubRequest.getModifiedDate();
         this.description = clubRequest.getDescription();
     }
