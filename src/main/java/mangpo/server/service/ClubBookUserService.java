@@ -105,4 +105,8 @@ public class ClubBookUserService {
     public void deleteCbu(ClubBookUser cbu){
         cbuRepository.delete(cbu);
     }
+
+    public ClubBookUser findByUserAndClubAndBookIsNull(User user, Club club) {
+        return cbuRepository.findByUserAndClubAndBookIsNull(user,club).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 ClubBookUser 정보입니다."));
+    }
 }

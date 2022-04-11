@@ -1,9 +1,10 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ClubUserCountInfoDto;
+import mangpo.server.dto.ClubUserInfoDto;
 import mangpo.server.dto.club.ClubInfoResponseDto;
 import mangpo.server.dto.post.PostResponseDto;
+import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.ClubBookUser;
 import mangpo.server.entity.book.Book;
@@ -15,6 +16,7 @@ import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +90,7 @@ public class ClubComplexViewService {
                 .collect(Collectors.toList());
     }
 
-    public ClubUserCountInfoDto findClubUserCountInfo(Long clubId, Long userId) {
+    public ClubUserInfoDto findClubUserInfo(Long clubId, Long userId) {
         Club club = clubService.findById(clubId);
         User user = userService.findById(userId);
         List<ClubBookUser> cbu = cbuService.findByUserAndClubAndBookIsNotNull(user, club);
@@ -111,10 +113,14 @@ public class ClubComplexViewService {
             totalComments += commentService.countByPost(p);
         }
 
-        return ClubUserCountInfoDto.builder()
+        LocalDateTime invitedDate  = cbuService.findByUserAndClubAndBookIsNull(user, club).getCreatedDate();
+
+        return ClubUserInfoDto.builder()
+                .userResponseDto(new UserResponseDto(user))
                 .totalPosts(totalPosts)
                 .totalComments(totalComments)
                 .totalBooks(totalBooks)
+                .invitedDate(invitedDate)
                 .build();
     }
 }

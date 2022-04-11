@@ -87,9 +87,10 @@ public class ClubController {
     }
 
     @GetMapping("/{clubId}/users/{userId}/info")
-    public Result<ClubUserCountInfoDto> getClubUserCountInfo(@PathVariable Long clubId, @PathVariable Long userId){
-        ClubUserCountInfoDto res = clubComplexViewService.findClubUserCountInfo(clubId, userId);
+    public Result<ClubUserInfoDto> getClubUserInfo(@PathVariable Long clubId, @PathVariable Long userId){
+        ClubUserInfoDto res = clubComplexViewService.findClubUserInfo(clubId, userId);
         return new Result<>(res);
+
     }
 
 
