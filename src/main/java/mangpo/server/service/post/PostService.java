@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -170,7 +169,7 @@ public class PostService {
         return postRepository.findFetchById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
-    public List<Post> findPostsByBookId(Long bookId){
+    public List<Post> findListByBookId(Long bookId){
         Book book = bookService.findBookById(bookId);
 
         List<Post> byBook = postRepository.findByBook(book);
@@ -227,7 +226,7 @@ public class PostService {
 
 
     public List<Post> findPostsByBookIdAndClubScope(Long bookId, Long clubId) {
-        List<Post> posts = findPostsByBookId(bookId);
+        List<Post> posts = findListByBookId(bookId);
 
         if (clubId != -1)
             excludePostByClubScope(clubId, posts);

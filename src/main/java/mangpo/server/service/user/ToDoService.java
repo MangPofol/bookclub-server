@@ -2,7 +2,7 @@ package mangpo.server.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.ToDoDto;
+import mangpo.server.dto.user.ToDoDto;
 import mangpo.server.dto.todo.ToDoListCreateDto;
 import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.entity.user.ToDo;

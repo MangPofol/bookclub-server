@@ -1,13 +1,12 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.InviteRequestDto;
+import mangpo.server.dto.club.InviteRequestDto;
 import mangpo.server.entity.Club;
 import mangpo.server.entity.Invite;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.ClubRepository;
 import mangpo.server.repository.InviteRepository;
-import mangpo.server.repository.UserRepository;
 import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

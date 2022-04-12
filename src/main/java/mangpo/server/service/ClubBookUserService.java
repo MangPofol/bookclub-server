@@ -23,7 +23,6 @@ public class ClubBookUserService {
     @Transactional
     public Long createClubBookUser(ClubBookUser clubBookUser){
         validateDuplicateCBU(clubBookUser);
-
         cbuRepository.save(clubBookUser);
         return clubBookUser.getId();
     }
@@ -41,8 +40,9 @@ public class ClubBookUserService {
         Long delete = cbuRepository.deleteAllByClub(club);
     }
 
-    public List<ClubBookUser> findListByUserExceptClub(User user){
-        return cbuRepository.findListByUserExceptClub(user);
+    public List<ClubBookUser> findListByUserAndClubIsNullAndBookIsNotNull(User user){
+        return cbuRepository.findListByUserAndClubIsNullAndBookIsNotNull(user);
+//        return cbuRepository.findListByUserExceptClub(user);
     }
 
 //    public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
@@ -53,12 +53,12 @@ public class ClubBookUserService {
     }
 
     public List<User> findUsersByClub(Club club){
-        return cbuRepository.findUsersByClub(club);
+        return cbuRepository.findByClubAndUserIsNotNullAndBookIsNull(club);
     }
 
-    public List<ClubBookUser> findClubBookUserByClub(Club club){
-        return cbuRepository.findClubBookUserByClub(club);
-    }
+//    public List<ClubBookUser> findClubBookUserByClub(Club club){
+//        return cbuRepository.findByClubAndBookIsNul(club);
+//    }
 
     @Transactional
     public void deleteAll(List<ClubBookUser> clubBookUsers){
@@ -108,5 +108,9 @@ public class ClubBookUserService {
 
     public ClubBookUser findByUserAndClubAndBookIsNull(User user, Club club) {
         return cbuRepository.findByUserAndClubAndBookIsNull(user,club).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 ClubBookUser 정보입니다."));
+    }
+
+    public List<ClubBookUser> findListByBook(Book book) {
+        return cbuRepository.findListByBook(book);
     }
 }

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
+import mangpo.server.dto.user.ChangePwDto;
+import mangpo.server.dto.user.UpdateUserDto;
 import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.user.User;
 

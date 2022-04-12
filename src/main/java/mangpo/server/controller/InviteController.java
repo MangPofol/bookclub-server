@@ -2,10 +2,9 @@ package mangpo.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.InviteRequestDto;
-import mangpo.server.dto.InviteResponseDto;
+import mangpo.server.dto.club.InviteRequestDto;
+import mangpo.server.dto.club.InviteResponseDto;
 import mangpo.server.dto.Result;
-import mangpo.server.dto.club.ClubResponseDto;
 import mangpo.server.service.InviteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

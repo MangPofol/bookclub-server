@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ChangePwDto;
-import mangpo.server.dto.UpdateUserDto;
+import mangpo.server.dto.user.ChangePwDto;
+import mangpo.server.dto.user.UpdateUserDto;
 import mangpo.server.entity.user.Authority;
 import mangpo.server.entity.user.User;
 import mangpo.server.entity.user.UserAuthority;

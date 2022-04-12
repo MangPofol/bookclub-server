@@ -1,4 +1,4 @@
-package mangpo.server.dto;
+package mangpo.server.dto.user;
 
 import lombok.Data;
 

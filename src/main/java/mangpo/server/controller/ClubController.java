@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
-import mangpo.server.dto.club.ClubInfoResponseDto;
-import mangpo.server.dto.club.ClubResponseDto;
-import mangpo.server.dto.club.CreateClubDto;
-import mangpo.server.dto.club.UpdateClubDto;
+import mangpo.server.dto.club.*;
 import mangpo.server.entity.*;
 import mangpo.server.service.*;
 import mangpo.server.service.club.ClubService;

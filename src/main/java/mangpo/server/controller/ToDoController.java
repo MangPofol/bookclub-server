@@ -6,6 +6,7 @@ import mangpo.server.dto.*;
 import mangpo.server.dto.todo.ToDoListCreateDto;
 import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.dto.todo.ToDoResponseDto;
+import mangpo.server.dto.user.ToDoDto;
 import mangpo.server.entity.user.ToDo;
 import mangpo.server.service.user.ToDoService;
 import org.springframework.http.ResponseEntity;

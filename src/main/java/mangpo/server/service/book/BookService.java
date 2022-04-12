@@ -7,10 +7,7 @@ import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.book.BookCategory;
 import mangpo.server.entity.user.User;
-import mangpo.server.repository.BookInfoRepository;
 import mangpo.server.repository.book.BookRepository;
-import mangpo.server.repository.ClubBookUserRepository;
-import mangpo.server.repository.UserRepository;
 import mangpo.server.service.ClubBookUserService;
 import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
@@ -72,10 +69,10 @@ public class BookService {
 //    }
 
     private void validateDuplicateBook(String isbn, User loginUser) {
-        List<ClubBookUser> listByUser = cbuService.findListByUserExceptClub(loginUser);
+        List<ClubBookUser> cbuList = cbuService.findListByUserAndClubIsNullAndBookIsNotNull(loginUser);
 //        List<ClubBookUser> listByUser = cbuRepository.findListByUserExceptClub(loginUser);
 
-        Optional<ClubBookUser> any = listByUser.stream()
+        Optional<ClubBookUser> any = cbuList.stream()
                 .filter(m -> m.getUser().getId().equals(loginUser.getId()))
                 .filter(m -> m.getBook().getBookInfo().getIsbn().equals(isbn))
                 .findAny();

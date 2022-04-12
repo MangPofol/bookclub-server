@@ -1,7 +1,7 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ClubUserInfoDto;
+import mangpo.server.dto.club.ClubUserInfoDto;
 import mangpo.server.dto.club.ClubInfoResponseDto;
 import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.user.UserResponseDto;

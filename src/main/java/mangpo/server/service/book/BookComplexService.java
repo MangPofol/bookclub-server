@@ -1,7 +1,6 @@
 package mangpo.server.service.book;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ClubBookUserSearchCondition;
 import mangpo.server.dto.book.CreateBookDto;
 import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
@@ -55,15 +54,12 @@ public class BookComplexService {
 
     @Transactional
     public void deleteBookAndRelated(Long bookId) {
-        Book deleteBook = bookService.findBookById(bookId);
+        Book book = bookService.findBookById(bookId);
 
-        ClubBookUserSearchCondition clubBookUserSearchCondition = new ClubBookUserSearchCondition();
-        clubBookUserSearchCondition.setBook(deleteBook);
-        List<ClubBookUser> allByCondition = cbuService.findAllByCondition(clubBookUserSearchCondition);
-        cbuService.deleteAll(allByCondition);
-//        bookService.deleteByUserAndBook(userId, bookId);
+        List<ClubBookUser> listByBook = cbuService.findListByBook(book);
+        cbuService.deleteAll(listByBook);
 
-        List<Post> postsByBookId = postService.findPostsByBookId(bookId);
+        List<Post> postsByBookId = postService.findListByBookId(bookId);
         postService.deleteAllWithCascade(postsByBookId);
 
         bookService.deleteBook(bookId);

@@ -3,7 +3,6 @@ package mangpo.server.service.club;
 
 import lombok.RequiredArgsConstructor;
 //import mangpo.server.dto.AddClubToUserBookRequestDto;
-import mangpo.server.dto.InviteRequestDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;
 import mangpo.server.entity.Club;

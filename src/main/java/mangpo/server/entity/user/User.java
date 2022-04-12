@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mangpo.server.dto.UpdateUserDto;
+import mangpo.server.dto.user.UpdateUserDto;
 import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
