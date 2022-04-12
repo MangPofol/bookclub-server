@@ -27,7 +27,7 @@ public class ToDoController {
 
     @GetMapping
     public Result<List<ToDoResponseDto>> getToDos() {
-        List<ToDo> toDos = toDoService.findToDos();
+        List<ToDo> toDos = toDoService.findList();
 
         List<ToDoResponseDto> collect = toDos.stream()
                 .map(ToDoResponseDto::new)

@@ -32,6 +32,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+
 //    private final CommentService commentService;
     private final ClubBookUserService cbuService;
     private final ClubService clubService;
@@ -51,12 +52,9 @@ public class PostService {
         Post post = postRequestDto.toEntityExceptBookAndUser();
         post.changeBook(requestBook);
 
-
         addLinks(postRequestDto, post);
-//        post.addLink(postRequestDto.get)
         addPostImageLocations(postRequestDto, post);
 
-//        Long postId = postService.createPost(post);
         User user = userService.findUserFromToken();
         post.addUser(user);
 
@@ -65,7 +63,6 @@ public class PostService {
         if (postRequestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(postRequestDto.getClubIdListForScope(), post);
 
-//        postRepository.save(post);
         return post.getId();
     }
 
@@ -94,22 +91,18 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long postId, PostRequestDto postRequestDto){
-        Post post = findPostFetchJoinImgLoc(postId);
+        Post post = findPostWithImgLoc(postId);
         PostScope ogScope = post.getScope();
 
         //remove all postImageLoc, then add all
         post.getPostImageLocations().clear();
         addPostImageLocations(postRequestDto, post);
 
-
-
         if (ogScope == PostScope.CLUB) {
             pcsService.deleteAllPcsByPost(post);
         }
         if (postRequestDto.getScope() == PostScope.CLUB)
             createAndPersistPostClubScope(postRequestDto.getClubIdListForScope(), post);
-
-
 
         //remove all links, then add all
         post.getLinks().clear();
@@ -138,16 +131,13 @@ public class PostService {
     public void deletePostById(Long postId){
         Post post = findPostById(postId);
 
-//        pcsService.deleteAllPcsByPost(post);
-//        likedService.deleteByPost(post);
-
         List<Liked> likedList = likedService.findAllByPost(post);
         likedService.deleteAll(likedList);
 
         List<PostClubScope> pcsList = pcsService.findAllByPost(post);
         pcsService.deleteAll(pcsList);
         //순환참조 방지용  repository 호출
-        List<Comment> commentList = commentRepository.findAllByPost(post);
+        List<Comment> commentList = commentRepository.findListByPost(post);
         commentRepository.deleteAll(commentList);
 
         postRepository.deleteById(postId);
@@ -168,16 +158,13 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
-    public Post findPostFetchJoinImgLoc(Long id){
+    public Post findPostWithImgLoc(Long id){
         return postRepository.findFetchById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
     public List<Post> findListByBookId(Long bookId){
         Book book = bookService.findBookById(bookId);
-
-        List<Post> byBook = postRepository.findByBook(book);
-
-        return byBook;
+        return postRepository.findByBook(book);
     }
 
     @Transactional
@@ -199,18 +186,18 @@ public class PostService {
         User user = userService.findUserFromToken();
         Post post = findPostById(postId);
 
-        Liked liked = likedUserFromPost(user, post);
+        Liked liked = findLikedWithUserAndPost(user, post);
         liked.undoLikeToPost(post);
 
         likedService.deleteLiked(liked);
     }
 
-    public Integer findTotalCount(){
+    public Integer findTotalCountOfUser(){
         User user = userService.findUserFromToken();
 
         List<ClubBookUser> cbuList = cbuService.findByUserAndClubIsNull(user);
         List<Book> books = cbuList.stream()
-                .map(m -> m.getBook())
+                .map(ClubBookUser::getBook)
                 .collect(Collectors.toList());
 
         int sum = 0;
@@ -219,12 +206,11 @@ public class PostService {
         return sum;
     }
 
-    private Liked likedUserFromPost(User user, Post post) {
-        List<Liked> collect = post.getLikedList().stream()
+    private Liked findLikedWithUserAndPost(User user, Post post) {
+        return post.getLikedList().stream()
                 .filter(l -> l.getUser().getId().equals(user.getId()))
-                .collect(Collectors.toList());
-        Liked liked = collect.get(0);
-        return liked;
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 Liked 정보입니다."));
     }
 
 

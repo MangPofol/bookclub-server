@@ -70,7 +70,6 @@ public class BookService {
 
     private void validateDuplicateBook(String isbn, User loginUser) {
         List<ClubBookUser> cbuList = cbuService.findListByUserAndClubIsNullAndBookIsNotNull(loginUser);
-//        List<ClubBookUser> listByUser = cbuRepository.findListByUserExceptClub(loginUser);
 
         Optional<ClubBookUser> any = cbuList.stream()
                 .filter(m -> m.getUser().getId().equals(loginUser.getId()))
@@ -114,16 +113,13 @@ public class BookService {
         return bookRepository.findByBookCategory(bookCategory);
     }
 
-
     public Set<Book> findBooksByCurrentUserAndBookCategory(BookCategory category) {
         User user = userService.findUserFromToken();
 
-        Set<Book> books = cbuService.findByUserAndClubIsNull(user).stream()
-                .map(m -> m.getBook())
+        return cbuService.findByUserAndClubIsNull(user).stream()
+                .map(ClubBookUser::getBook)
                 .filter(m -> m.getBookCategory() == category)
                 .collect(Collectors.toSet());
-
-       return books;
     }
 
     public Long findTotalBook() {

@@ -36,7 +36,6 @@ public class ClubComplexViewService {
     private final CommentService commentService;
 
 
-    //리팩토링 고려
     public ClubInfoResponseDto getClubInfoByClubId(Long clubId) {
         Club club = clubService.findById(clubId);
         List<User> usersInClub = cbuService.findUsersByClub(club);
@@ -53,7 +52,6 @@ public class ClubComplexViewService {
             List<Post> bookPosts = postService.findListByBook(b);
             clubAllPosts.addAll(bookPosts);
         }
-
 
         ClubInfoResponseDto res = new ClubInfoResponseDto();
 
@@ -97,10 +95,8 @@ public class ClubComplexViewService {
         User user = userService.findById(userId);
         List<ClubBookUser> cbu = cbuService.findByUserAndClubAndBookIsNotNull(user, club);
 
-        int totalBooks = cbu.size();
-
         List<Book> books = cbu.stream()
-                .map(m -> m.getBook())
+                .map(ClubBookUser::getBook)
                 .collect(Collectors.toList());
 
         List<Post> allPosts = new ArrayList<>();
@@ -108,20 +104,20 @@ public class ClubComplexViewService {
             List<Post> posts = postService.findListByBook(b);
             allPosts.addAll(posts);
         }
-        int totalPosts = allPosts.size();
 
         int totalComments = 0;
         for (Post p : allPosts) {
             totalComments += commentService.countByPost(p);
         }
 
+        int totalPosts = allPosts.size();
         LocalDateTime invitedDate  = cbuService.findByUserAndClubAndBookIsNull(user, club).getCreatedDate();
 
         return ClubUserInfoDto.builder()
                 .userResponseDto(new UserResponseDto(user))
                 .totalPosts(totalPosts)
                 .totalComments(totalComments)
-                .totalBooks(totalBooks)
+                .totalBooks(cbu.size())
                 .invitedDate(invitedDate)
                 .build();
     }

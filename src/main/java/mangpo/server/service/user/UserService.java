@@ -46,8 +46,6 @@ public class UserService {
         validateDuplicateUser(user.getEmail());
         userRepository.save(user);
 
-
-//        Authority role = authorityRepository.findById("ROLE_USER").get();
         Authority role = authorityRepository.findById("ROLE_NEED_EMAIL").get();
 
         UserAuthority userAuthority = UserAuthority.builder()
@@ -86,13 +84,6 @@ public class UserService {
 
         user.update(updateUserDto);
     }
-
-//    @Transactional
-//    public void deleteUser(Long id){
-//        User user = findById(id);
-//
-//        userRepository.delete(user);
-//    }
 
     @Transactional
     public void changeDormant(User user){

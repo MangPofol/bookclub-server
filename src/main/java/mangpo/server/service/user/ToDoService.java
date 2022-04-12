@@ -21,8 +21,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ToDoService {
 
-    private final UserService userService;
     private final ToDoRepository toDoRepository;
+
+    private final UserService userService;
 
     @Transactional
     public Long createToDo(ToDoDto toDoDto){
@@ -68,10 +69,9 @@ public class ToDoService {
         }
     }
 
-    public List<ToDo> findToDos(){
+    public List<ToDo> findList(){
         User user = userService.findUserFromToken();
-
-        return toDoRepository.findByUser(user);
+        return toDoRepository.findListByUser(user);
     }
 
     public ToDo findById(Long toDoId){
@@ -85,7 +85,7 @@ public class ToDoService {
 
         List<ToDo> todos = user.getTodos();
         List<Long> todoIds = todos.stream()
-                .map(m -> m.getId())
+                .map(ToDo::getId)
                 .collect(Collectors.toList());
 
         for (Long l : request) {

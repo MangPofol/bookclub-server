@@ -21,13 +21,11 @@ public class InviteService {
 
     private final InviteRepository inviteRepository;
     private final ClubRepository clubRepository;
-//    private final UserRepository userRepository;
     private final UserService userService;
 
     //ToDo: 추후 firebase push message 추가
     @Transactional
     public Long createInvite(InviteRequestDto inviteRequestDto){
-//        User user = userRepository.findByEmail(inviteRequestDto.getUserEmailToInvite()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
         User user = userService.findUserByEmail(inviteRequestDto.getUserEmailToInvite());
         Club club = clubRepository.findById(inviteRequestDto.getClubId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
 

@@ -6,7 +6,6 @@ import mangpo.server.entity.post.Comment;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.post.CommentRepository;
-import mangpo.server.service.post.PostService;
 import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,21 +43,13 @@ public class CommentService {
         return commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 comment입니다."));
     }
 
-
-//    @Transactional
-//    public Long createComment(Comment comment){
-//        Comment save = commentRepository.save(comment);
-//        return save.getId();
-//    }
-//
-
     @Transactional
     public void deleteComment(Long commentId){
         commentRepository.deleteById(commentId);
     }
 
-    public List<Comment> findAllByPost(Post post){
-        return commentRepository.findAllByPost(post);
+    public List<Comment> findListByPost(Post post){
+        return commentRepository.findListByPost(post);
     }
 
     @Transactional

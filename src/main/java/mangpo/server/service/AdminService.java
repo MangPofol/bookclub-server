@@ -19,10 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-
+@Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Service
 public class AdminService {
 
     private final CommentRepository commentRepository;

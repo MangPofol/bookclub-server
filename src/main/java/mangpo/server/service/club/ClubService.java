@@ -75,8 +75,11 @@ public class ClubService {
 
         Club club = findById(clubId);
         club.update(updateClubDto.toEntity());
-
         //공개범위 관련 수정
+        updatePostClubScope(updateClubDto, club);
+    }
+
+    private void updatePostClubScope(UpdateClubDto updateClubDto, Club club) {
         List<PostClubScope> listByClub = pcsService.findListByClub(club);
         for (PostClubScope pcs : listByClub)
             pcs.changeClubName(updateClubDto.getName());
@@ -163,9 +166,9 @@ public class ClubService {
 
     @Transactional
     public void deleteBookFromClub(Long clubId, Long bookId) {
-        User user = userService.findUserFromToken();
         Club club = findById(clubId);
         Book book = bookService.findBookById(bookId);
+        User user = userService.findUserFromToken();
 
         ClubBookUser cbu = cbuService.findByClubAndBookAndUser(club, book, user);
         cbuService.deleteCbu(cbu);
