@@ -16,8 +16,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
 @Slf4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/todos")
 public class ToDoController {
@@ -49,14 +49,12 @@ public class ToDoController {
     @PutMapping("/{toDoId}")
     public ResponseEntity<?> updateTodo(@PathVariable Long toDoId, @RequestBody ToDoDto toDoDto){
         toDoService.updateTodo(toDoId,toDoDto);
-
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteToDo(@PathVariable Long id){
         toDoService.deleteById(id);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -64,7 +62,6 @@ public class ToDoController {
     @PostMapping("/create-todos")
     public ResponseEntity<?> createToDoList(@RequestBody ToDoListCreateDto toDoListCreateDto){
         toDoService.createToDoList(toDoListCreateDto);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -72,7 +69,6 @@ public class ToDoController {
     @PostMapping("/delete-todos")
     public ResponseEntity<?> deleteToDos(@RequestBody ToDoDeleteDto toDoDeleteDto){
         toDoService.deleteToDos(toDoDeleteDto);
-
         return ResponseEntity.noContent().build();
     }
 

@@ -11,25 +11,13 @@ import mangpo.server.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 @Slf4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-
-//    @GetMapping("/user")
-//    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-//    public ResponseEntity<UserDto> getMyUserInfo(HttpServletRequest request) {
-//        return ResponseEntity.ok(userService.getMyUserWithAuthorities());
-//    }
-//
-//    @GetMapping("/user/{username}")
-//    @PreAuthorize("hasAnyRole('ADMIN')")
-//    public ResponseEntity<UserDto> getUserInfo(@PathVariable String username) {
-//        return ResponseEntity.ok(userService.getUserWithAuthorities(username));
-//    }
 
     @GetMapping
     public ResponseEntity<Result<UserResponseDto>> getUserInfo(@RequestParam Long userId) {
@@ -68,7 +56,6 @@ public class UserController {
     @PostMapping("/validate-duplicate")
     public ResponseEntity<?> validateDuplicate(@RequestBody UserValidationDto userValidationDto) {
         userService.validateDuplicateUser(userValidationDto.getEmail());
-
         return ResponseEntity.noContent().build();
     }
 

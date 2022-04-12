@@ -44,7 +44,6 @@ public class PostController {
     @GetMapping
     public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(defaultValue = "-1") Long clubId) {
         List<Post> posts = postService.findPostsByBookIdAndClubScope(bookId, clubId);
-
         List<PostResponseDto> postResponseDtoList = pcsService.createPostResponseDtoList(posts);
 
         return new Result<>(postResponseDtoList);
@@ -58,25 +57,19 @@ public class PostController {
                 b.path("/posts/{postId}").buildAndExpand(postId);
 
         PostResponseDto postResponseDto = pcsService.createPostResponseDto(postService.findPostById(postId));
-
-//        PostResponseDto postResponseDto = new PostResponseDto(postService.findPostById(postId));
-
         return ResponseEntity.created(uriComponents.toUri()).body(postResponseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePostById(id);
-
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
         postService.updatePost(id, requestDto);
-
         PostResponseDto postResponseDto = pcsService.createPostResponseDto(postService.findPostById(id));
-
         return ResponseEntity.ok().body(postResponseDto);
     }
 

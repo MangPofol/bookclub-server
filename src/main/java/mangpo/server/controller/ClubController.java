@@ -43,7 +43,7 @@ public class ClubController {
                 .map(ClubResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new Result<List<ClubResponseDto>>(collect);
+        return new Result<>(collect);
     }
 
     @PostMapping
