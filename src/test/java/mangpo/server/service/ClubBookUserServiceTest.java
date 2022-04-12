@@ -1,8 +1,8 @@
 //package mangpo.server.service;
 //
-//import mangpo.server.entity.ClubBookUser;
+//import mangpo.server.entity.cbu.ClubBookUser;
 //import mangpo.server.entity.user.User;
-//import mangpo.server.repository.ClubBookUserRepository;
+//import mangpo.server.repository.cbu.ClubBookUserRepository;
 //import mangpo.server.service.user.UserService;
 //import org.assertj.core.api.Assertions;
 //import org.junit.jupiter.api.BeforeEach;

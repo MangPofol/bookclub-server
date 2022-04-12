@@ -3,11 +3,11 @@ package mangpo.server.service.post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.post.PostResponseDto;
-import mangpo.server.entity.Club;
+import mangpo.server.entity.club.Club;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.post.PostClubScope;
 import mangpo.server.entity.post.PostScope;
-import mangpo.server.repository.PostClubScopeRepository;
+import mangpo.server.repository.post.PostClubScopeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -5,7 +5,7 @@
 //import mangpo.server.entity.book.BookCategory;
 //import mangpo.server.entity.user.User;
 //import mangpo.server.repository.book.BookQueryRepository;
-//import mangpo.server.repository.UserRepository;
+//import mangpo.server.repository.user.UserRepository;
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
 //

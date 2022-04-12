@@ -1,6 +1,6 @@
 //package mangpo.server.service;
 //
-//import mangpo.server.entity.Club;
+//import mangpo.server.entity.club.Club;
 //import mangpo.server.repository.ClubRepository;
 //import mangpo.server.service.club.ClubService;
 //import org.junit.jupiter.api.BeforeEach;

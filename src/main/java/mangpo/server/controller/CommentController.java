@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.comment.CommentRequestDto;
 import mangpo.server.dto.comment.CommentResponseDto;
 import mangpo.server.dto.Result;
-import mangpo.server.service.CommentService;
-import mangpo.server.service.post.PostService;
-import mangpo.server.service.user.UserService;
+import mangpo.server.service.post.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -28,7 +26,7 @@ public class CommentController {
                 b.path("/comments/{commentId}").buildAndExpand(commentId);
 
         CommentResponseDto commentResponseDto = new CommentResponseDto(commentService.findById(commentId));
-        Result<CommentResponseDto> result= new Result(commentResponseDto);
+        Result<CommentResponseDto> result= new Result<>(commentResponseDto);
 
         return ResponseEntity.created(uriComponents.toUri()).body(result);
     }

@@ -1,15 +1,13 @@
 package mangpo.server.service.book;
 
-import mangpo.server.entity.Club;
-import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.cbu.ClubBookUser;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.book.BookCategory;
 import mangpo.server.entity.book.BookInfo;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.book.BookRepository;
-import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.user.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
@@ -104,7 +101,7 @@ class BookServiceTest {
 
         given(mockUserService.findById(any())).willReturn(user1);
         given(mockBookRepository.save(any())).willReturn(book1);
-        given(mockCbuService.findListByUserExceptClub(any())).willReturn(cbuList);
+        given(mockCbuService.findListByUserAndClubIsNullAndBookIsNotNull(any())).willReturn(cbuList);
 
         //when
         bookService.createBookWithValidation(book1, book1.getBookInfo().getIsbn(), user1.getId());
@@ -150,7 +147,7 @@ class BookServiceTest {
 
         given(mockUserService.findById(any())).willReturn(user1);
         given(mockBookRepository.save(any())).willReturn(book1);
-        given(mockCbuService.findListByUserExceptClub(any())).willReturn(cbuList);
+        given(mockCbuService.findListByUserAndClubIsNullAndBookIsNotNull(any())).willReturn(cbuList);
 
 
         //when then

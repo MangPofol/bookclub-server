@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.club.InviteRequestDto;
 import mangpo.server.dto.club.InviteResponseDto;
 import mangpo.server.dto.Result;
-import mangpo.server.service.InviteService;
+import mangpo.server.service.club.InviteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;

@@ -2,12 +2,12 @@ package mangpo.server.service.book;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.dto.book.CreateBookDto;
-import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.book.BookInfo;
+import mangpo.server.entity.cbu.ClubBookUser;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.user.User;
-import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.post.PostService;
 import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;

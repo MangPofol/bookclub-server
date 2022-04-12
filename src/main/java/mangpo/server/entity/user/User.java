@@ -1,9 +1,6 @@
 package mangpo.server.entity.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import mangpo.server.dto.user.UpdateUserDto;
 import mangpo.server.entity.common.BaseTimeEntity;
 
@@ -16,7 +13,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
     @Id

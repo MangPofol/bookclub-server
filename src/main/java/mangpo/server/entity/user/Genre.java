@@ -1,18 +1,15 @@
 package mangpo.server.entity.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Genre {
 
     @Id @GeneratedValue

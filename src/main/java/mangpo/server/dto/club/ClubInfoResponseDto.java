@@ -4,7 +4,8 @@ import lombok.Data;
 import mangpo.server.dto.book.BookAndUserDto;
 import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.user.UserResponseDto;
-import mangpo.server.entity.*;
+import mangpo.server.entity.cbu.ClubBookUser;
+import mangpo.server.entity.club.Club;
 import mangpo.server.entity.user.User;
 
 import java.time.LocalDateTime;

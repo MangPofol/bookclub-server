@@ -20,5 +20,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findById(Long id);
 
     @EntityGraph(attributePaths = ("bookCategory"))
-    Book findByIdAndBookCategory(Long bookId, BookCategory bookCategory);
+    Optional<Book> findByIdAndBookCategory(Long bookId, BookCategory bookCategory);
 }

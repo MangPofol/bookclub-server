@@ -2,8 +2,7 @@ package mangpo.server.entity.post;
 
 
 import lombok.*;
-import mangpo.server.entity.Club;
-import mangpo.server.entity.post.Post;
+import mangpo.server.entity.club.Club;
 
 import javax.persistence.*;
 

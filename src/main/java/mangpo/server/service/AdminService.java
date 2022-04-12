@@ -1,12 +1,18 @@
 package mangpo.server.service;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.entity.ClubBookUser;
-import mangpo.server.entity.book.Book;
+import mangpo.server.entity.cbu.ClubBookUser;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.user.User;
-import mangpo.server.repository.*;
 import mangpo.server.repository.book.BookRepository;
+import mangpo.server.repository.cbu.ClubBookUserRepository;
+import mangpo.server.repository.club.InviteRepository;
+import mangpo.server.repository.post.CommentRepository;
+import mangpo.server.repository.post.PostClubScopeRepository;
+import mangpo.server.repository.post.PostRepository;
+import mangpo.server.repository.user.LikedRepository;
+import mangpo.server.repository.user.UserAuthorityRepository;
+import mangpo.server.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +47,7 @@ public class AdminService {
         userAuthorityRepository.deleteAllByUser(user);
 
 
-        Post post = postRepository.findByUser(user);
+        Post post = postRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 책입니다."));
         pcsRepository.deleteAllByPost(post);
         postRepository.deleteAllByUser(user);
 

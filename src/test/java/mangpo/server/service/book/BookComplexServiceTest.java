@@ -1,16 +1,15 @@
 package mangpo.server.service.book;
 
 import mangpo.server.dto.book.CreateBookDto;
-import mangpo.server.entity.ClubBookUser;
+import mangpo.server.entity.cbu.ClubBookUser;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.book.BookCategory;
 import mangpo.server.entity.book.BookInfo;
 import mangpo.server.entity.post.Post;
 import mangpo.server.entity.user.User;
-import mangpo.server.service.ClubBookUserService;
+import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.post.PostService;
 import mangpo.server.service.user.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

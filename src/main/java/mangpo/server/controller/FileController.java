@@ -2,8 +2,7 @@ package mangpo.server.controller;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.DeleteFilesDto;
-import mangpo.server.service.S3Service;
+import mangpo.server.service.common.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

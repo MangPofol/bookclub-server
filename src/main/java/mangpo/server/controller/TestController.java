@@ -2,8 +2,8 @@ package mangpo.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.FcmServcie;
-import mangpo.server.repository.PostRepository;
+import mangpo.server.service.common.FcmServcie;
+import mangpo.server.repository.post.PostRepository;
 import mangpo.server.service.book.BookService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

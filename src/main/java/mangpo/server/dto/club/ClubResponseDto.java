@@ -1,7 +1,7 @@
 package mangpo.server.dto.club;
 
 import lombok.Data;
-import mangpo.server.entity.Club;
+import mangpo.server.entity.club.Club;
 
 import java.time.LocalDateTime;
 

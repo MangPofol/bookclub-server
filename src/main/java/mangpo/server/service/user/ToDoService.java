@@ -7,7 +7,7 @@ import mangpo.server.dto.todo.ToDoListCreateDto;
 import mangpo.server.dto.todo.ToDoDeleteDto;
 import mangpo.server.entity.user.ToDo;
 import mangpo.server.entity.user.User;
-import mangpo.server.repository.ToDoRepository;
+import mangpo.server.repository.user.ToDoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

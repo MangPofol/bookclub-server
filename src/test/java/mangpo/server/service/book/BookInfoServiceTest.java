@@ -1,8 +1,7 @@
 package mangpo.server.service.book;
 
 import mangpo.server.entity.book.BookInfo;
-import mangpo.server.repository.BookInfoRepository;
-import mangpo.server.service.book.BookInfoService;
+import mangpo.server.repository.book.BookInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

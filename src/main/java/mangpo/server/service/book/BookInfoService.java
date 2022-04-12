@@ -2,7 +2,7 @@ package mangpo.server.service.book;
 
 import lombok.RequiredArgsConstructor;
 import mangpo.server.entity.book.BookInfo;
-import mangpo.server.repository.BookInfoRepository;
+import mangpo.server.repository.book.BookInfoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

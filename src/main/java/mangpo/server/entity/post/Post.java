@@ -2,13 +2,12 @@ package mangpo.server.entity.post;
 
 import lombok.*;
 import mangpo.server.dto.post.PostRequestDto;
-import mangpo.server.entity.*;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.common.BaseTimeEntity;
+import mangpo.server.entity.user.Liked;
 import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

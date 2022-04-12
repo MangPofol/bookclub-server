@@ -1,7 +1,7 @@
 package mangpo.server.dto.club;
 
 import lombok.Data;
-import mangpo.server.entity.Invite;
+import mangpo.server.entity.club.Invite;
 
 @Data
 public class InviteResponseDto {
