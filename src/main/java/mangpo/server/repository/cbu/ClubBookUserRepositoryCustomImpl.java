@@ -11,7 +11,7 @@ import mangpo.server.entity.user.User;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static mangpo.server.entity.QClubBookUser.clubBookUser;
+import static mangpo.server.entity.cbu.QClubBookUser.clubBookUser;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 

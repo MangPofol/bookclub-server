@@ -2,35 +2,35 @@ package mangpo.server.service.book;
 
 import mangpo.server.entity.book.BookInfo;
 import mangpo.server.repository.book.BookInfoRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
 @Transactional
-@RunWith(MockitoJUnitRunner.class)
-class BookInfoServiceTest{
+@ExtendWith(MockitoExtension.class)
+class BookInfoServiceTest {
 
     @InjectMocks
     private BookInfoService bookInfoService;
 
     @Mock
-    private BookInfoRepository mockedBookInfoRepository;
+    private BookInfoRepository bookInfoRepository;
 
-    private BookInfo bookInfo;
+    private static BookInfo bookInfo;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
+    @BeforeAll
+    static void setup() {
+//        MockitoAnnotations.openMocks(this);
 
         Long id = 1L;
         String name = "bookInfo_1";
@@ -46,27 +46,31 @@ class BookInfoServiceTest{
     @Test
     void createBookInfo_정상() {
         //given
-        given(mockedBookInfoRepository.save(any())).willReturn(bookInfo);
-        given(mockedBookInfoRepository.findByIsbn(any())).willReturn(Optional.empty());
+        given(bookInfoRepository.save(any())).willReturn(bookInfo);
+        given(bookInfoRepository.findByIsbn(any())).willReturn(Optional.empty());
 
         //when
-        Long resultId = bookInfoService.createBookInfo(this.bookInfo);
+        Long resultId = bookInfoService.createBookInfo(bookInfo);
 
         //then
         assertThat(resultId).isEqualTo(bookInfo.getId());
+
+        then(bookInfoRepository).should(times(1)).findByIsbn(bookInfo.getIsbn());
+        then(bookInfoRepository).should(times(1)).save(bookInfo);
     }
 
     @Test
     void createBookInfo_중복() {
         //given
-        given(mockedBookInfoRepository.save(any())).willReturn(bookInfo);
-        given(mockedBookInfoRepository.findByIsbn(any())).willReturn(Optional.of(bookInfo));
-
+        given(bookInfoRepository.findByIsbn(any())).willReturn(Optional.of(bookInfo));
 
         //when then
-        assertThatThrownBy(() ->  bookInfoService.createBookInfo(this.bookInfo))
+        assertThatThrownBy(() -> bookInfoService.createBookInfo(bookInfo))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 등록된 책 정보입니다.");
+
+        then(bookInfoRepository).should(times(1)).findByIsbn(bookInfo.getIsbn());
+        then(bookInfoRepository).should(never()).save(any());
     }
 
     @Test
@@ -74,12 +78,62 @@ class BookInfoServiceTest{
         //given
         BookInfo noIsbn = BookInfo.builder().build();
 
-        given(mockedBookInfoRepository.save(any())).willReturn(noIsbn);
-        given(mockedBookInfoRepository.findByIsbn(any())).willReturn(Optional.empty());
-
         //when then
-        assertThatThrownBy(() ->  bookInfoService.createBookInfo(noIsbn))
+        assertThatThrownBy(() -> bookInfoService.createBookInfo(noIsbn))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("isbn 정보가 없습니다.");
+
+        then(bookInfoRepository).should(never()).save(any());
     }
+
+    @Test
+    void findBookInfoByIsbn() {
+        //given
+        given(bookInfoRepository.findByIsbn(any())).willReturn(Optional.of(bookInfo));
+
+        //when
+        BookInfo bi = bookInfoService.findBookInfoByIsbn(bookInfo.getIsbn());
+
+        //then
+        then(bookInfoRepository).should(times(1)).findByIsbn(any());
+    }
+
+    @Test
+    void findBookInfoById() {
+        //given
+        given(bookInfoRepository.findById(any())).willReturn(Optional.of(bookInfo));
+
+        //when
+        BookInfo bi = bookInfoService.findBookInfoById(bookInfo.getId());
+
+        //then
+        then(bookInfoRepository).should(times(1)).findById(any());
+    }
+
+    @Test
+    void createOrFindBookInfo_정상() {
+        //given
+        given(bookInfoRepository.findByIsbn(any())).willReturn(Optional.empty());
+        given(bookInfoRepository.save(any())).willReturn(bookInfo);
+
+        //when
+        BookInfo orFindBookInfo = bookInfoService.createOrFindBookInfo(bookInfo);
+
+        //then
+        assertThat(orFindBookInfo).isEqualTo(bookInfo);
+    }
+
+    @Test
+    void createOrFindBookInfo_isbn_중복() {
+        //given
+        given(bookInfoRepository.findByIsbn(any())).willReturn(Optional.of(bookInfo));
+
+        //when
+        BookInfo orFindBookInfo = bookInfoService.createOrFindBookInfo(bookInfo);
+
+        //then
+        assertThat(orFindBookInfo).isEqualTo(bookInfo);
+    }
+
+
 }
