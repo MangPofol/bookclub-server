@@ -97,5 +97,24 @@ public class User extends BaseTimeEntity {
         this.emailValidCode = emailValidCode;
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", sex=" + sex +
+                ", birthdate=" + birthdate +
+                ", nickname='" + nickname + '\'' +
+                ", introduce='" + introduce + '\'' +
+                ", style='" + style + '\'' +
+                ", goal='" + goal + '\'' +
+                ", profileImgLocation='" + profileImgLocation + '\'' +
+                ", genres=" + genres +
+                ", todos=" + todos +
+                ", isDormant=" + isDormant +
+                ", emailValidCode='" + emailValidCode + '\'' +
+                ", userAuthorityList=" + userAuthorityList +
+                '}';
+    }
 }

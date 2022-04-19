@@ -35,4 +35,14 @@ public class Book extends BaseTimeEntity {
     public void changeCategory(BookCategory bookCategory){
         this.bookCategory = bookCategory;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", bookInfo=" + bookInfo +
+                ", bookCategory=" + bookCategory +
+                ", posts=" + posts +
+                '}';
+    }
 }

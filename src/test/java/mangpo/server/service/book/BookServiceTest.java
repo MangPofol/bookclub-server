@@ -8,13 +8,14 @@ import mangpo.server.entity.user.User;
 import mangpo.server.repository.book.BookRepository;
 import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.user.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -24,30 +25,31 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 @Transactional
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class BookServiceTest {
 
     @InjectMocks
     private BookService bookService;
 
     @Mock
-    private BookRepository mockBookRepository;
+    private BookRepository bookRepository;
     @Mock
-    private ClubBookUserService mockCbuService;
+    private ClubBookUserService cbuService;
     @Mock
-    private UserService mockUserService;
+    private UserService userService;
 
-    private User user1;
-    private User user2;
+    private static User user1;
+    private static User user2;
 
     private ClubBookUser cbu;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
+    @BeforeAll
+    static void setUp() throws Exception {
 
         user1 = User.builder()
                 .id(1L)
@@ -99,15 +101,16 @@ class BookServiceTest {
         List<ClubBookUser> cbuList = new ArrayList<>();
         cbuList.add(cbu1);
 
-        given(mockUserService.findById(any())).willReturn(user1);
-        given(mockBookRepository.save(any())).willReturn(book1);
-        given(mockCbuService.findListByUserAndClubIsNullAndBookIsNotNull(any())).willReturn(cbuList);
+        given(userService.findById(any())).willReturn(user1);
+        given(bookRepository.save(any())).willReturn(book1);
+        given(cbuService.findListByUserAndClubIsNullAndBookIsNotNull(any())).willReturn(cbuList);
 
         //when
-        bookService.createBookWithValidation(book1, book1.getBookInfo().getIsbn(), user1.getId());
+        Long bookId = bookService.createBookWithValidation(book1, book1.getBookInfo().getIsbn(), user1.getId());
 
         //then
-        assertThat(book1.getId()).isEqualTo(1L);
+        assertThat(bookId).isEqualTo(book1.getId());
+        then(bookRepository).should(times(1)).save(book1);
     }
 
     // 유저 : 책 2개 같은 isbn
@@ -145,17 +148,19 @@ class BookServiceTest {
         List<ClubBookUser> cbuList = new ArrayList<>();
         cbuList.add(cbu1);
 
-        given(mockUserService.findById(any())).willReturn(user1);
-        given(mockBookRepository.save(any())).willReturn(book1);
-        given(mockCbuService.findListByUserAndClubIsNullAndBookIsNotNull(any())).willReturn(cbuList);
+        given(userService.findById(any())).willReturn(user1);
+        given(cbuService.findListByUserAndClubIsNullAndBookIsNotNull(any())).willReturn(cbuList);
 
 
         //when then
         assertThatThrownBy(() -> bookService.createBookWithValidation(book1, book1.getBookInfo().getIsbn(), user1.getId()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 유저가 등록한 책입니다.");
+
+        then(bookRepository).should(never()).save(book1);
     }
 
+    //통합으로
     // 유저 : 책 3개, 2 BEFORE 1 NOW
     @Test
     void findBooksByCurrentUserAndBookCategory() {
@@ -198,17 +203,16 @@ class BookServiceTest {
         cbuList.add(cbu2);
         cbuList.add(cbu3);
 
-        given(mockUserService.findById(any())).willReturn(user1);
-        given(mockCbuService.findByUserAndClubIsNull(any())).willReturn(cbuList);
+        given(userService.findUserFromToken()).willReturn(user1);
+        given(cbuService.findByUserAndClubIsNull(any())).willReturn(cbuList);
 
         //when
         Set<Book> books = bookService.findBooksByCurrentUserAndBookCategory(BookCategory.BEFORE);
 
         //then
-        assertThat(books.size()).isEqualTo(2);
-        assertThat(books.contains(book1)).isTrue();
-        assertThat(books.contains(book2)).isTrue();
-        assertThat(books.contains(book3)).isFalse();
-
+        assertThat(books)
+                .hasSize(2)
+                .contains(book1,book2)
+                .doesNotContain(book3);
     }
 }

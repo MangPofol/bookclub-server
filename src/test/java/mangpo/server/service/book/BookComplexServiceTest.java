@@ -10,48 +10,46 @@ import mangpo.server.entity.user.User;
 import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.post.PostService;
 import mangpo.server.service.user.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @Transactional
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class BookComplexServiceTest {
 
     @InjectMocks
     private BookComplexService bookComplexService;
 
     @Mock
-    private BookInfoService mockBookInfoService;
+    private BookInfoService bookInfoService;
     @Mock
-    private BookService mockBookService;
+    private BookService bookService;
     @Mock
-    private ClubBookUserService mockCbuService;
+    private ClubBookUserService cbuService;
     @Mock
-    private UserService mockUserService;
+    private UserService userService;
     @Mock
-    private PostService mockPostService;
+    private PostService postService;
 
-    private User user;
-    private Post post;
-    private ClubBookUser cbu;
-    private Book book;
-    private BookInfo bookInfo;
+    private static User user;
+    private static Post post;
+    private static ClubBookUser cbu;
+    private static Book book;
+    private static BookInfo bookInfo;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
-
+    @BeforeAll
+    static void setUp() throws Exception {
         user = User.builder()
                 .id(1L)
                 .build();
@@ -76,10 +74,10 @@ class BookComplexServiceTest {
     @Test
     void createBookAndRelated() {
         //given
-        given(mockUserService.findUserFromToken()).willReturn(user);
-        given(mockBookInfoService.createOrFindBookInfo(any())).willReturn(bookInfo);
-        given(mockCbuService.createClubBookUser(any())).willReturn(cbu.getId());
-        given(mockBookService.createBookWithValidation(any(),any(),any())).willReturn(book.getId());
+        given(userService.findUserFromToken()).willReturn(user);
+        given(bookInfoService.createOrFindBookInfo(any())).willReturn(bookInfo);
+        given(cbuService.createClubBookUser(any())).willReturn(cbu.getId());
+        given(bookService.createBookWithValidation(any(),any(),any())).willReturn(book.getId());
 
         CreateBookDto createBookDto = new CreateBookDto("name", "isbn", BookCategory.AFTER);
 
@@ -88,18 +86,20 @@ class BookComplexServiceTest {
 
         //then
         assertThat(bookId).isEqualTo(book.getId());
-
+        then(bookService).should(times(1)).createBookWithValidation(any(),any(),any());
     }
 
     @Test
     void deleteBookAndRelated() {
         //given
+        given(bookService.findBookById(any())).willReturn(book);
+
         //when
         bookComplexService.deleteBookAndRelated(book.getId());
 
         //then
-        Mockito.verify(mockBookService).findBookById(book.getId());
-        Mockito.verify(mockCbuService).deleteAll(any());
-        Mockito.verify(mockPostService).deleteAllWithCascade(any());
+        then(bookService).should(times(1)).findBookById(any());
+        then(cbuService).should(times(1)).deleteAll(any());
+        then(postService).should(times(1)).deleteAllWithCascade(any());
     }
 }

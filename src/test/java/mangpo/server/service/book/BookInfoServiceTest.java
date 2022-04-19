@@ -127,6 +127,7 @@ class BookInfoServiceTest {
     void createOrFindBookInfo_isbn_중복() {
         //given
         given(bookInfoRepository.findByIsbn(any())).willReturn(Optional.of(bookInfo));
+//        willDoNothing().given(bookComplexService).deleteBookAndRelated(anyLong());
 
         //when
         BookInfo orFindBookInfo = bookInfoService.createOrFindBookInfo(bookInfo);
