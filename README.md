@@ -59,11 +59,13 @@
 * 기획에서 요구사항 도출 및 데이터베이스 설계
 * 기능 추가에 따른 테이블 추가 및 수정(반정규화)
 * HTTP API 개발
+* 좋은 아키텍처에 대한 고민
 * 기능 테스트 작성
+* Jacoco 이용한 테스트 커버리지 분석
 * 더 좋은 코드 품질과 성능을 위한 지속적 리팩토링
 * AWS Beanstalk을 이용한 배포
 * Github actions를 이용한 배포 자동화
-* Ngrinder 이용한 성능 테스트
+* nGrinder 이용한 성능 테스트
 * 기타: 홍보 영상 제작, 사용자 경험 설문조사
 
 
@@ -74,8 +76,15 @@
 * notification 기능 개발 및 메세지 큐 적용
 
 
-
-
+### 문제 해결 & 학습 블로깅
+* 테스트 코드 학습<br>https://choibulldog.tistory.com/67
+* 테스트 코드 리팩토링<br>https://choibulldog.tistory.com/50
+* Jacoco 이용<br>https://choibulldog.tistory.com/66
+* 서버 성능 테스트 학습<br>https://choibulldog.tistory.com/61
+* nGrinder 이용한 성능 테스트<br>https://choibulldog.tistory.com/60
+* Controller와 Service의 역할에 대한 고민<br>https://choibulldog.tistory.com/52
+* DB table 개선<br>https://choibulldog.tistory.com/49
+* @Builder 관련 NPE 해결<br>https://choibulldog.tistory.com/43
 
 
 ### UI
