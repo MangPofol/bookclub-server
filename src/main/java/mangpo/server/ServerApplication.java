@@ -22,5 +22,4 @@ public class ServerApplication {
 				.properties(APPLICATION_LOCATIONS)
 				.run(args);
 	}
-
 }

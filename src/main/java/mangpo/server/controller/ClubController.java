@@ -98,4 +98,10 @@ public class ClubController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{clubId}/users/{userId}")
+    public ResponseEntity<?> deleteUserFromClub(@PathVariable Long clubId, @PathVariable Long userId){
+        clubService.deleteUserFromClub(clubId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

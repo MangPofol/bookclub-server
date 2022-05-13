@@ -5,6 +5,7 @@ import mangpo.server.dto.club.InviteRequestDto;
 import mangpo.server.entity.club.Club;
 import mangpo.server.entity.club.Invite;
 import mangpo.server.entity.user.User;
+import mangpo.server.repository.cbu.ClubBookUserRepository;
 import mangpo.server.repository.club.ClubRepository;
 import mangpo.server.repository.club.InviteRepository;
 import mangpo.server.service.user.UserService;
@@ -21,6 +22,7 @@ public class InviteService {
 
     private final InviteRepository inviteRepository;
     private final ClubRepository clubRepository;
+    private final ClubBookUserRepository cbuRepository;
     private final UserService userService;
 
     //ToDo: 추후 firebase push message 추가
@@ -29,7 +31,7 @@ public class InviteService {
         User user = userService.findUserByEmail(inviteRequestDto.getUserEmailToInvite());
         Club club = clubRepository.findById(inviteRequestDto.getClubId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 클럽입니다."));
 
-        if(inviteRepository.findByUserAndClub(user, club).isPresent())
+        if(inviteRepository.findByUserAndClub(user, club).isPresent() || cbuRepository.existsByUserAndClub(user,club))
             throw new IllegalStateException("이미 초대한 클럽원 입니다");
 
 

@@ -113,4 +113,8 @@ public class ClubBookUserService {
     public List<ClubBookUser> findListByBook(Book book) {
         return cbuRepository.findListByBook(book);
     }
+
+    public void deleteAllByUserAndClub(User user, Club club) {
+        cbuRepository.deleteAllByUserAndClub(user,club);
+    }
 }

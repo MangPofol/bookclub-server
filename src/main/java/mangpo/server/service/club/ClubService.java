@@ -173,4 +173,12 @@ public class ClubService {
         ClubBookUser cbu = cbuService.findByClubAndBookAndUser(club, book, user);
         cbuService.deleteCbu(cbu);
     }
+
+    //회원 클럽에서 탈퇴
+    @Transactional
+    public void deleteUserFromClub(Long clubId, Long userId) {
+        User user = userService.findById(userId);
+        Club club = findById(clubId);
+        cbuService.deleteAllByUserAndClub(user,club);
+    }
 }
