@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.*;
 import mangpo.server.dto.club.*;
 import mangpo.server.entity.club.Club;
-import mangpo.server.service.club.ClubComplexViewService;
+import mangpo.server.service.club.ClubViewService;
 import mangpo.server.service.club.ClubService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +24,11 @@ public class ClubController {
 
 
     private final ClubService clubService;
-    private final ClubComplexViewService clubComplexViewService;
+    private final ClubViewService clubViewService;
 
     @GetMapping("/{clubId}")
     public Result<ClubInfoResponseDto> getClubInfoByClubId(@PathVariable Long clubId) {
-        ClubInfoResponseDto clubInfoResponseDto = clubComplexViewService.getClubInfoByClubId(clubId);
+        ClubInfoResponseDto clubInfoResponseDto = clubViewService.getClubInfoByClubId(clubId);
         return new Result<>(clubInfoResponseDto);
     }
 
@@ -85,7 +85,7 @@ public class ClubController {
 
     @GetMapping("/{clubId}/users/{userId}/info")
     public Result<ClubUserInfoDto> getClubUserInfo(@PathVariable Long clubId, @PathVariable Long userId){
-        ClubUserInfoDto res = clubComplexViewService.findClubUserInfo(clubId, userId);
+        ClubUserInfoDto res = clubViewService.findClubUserInfo(clubId, userId);
         return new Result<>(res);
 
     }

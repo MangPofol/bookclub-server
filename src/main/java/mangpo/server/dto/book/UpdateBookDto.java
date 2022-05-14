@@ -8,8 +8,6 @@ import mangpo.server.entity.book.Book;
 import mangpo.server.entity.book.BookCategory;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UpdateBookDto {
     private BookCategory category;
 

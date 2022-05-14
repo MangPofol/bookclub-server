@@ -1,6 +1,8 @@
 package mangpo.server.service.club;
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.TrendingPostDto;
+import mangpo.server.dto.club.ClubResponseDto;
 import mangpo.server.dto.club.ClubUserInfoDto;
 import mangpo.server.dto.club.ClubInfoResponseDto;
 import mangpo.server.dto.post.PostResponseDto;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ClubComplexViewService {
+public class ClubViewService {
 
     private final UserService userService;
     private final ClubService clubService;
@@ -58,23 +60,36 @@ public class ClubComplexViewService {
         //기준 이용 필터링
         //Trending Posts(memo) 노출 기준 : 좋아요 과반 + 댓글 클럽원수*2, 만족하는거 없으면 비워두기
         int usersSize = usersInClub.size();
-        List<PostResponseDto> filteredPostsDto = filterWithPolicy(clubAllPosts, usersSize, res);
-
-
-        res.setClubInfo(club);
-        res.setBookAndUserDtos(cbuListByClub);
-        res.setTrendingPosts(filteredPostsDto);
-        res.setUsersInfo(usersInClub);
+        List<Post> trendingPosts = filterWithPolicy(clubAllPosts, usersSize, res);
 
         res.setTotalUser(usersSize);
         res.setTotalPosts(clubAllPosts.size());
         res.setTotalBooks(clubBooks.size());
 
+        res.setClubResponseDto(new ClubResponseDto(club));
+
+        res.setUsersInfo(usersInClub);
+        res.setBookAndUserDtos(cbuListByClub);
+
+        List<TrendingPostDto> trendingPostDtos = new ArrayList<>();
+        for (Post p : trendingPosts) {
+
+            TrendingPostDto dto = TrendingPostDto.builder()
+                    .nickname(p.getUser().getNickname())
+                    .profileImgLocation(p.getUser().getProfileImgLocation())
+                    .bookName(p.getBook().getBookInfo().getName())
+                    .postResponseDto(new PostResponseDto(p))
+                    .build();
+            trendingPostDtos.add(dto);
+        }
+
+        res.setTrendingPostDtos(trendingPostDtos);
+
         return res;
     }
 
     //like,comment count도 함
-    private List<PostResponseDto> filterWithPolicy(List<Post> clubAllPosts, int usersSize, ClubInfoResponseDto res) {
+    private List<Post> filterWithPolicy(List<Post> clubAllPosts, int usersSize, ClubInfoResponseDto res) {
         return clubAllPosts.stream()
                 .filter(p -> {
                     Integer cnt = likedService.countByPost(p);
@@ -86,7 +101,6 @@ public class ClubComplexViewService {
                     res.addComment(cnt);
                     return cnt > usersSize * 2L;
                 })
-                .map(PostResponseDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +125,7 @@ public class ClubComplexViewService {
         }
 
         int totalPosts = allPosts.size();
-        LocalDateTime invitedDate  = cbuService.findByUserAndClubAndBookIsNull(user, club).getCreatedDate();
+        LocalDateTime invitedDate = cbuService.findByUserAndClubAndBookIsNull(user, club).getCreatedDate();
 
         return ClubUserInfoDto.builder()
                 .userResponseDto(new UserResponseDto(user))

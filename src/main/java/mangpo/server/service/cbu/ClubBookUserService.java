@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -53,7 +54,10 @@ public class ClubBookUserService {
     }
 
     public List<User> findUsersByClub(Club club){
-        return cbuRepository.findByClubAndUserIsNotNullAndBookIsNull(club);
+        return cbuRepository.findByClubAndUserIsNotNullAndBookIsNull(club)
+                .stream()
+                .map(ClubBookUser::getUser)
+                .collect(Collectors.toList());
     }
 
 //    public List<ClubBookUser> findClubBookUserByClub(Club club){

@@ -1,66 +1,38 @@
 package mangpo.server.dto.club;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import mangpo.server.dto.TrendingPostDto;
 import mangpo.server.dto.book.BookAndUserDto;
-import mangpo.server.dto.post.PostResponseDto;
 import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.cbu.ClubBookUser;
-import mangpo.server.entity.club.Club;
 import mangpo.server.entity.user.User;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 public class ClubInfoResponseDto {
 
-    private Long id;
-    private String name;
-    private Integer level;
-    private Long presidentId;
-    private String description;
-    private LocalDateTime lastAddBookDate;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
-
     //클럽 내부 전체 카운드
-    private Integer totalUser = 0;
-    private Integer totalPosts = 0;
-    private Integer totalBooks = 0;
-    private Integer totalComments = 0;
-    private Integer totalLikes = 0;
+//    @Builder.Default
+    private int totalUser = 0;
+//    @Builder.Default
+    private int totalPosts = 0;
+//    @Builder.Default
+    private int totalBooks = 0;
+//    @Builder.Default
+    private int totalComments = 0;
+//    @Builder.Default
+    private int totalLikes = 0;
 
+    private ClubResponseDto clubResponseDto;
 
     private List<UserResponseDto> userResponseDtos;
     private List<BookAndUserDto> bookAndUserDtos;//userId,bookId,isbn
-    private List<PostResponseDto> trendingPosts = new ArrayList<>();
-
-    public void setClubInfo(Club club) {
-        this.id = club.getId();
-        this.name = club.getName();
-        this.level = club.getLevel();
-        this.presidentId = club.getPresidentId();
-        this.description = club.getDescription();
-        this.lastAddBookDate = club.getLastAddBookDate();
-        this.createdDate = club.getCreatedDate();
-        this.modifiedDate = club.getModifiedDate();
-    }
-
-
-//    public void setHotMemo(List<Post> posts) {
-//        for (Post p : posts) {
-//            hotMemo.put(p.getId(), p.getTitle());
-//        }
-//
-//    }
-//
-//    public void setHotTopic(List<Post> posts) {
-//        for (Post p : posts) {
-//            hotTopic.put(p.getId(), p.getTitle());
-//        }
-//    }
+    private List<TrendingPostDto> trendingPostDtos;
 
     public void setUsersInfo(List<User> user) {
         this.userResponseDtos = user.stream()
