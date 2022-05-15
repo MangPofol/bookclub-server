@@ -1,6 +1,7 @@
 package mangpo.server.service.club;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mangpo.server.dto.TrendingPostDto;
 import mangpo.server.dto.club.ClubResponseDto;
 import mangpo.server.dto.club.ClubUserInfoDto;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -80,6 +82,7 @@ public class ClubViewService {
                     .bookName(p.getBook().getBookInfo().getName())
                     .postResponseDto(new PostResponseDto(p))
                     .build();
+
             trendingPostDtos.add(dto);
         }
 

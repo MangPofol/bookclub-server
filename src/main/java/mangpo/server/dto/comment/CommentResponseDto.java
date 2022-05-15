@@ -11,6 +11,7 @@ public class CommentResponseDto {
     private Long commentId;
     private Long parentCommentId;
     private String userNickname;
+    private String profileImgLocation;
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -19,6 +20,7 @@ public class CommentResponseDto {
         this.commentId = comment.getId();
         this.parentCommentId = comment.getParentCommentId();
         this.userNickname = comment.getUser().getNickname();
+        this.profileImgLocation = comment.getUser().getProfileImgLocation();
         this.content = comment.getContent();
         this.createdDate = comment.getCreatedDate();
         this.modifiedDate = comment.getModifiedDate();
