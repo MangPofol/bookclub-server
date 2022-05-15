@@ -5,6 +5,7 @@ import mangpo.server.entity.common.BaseTimeEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -43,5 +44,18 @@ public class Club extends BaseTimeEntity {
 
     public void updateLastAddBookDate(){
         this.lastAddBookDate = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Club club = (Club) o;
+        return Objects.equals(id, club.id) && Objects.equals(name, club.name) && Objects.equals(level, club.level) && Objects.equals(presidentId, club.presidentId) && Objects.equals(description, club.description) && Objects.equals(lastAddBookDate, club.lastAddBookDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, level, presidentId, description, lastAddBookDate);
     }
 }

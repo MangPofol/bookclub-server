@@ -49,4 +49,8 @@ public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>
     void deleteAllByUserAndClub(User user, Club club);
 
     boolean existsByUserAndClub(User user, Club club);
+
+    boolean existsByClubAndBookAndUser(Club club, Book book, User user);
+
+    List<ClubBookUser> findByClubIsNotNullAndBookAndUser(Book book, User user);
 }

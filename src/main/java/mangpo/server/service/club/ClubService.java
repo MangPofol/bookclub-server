@@ -181,4 +181,8 @@ public class ClubService {
         Club club = findById(clubId);
         cbuService.deleteAllByUserAndClub(user,club);
     }
+
+    public boolean isClubContainsBook(Club club, Book book, User user) {
+        return cbuService.isClubContainsBook(club,book,user);
+    }
 }

@@ -54,20 +54,22 @@ public class ClubController {
         return ResponseEntity.created(uriComponents.toUri()).body(clubResponseDto);
     }
 
-    //클럽화면에서 클럽에 책 추가하는 기능
-    //user,book만이 존재하는 ClubBookUser 엔티티의 정보를 이용해 새로운 ClubBookUser 엔티티를 만든다
-    @PostMapping("/{clubId}/books/{bookId}")
-    public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @PathVariable Long bookId) {
-        clubService.addClubToUserBook(clubId, bookId);
-        return ResponseEntity.noContent().build();
-    }
+//    ============자동화 완료=============
 
-    //ClubBook 삭제
-    @DeleteMapping("{clubId}/books/{bookId}")
-    public ResponseEntity<?> deleteBookFromClub(@PathVariable Long clubId, @PathVariable Long bookId){
-        clubService.deleteBookFromClub(clubId,bookId);
-        return ResponseEntity.noContent().build();
-    }
+//    //클럽화면에서 클럽에 책 추가하는 기능
+//    //user,book만이 존재하는 ClubBookUser 엔티티의 정보를 이용해 새로운 ClubBookUser 엔티티를 만든다
+//    @PostMapping("/{clubId}/books/{bookId}")
+//    public ResponseEntity<?> addClubToUserBook(@PathVariable Long clubId, @PathVariable Long bookId) {
+//        clubService.addClubToUserBook(clubId, bookId);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    //ClubBook 삭제
+//    @DeleteMapping("{clubId}/books/{bookId}")
+//    public ResponseEntity<?> deleteBookFromClub(@PathVariable Long clubId, @PathVariable Long bookId){
+//        clubService.deleteBookFromClub(clubId,bookId);
+//        return ResponseEntity.noContent().build();
+//    }
 
 
     @PatchMapping("/{clubId}")
@@ -92,6 +94,7 @@ public class ClubController {
 
 
     //invite
+//    자동화
     @PostMapping("/{clubId}/users")
     public ResponseEntity<?> addUserToClub(@PathVariable Long clubId) {
         clubService.addUserToClub(clubId);

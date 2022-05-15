@@ -20,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -33,7 +35,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-//    private final CommentService commentService;
+    //    private final CommentService commentService;
     private final ClubBookUserService cbuService;
     private final ClubService clubService;
     private final PostClubScopeService pcsService;
@@ -47,10 +49,10 @@ public class PostService {
     // 애초에 이렇게 많이 가져다 쓰는게 틀린건가?
 
     @Transactional
-    public Long createPost(PostRequestDto postRequestDto){
-        Book requestBook = bookService.findBookById(postRequestDto.getBookId());
+    public Long createPost(PostRequestDto postRequestDto) {
+        Book book = bookService.findBookById(postRequestDto.getBookId());
         Post post = postRequestDto.toEntityExceptBookAndUser();
-        post.changeBook(requestBook);
+        post.changeBook(book);
 
         addLinks(postRequestDto, post);
         addPostImageLocations(postRequestDto, post);
@@ -60,14 +62,38 @@ public class PostService {
 
         postRepository.save(post);
 
-        if (postRequestDto.getScope() == PostScope.CLUB)
-            createAndPersistPostClubScope(postRequestDto.getClubIdListForScope(), post);
+        if (postRequestDto.getScope() == PostScope.CLUB) {
+            addPostToClubAndBookIfNotExists(postRequestDto, book, post, user);
+        }
 
         return post.getId();
     }
 
+    private void addPostToClubAndBookIfNotExists(PostRequestDto postRequestDto, Book book, Post post, User user) {
+        for (Long clubId : postRequestDto.getClubIdListForScope()) {
+            Club club = clubService.findById(clubId);
+            if (!clubService.isClubContainsBook(club, book, user)) {
+                //cbu에 book 추가, 관련 메세지, pcs 추가
+                clubService.addClubToUserBook(club.getId(), book.getId());
+            }
+
+            club.updateLastAddBookDate();
+            createPostClubScope(club, post);
+        }
+    }
+
+    private void createPostClubScope(Club club, Post post) {
+        PostClubScope pcs = PostClubScope.builder()
+                .post(post)
+                .club(club)
+                .clubName(club.getName())
+                .build();
+
+        pcsService.createPCS(pcs);
+    }
+
     private void addLinks(PostRequestDto postRequestDto, Post post) {
-        for(LinkRequestDto l : postRequestDto.getLinkRequestDtos()){
+        for (LinkRequestDto l : postRequestDto.getLinkRequestDtos()) {
             Link link = Link.builder()
                     .post(post)
                     .hyperlinkTitle(l.getHyperlinkTitle())
@@ -90,7 +116,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostRequestDto postRequestDto){
+    public void updatePost(Long postId, PostRequestDto postRequestDto) {
         Post post = findPostWithImgLoc(postId);
         PostScope ogScope = post.getScope();
 
@@ -98,11 +124,20 @@ public class PostService {
         post.getPostImageLocations().clear();
         addPostImageLocations(postRequestDto, post);
 
+
+
         if (ogScope == PostScope.CLUB) {
+            List<Club> clubScopeListOfDeletedPost =  pcsService.findAllByPost(post).stream()
+                    .map(PostClubScope::getClub)
+                    .collect(Collectors.toList());
+
             pcsService.deleteAllPcsByPost(post);
+            deletePostAndBookFromClubIfNoPostExists(post, clubScopeListOfDeletedPost);
         }
-        if (postRequestDto.getScope() == PostScope.CLUB)
-            createAndPersistPostClubScope(postRequestDto.getClubIdListForScope(), post);
+
+        if (postRequestDto.getScope() == PostScope.CLUB){
+            addPostToClubAndBookIfNotExists(postRequestDto, post.getBook(), post, userService.findUserFromToken());
+        }
 
         //remove all links, then add all
         post.getLinks().clear();
@@ -111,31 +146,39 @@ public class PostService {
         post.update(postRequestDto);
     }
 
-    private void createAndPersistPostClubScope( List<Long> clubIdListForScope, Post post) {
-        for (Long clubId : clubIdListForScope) {
-            Club club = clubService.findById(clubId);
-
-            club.updateLastAddBookDate();
-
-            PostClubScope pcs = PostClubScope.builder()
-                    .post(post)
-                    .club(club)
-                    .clubName(club.getName())
-                    .build();
-
-            pcsService.createPCS(pcs);
-        }
-    }
+//    private void createAndPersistPostClubScope( List<Long> clubIdListForScope, Post post) {
+//        for (Long clubId : clubIdListForScope) {
+//            Club club = clubService.findById(clubId);
+//
+//            club.updateLastAddBookDate();
+//
+//            PostClubScope pcs = PostClubScope.builder()
+//                    .post(post)
+//                    .club(club)
+//                    .clubName(club.getName())
+//                    .build();
+//
+//            pcsService.createPCS(pcs);
+//        }
+//    }
 
     @Transactional
-    public void deletePostById(Long postId){
+    public void deletePostById(Long postId) {
         Post post = findPostById(postId);
 
         List<Liked> likedList = likedService.findAllByPost(post);
         likedService.deleteAll(likedList);
 
-        List<PostClubScope> pcsList = pcsService.findAllByPost(post);
-        pcsService.deleteAll(pcsList);
+
+        if (post.getScope() == PostScope.CLUB) {
+            List<Club> clubScopeListOfDeletedPost = pcsService.findAllByPost(post).stream()
+                    .map(PostClubScope::getClub)
+                    .collect(Collectors.toList());
+
+            pcsService.deleteAllPcsByPost(post);
+            deletePostAndBookFromClubIfNoPostExists(post, clubScopeListOfDeletedPost);
+        }
+
         //순환참조 방지용  repository 호출
         List<Comment> commentList = commentRepository.findListByPost(post);
         commentRepository.deleteAll(commentList);
@@ -143,32 +186,49 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+    private void deletePostAndBookFromClubIfNoPostExists(Post post, List<Club> clubScopeListOfDeletedPost) {
+        Set<Club> clubSet = new HashSet<>();
+
+        for (Post p : findListByBook(post.getBook())) {
+            for (PostClubScope pcs : pcsService.findAllByPost(p)) {
+                clubSet.add(pcs.getClub());
+            }
+        }
+
+        for (Club deletedClub : clubScopeListOfDeletedPost) {
+            if(!clubSet.contains(deletedClub)){
+                ClubBookUser cbu = cbuService.findByClubAndBookAndUser(deletedClub, post.getBook(), userService.findUserFromToken());
+                cbuService.deleteCbu(cbu);
+            }
+        }
+    }
+
     @Transactional
-    public void deleteAll(List<Post> posts){
+    public void deleteAll(List<Post> posts) {
         postRepository.deleteAll(posts);
     }
 
-    public void deleteAllWithCascade(List<Post> posts){
+    public void deleteAllWithCascade(List<Post> posts) {
         for (Post post : posts) {
             deletePostById(post.getId());
         }
     }
 
-    public Post findPostById(Long id){
-        return postRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
+    public Post findPostById(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
-    public Post findPostWithImgLoc(Long id){
-        return postRepository.findFetchById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 포스트입니다."));
+    public Post findPostWithImgLoc(Long id) {
+        return postRepository.findFetchById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포스트입니다."));
     }
 
-    public List<Post> findListByBookId(Long bookId){
+    public List<Post> findListByBookId(Long bookId) {
         Book book = bookService.findBookById(bookId);
         return postRepository.findByBook(book);
     }
 
     @Transactional
-    public void doLikePost(Long postId){
+    public void doLikePost(Long postId) {
         User user = userService.findUserFromToken();
         Post post = findPostById(postId);
 
@@ -182,7 +242,7 @@ public class PostService {
     }
 
     @Transactional
-    public void undoLikePost(Long postId){
+    public void undoLikePost(Long postId) {
         User user = userService.findUserFromToken();
         Post post = findPostById(postId);
 
@@ -192,7 +252,7 @@ public class PostService {
         likedService.deleteLiked(liked);
     }
 
-    public Integer findTotalCountOfUser(){
+    public Integer findTotalCountOfUser() {
         User user = userService.findUserFromToken();
 
         List<ClubBookUser> cbuList = cbuService.findByUserAndClubIsNull(user);
@@ -228,10 +288,10 @@ public class PostService {
 
         Iterator<Post> iter = posts.iterator();
 
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             Post p = iter.next();
 
-            if(p.getScope() == PostScope.PRIVATE)
+            if (p.getScope() == PostScope.PRIVATE)
                 iter.remove();
             else if (p.getScope() == PostScope.CLUB) {
                 List<PostClubScope> listByPost = pcsService.findListWithClubByPost(p);
@@ -245,7 +305,7 @@ public class PostService {
         }
     }
 
-    public List<Post> findListByBook(Book b){
+    public List<Post> findListByBook(Book b) {
         return postRepository.findListByBook(b);
     }
 

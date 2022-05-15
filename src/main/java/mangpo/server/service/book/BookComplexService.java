@@ -56,11 +56,11 @@ public class BookComplexService {
     public void deleteBookAndRelated(Long bookId) {
         Book book = bookService.findBookById(bookId);
 
-        List<ClubBookUser> listByBook = cbuService.findListByBook(book);
-        cbuService.deleteAll(listByBook);
-
         List<Post> postsByBookId = postService.findListByBookId(bookId);
         postService.deleteAllWithCascade(postsByBookId);
+
+        List<ClubBookUser> listByBook = cbuService.findListByBook(book);
+        cbuService.deleteAll(listByBook);
 
         bookService.deleteBook(bookId);
     }
