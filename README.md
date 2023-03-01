@@ -18,8 +18,12 @@
   <div align="center"><img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/archi.png" width="100%"/></div>
   <br>  
 </p>
+<br>
 
+### API 링크
+* https://documenter.getpostman.com/view/15985111/UV5RmLAa
 
+<br>
 ### 사용 기술, 개발 환경
 
 * Java, Spring Boot, Gradle
