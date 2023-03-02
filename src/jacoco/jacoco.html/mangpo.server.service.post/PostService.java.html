@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.service.post</a> &gt; <span class="el_source">PostService.java</span></div><h1>PostService.java</h1><pre class="source lang-java linenums">package mangpo.server.service.post;
+
+import lombok.RequiredArgsConstructor;
+import mangpo.server.dto.post.PostRequestDto;
+import mangpo.server.entity.*;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.post.*;
+import mangpo.server.entity.user.User;
+import mangpo.server.repository.*;
+import mangpo.server.service.cbu.ClubBookUserService;
+import mangpo.server.service.user.LikedService;
+import mangpo.server.service.book.BookService;
+import mangpo.server.service.club.ClubService;
+import mangpo.server.service.user.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class PostService {
+
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+//    private final CommentService commentService;
+    private final ClubBookUserService cbuService;
+    private final ClubService clubService;
+    private final PostClubScopeService pcsService;
+    private final BookService bookService;
+    private final UserService userService;
+    private final LikedService likedService;
+
+    //TODO:
+    // 이렇게 의존성이 많은 서비스는 어떻게 테스트를 작성해야 하지?
+    // 이걸 다 mocking 할 수 있는건가?
+    // 애초에 이렇게 많이 가져다 쓰는게 틀린건가?
+
+    @Transactional
+    public Long createPost(PostRequestDto postRequestDto){
+<span class="nc" id="L46">        Book requestBook = bookService.findBookById(postRequestDto.getBookId());</span>
+<span class="nc" id="L47">        Post post = postRequestDto.toEntityExceptBook();</span>
+<span class="nc" id="L48">        post.changeBook(requestBook);</span>
+
+<span class="nc" id="L50">        addPostImageLocations(postRequestDto, post);</span>
+
+//        Long postId = postService.createPost(post);
+<span class="nc" id="L53">        postRepository.save(post);</span>
+
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (postRequestDto.getScope() == PostScope.CLUB)</span>
+<span class="nc" id="L56">            createAndPersistPostClubScope(postRequestDto, post);</span>
+
+//        postRepository.save(post);
+<span class="nc" id="L59">        return post.getId();</span>
+    }
+
+    private void addPostImageLocations(PostRequestDto postRequestDto, Post post) {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        for (String imgLoc : postRequestDto.getPostImgLocations()) {</span>
+<span class="nc" id="L64">            PostImageLocation postImageLocation = PostImageLocation.builder()</span>
+<span class="nc" id="L65">                    .post(post)</span>
+<span class="nc" id="L66">                    .imgLocation(imgLoc)</span>
+<span class="nc" id="L67">                    .build();</span>
+
+<span class="nc" id="L69">            post.getPostImageLocations().add(postImageLocation);</span>
+<span class="nc" id="L70">        }</span>
+<span class="nc" id="L71">    }</span>
+
+    @Transactional
+    public void updatePost(Long postId, PostRequestDto postRequestDto){
+<span class="nc" id="L75">        Post post = findPostFetchJoinImgLoc(postId);</span>
+<span class="nc" id="L76">        PostScope ogScope = post.getScope();</span>
+<span class="nc" id="L77">        post.getPostImageLocations().clear();</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        for (String s:  postRequestDto.getPostImgLocations()) {</span>
+<span class="nc" id="L80">            PostImageLocation p = PostImageLocation.builder()</span>
+<span class="nc" id="L81">                    .post(post)</span>
+<span class="nc" id="L82">                    .imgLocation(s)</span>
+<span class="nc" id="L83">                    .build();</span>
+
+<span class="nc" id="L85">            post.getPostImageLocations().add(p);</span>
+<span class="nc" id="L86">        }</span>
+
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (ogScope == PostScope.CLUB) {</span>
+<span class="nc" id="L89">            pcsService.deleteAllPcsByPost(post);</span>
+        }
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (postRequestDto.getScope() == PostScope.CLUB)</span>
+<span class="nc" id="L92">            createAndPersistPostClubScope(postRequestDto, post);</span>
+
+<span class="nc" id="L94">        post.update(postRequestDto);</span>
+
+//        Post post = findById(postId);
+//        post.update(postRequestDto);
+<span class="nc" id="L98">    }</span>
+
+    private void createAndPersistPostClubScope(PostRequestDto requestDto, Post post) {
+
+<span class="nc" id="L102">        List&lt;Long&gt; clubIdListForScope = requestDto.getClubIdListForScope();</span>
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        for (Long clubId : clubIdListForScope) {</span>
+<span class="nc" id="L105">            Club club = clubService.findClub(clubId);</span>
+
+<span class="nc" id="L107">            PostClubScope pcs = PostClubScope.builder()</span>
+<span class="nc" id="L108">                    .post(post)</span>
+<span class="nc" id="L109">                    .club(club)</span>
+<span class="nc" id="L110">                    .clubName(club.getName())</span>
+<span class="nc" id="L111">                    .build();</span>
+
+<span class="nc" id="L113">            pcsService.createPCS(pcs);</span>
+<span class="nc" id="L114">        }</span>
+<span class="nc" id="L115">    }</span>
+
+    @Transactional
+    public void deletePostById(Long postId){
+<span class="nc" id="L119">        Post post = findPostById(postId);</span>
+
+//        pcsService.deleteAllPcsByPost(post);
+//        likedService.deleteByPost(post);
+
+<span class="nc" id="L124">        List&lt;Liked&gt; likedList = likedService.findAllByPost(post);</span>
+<span class="nc" id="L125">        likedService.deleteAll(likedList);</span>
+
+<span class="nc" id="L127">        List&lt;PostClubScope&gt; pcsList = pcsService.findAllByPost(post);</span>
+<span class="nc" id="L128">        pcsService.deleteAll(pcsList);</span>
+        //순환참조
+<span class="nc" id="L130">        List&lt;Comment&gt; commentList = commentRepository.findAllByPost(post);</span>
+<span class="nc" id="L131">        commentRepository.deleteAll(commentList);</span>
+
+<span class="nc" id="L133">        postRepository.deleteById(postId);</span>
+<span class="nc" id="L134">    }</span>
+
+    @Transactional
+    public void deleteAll(List&lt;Post&gt; posts){
+<span class="nc" id="L138">        postRepository.deleteAll(posts);</span>
+<span class="nc" id="L139">    }</span>
+
+    public void deleteAllWithCascade(List&lt;Post&gt; posts){
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        for (Post post : posts) {</span>
+<span class="nc" id="L143">            deletePostById(post.getId());</span>
+<span class="nc" id="L144">        }</span>
+<span class="nc" id="L145">    }</span>
+
+    public Post findPostById(Long id){
+<span class="nc" id="L148">        return postRepository.findById(id).orElseThrow(()-&gt;  new EntityNotFoundException(&quot;존재하지 않는 포스트입니다.&quot;));</span>
+    }
+
+    public Post findPostFetchJoinImgLoc(Long id){
+<span class="nc" id="L152">        return postRepository.findFetchById(id).orElseThrow(()-&gt;  new EntityNotFoundException(&quot;존재하지 않는 포스트입니다.&quot;));</span>
+    }
+
+    public List&lt;Post&gt; findPostsByBookId(Long bookId){
+<span class="nc" id="L156">        Book book = bookService.findBookById(bookId);</span>
+
+<span class="nc" id="L158">        List&lt;Post&gt; byBook = postRepository.findByBook(book);</span>
+
+<span class="nc" id="L160">        return byBook;</span>
+    }
+
+    @Transactional
+    public void doLikePost(Long postId){
+<span class="nc" id="L165">        User user = userService.findUserFromToken();</span>
+<span class="nc" id="L166">        Post post = findPostById(postId);</span>
+
+<span class="nc" id="L168">        Liked liked = Liked.builder()</span>
+<span class="nc" id="L169">                .user(user)</span>
+<span class="nc" id="L170">                .isLiked(true)</span>
+<span class="nc" id="L171">                .build();</span>
+<span class="nc" id="L172">        liked.doLikeToPost(post);</span>
+
+<span class="nc" id="L174">        likedService.createLiked(liked);</span>
+<span class="nc" id="L175">    }</span>
+
+    @Transactional
+    public void undoLikePost(Long postId){
+<span class="nc" id="L179">        User user = userService.findUserFromToken();</span>
+<span class="nc" id="L180">        Post post = findPostById(postId);</span>
+
+<span class="nc" id="L182">        Liked liked = likedUserFromPost(user, post);</span>
+<span class="nc" id="L183">        liked.undoLikeToPost(post);</span>
+
+<span class="nc" id="L185">        likedService.deleteLiked(liked);</span>
+<span class="nc" id="L186">    }</span>
+
+    public Integer findTotalCount(){
+<span class="nc" id="L189">        User user = userService.findUserFromToken();</span>
+
+<span class="nc" id="L191">        List&lt;ClubBookUser&gt; cbuList = cbuService.findByUserAndClubIsNull(user);</span>
+<span class="nc" id="L192">        List&lt;Book&gt; books = cbuList.stream()</span>
+<span class="nc" id="L193">                .map(m -&gt; m.getBook())</span>
+<span class="nc" id="L194">                .collect(Collectors.toList());</span>
+
+<span class="nc" id="L196">        int sum = 0;</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        for (Book book : books)</span>
+<span class="nc" id="L198">            sum += postRepository.countByBook(book);</span>
+<span class="nc" id="L199">        return sum;</span>
+    }
+
+    private Liked likedUserFromPost(User user, Post post) {
+<span class="nc" id="L203">        List&lt;Liked&gt; collect = post.getLikedList().stream()</span>
+<span class="nc" id="L204">                .filter(l -&gt; l.getUser().getId().equals(user.getId()))</span>
+<span class="nc" id="L205">                .collect(Collectors.toList());</span>
+<span class="nc" id="L206">        Liked liked = collect.get(0);</span>
+<span class="nc" id="L207">        return liked;</span>
+    }
+
+
+    public List&lt;Post&gt; findPostsByBookIdAndClubScope(Long bookId, Long clubId) {
+<span class="nc" id="L212">        List&lt;Post&gt; posts = findPostsByBookId(bookId);</span>
+
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        if (clubId != -1)</span>
+<span class="nc" id="L215">            excludePostByClubScope(clubId, posts);</span>
+
+<span class="nc" id="L217">        return posts;</span>
+    }
+
+    private void excludePostByClubScope(Long clubId, List&lt;Post&gt; posts) {
+<span class="nc" id="L221">        Club clubRequest = clubService.findClub(clubId);</span>
+
+<span class="nc" id="L223">        Iterator&lt;Post&gt; iter = posts.iterator();</span>
+
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        while(iter.hasNext()){</span>
+<span class="nc" id="L226">            Post p = iter.next();</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">            if (p.getScope() == PostScope.CLUB) {</span>
+<span class="nc" id="L228">                List&lt;PostClubScope&gt; listByPost = pcsService.findListWithClubByPost(p);</span>
+
+<span class="nc" id="L230">                boolean present = listByPost.stream()</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">                        .anyMatch(m -&gt; m.getClub() == clubRequest);</span>
+
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                if (!present)</span>
+<span class="nc" id="L234">                    iter.remove();</span>
+            }
+<span class="nc" id="L236">        }</span>
+<span class="nc" id="L237">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

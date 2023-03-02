@@ -1,4 +1,5 @@
 package mangpo.server.dto.club;
+
 import lombok.Data;
 import mangpo.server.entity.club.Club;
 

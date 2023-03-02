@@ -2,7 +2,6 @@ package mangpo.server.entity.user;
 
 import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
-import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 
@@ -13,11 +12,12 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ToDo extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "todo_id")
     private Long id;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -25,16 +25,15 @@ public class ToDo extends BaseTimeEntity {
     private Boolean isComplete;
 
     public void addUser(User user) {
-        if(this.user != null)
+        if (this.user != null)
             this.user.getTodos().remove(this);
 
         this.user = user;
         user.getTodos().add(this);
     }
 
-    public void update(String content, Boolean isComplete){
+    public void update(String content, Boolean isComplete) {
         this.content = content;
         this.isComplete = isComplete;
     }
-
 }

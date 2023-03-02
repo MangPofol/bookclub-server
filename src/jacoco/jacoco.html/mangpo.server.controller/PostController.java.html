@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.controller</a> &gt; <span class="el_source">PostController.java</span></div><h1>PostController.java</h1><pre class="source lang-java linenums">package mangpo.server.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.post.PostRequestDto;
+import mangpo.server.dto.post.PostResponseDto;
+import mangpo.server.dto.Result;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
+import mangpo.server.entity.post.PostScope;
+import mangpo.server.service.post.PostClubScopeService;
+import mangpo.server.service.post.PostService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="nc" id="L21">@Slf4j</span>
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(&quot;/posts&quot;)
+public class PostController {
+
+//    private final PostComplexService postComplexService;
+
+    private final PostService postService;
+    private final PostClubScopeService pcsService;
+
+    //Todo dto로 직접 조회 고려
+//    @GetMapping
+//    public Result&lt;List&lt;PostResponseDto&gt;&gt; getPostsByBookId(@RequestParam Long bookId) {
+//        List&lt;Post&gt; posts = postService.findPostsByBookId(bookId);
+//
+//        List&lt;PostResponseDto&gt; collect = posts.stream()
+//                .map(PostResponseDto::new)
+//                .collect(Collectors.toList());
+//
+//        return new Result(collect);
+//    }
+
+    @GetMapping
+    public Result&lt;List&lt;PostResponseDto&gt;&gt; getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(defaultValue = &quot;-1&quot;) Long clubId) {
+<span class="nc" id="L46">        List&lt;Post&gt; posts = postService.findPostsByBookIdAndClubScope(bookId, clubId);</span>
+
+<span class="nc" id="L48">        List&lt;PostResponseDto&gt; postResponseDtoList = pcsService.createPostResponseDtoList(posts);</span>
+
+<span class="nc" id="L50">        return new Result&lt;&gt;(postResponseDtoList);</span>
+    }
+//
+//    private  List&lt;PostResponseDto&gt; createPostResponseDtoList(List&lt;Post&gt; posts ) {
+//        List&lt;PostResponseDto&gt; collect = new ArrayList&lt;&gt;();
+//
+//        for (Post post : posts) {
+//            PostResponseDto postResponseDto = new PostResponseDto(post);
+//            PostScope scope = post.getScope();
+//
+//            if (scope.equals(PostScope.CLUB)){
+//                List&lt;PostClubScope&gt; listByPost = pcsService.findListWithClubByPost(post);
+//
+//                for (PostClubScope pcs : listByPost) {
+//                    postResponseDto.addClubIdListForScope(pcs.getClub().getId());
+//                }
+//            }
+//            collect.add(postResponseDto);
+//        }
+//        return collect;
+//    }
+
+
+    @PostMapping
+    public ResponseEntity&lt;PostResponseDto&gt; createPost(@RequestBody PostRequestDto requestDto, UriComponentsBuilder b) {
+<span class="nc" id="L75">        Long postId = postService.createPost(requestDto);</span>
+
+<span class="nc" id="L77">        UriComponents uriComponents =</span>
+<span class="nc" id="L78">                b.path(&quot;/posts/{postId}&quot;).buildAndExpand(postId);</span>
+
+<span class="nc" id="L80">        PostResponseDto postResponseDto = pcsService.createPostResponseDto(postService.findPostById(postId));</span>
+
+//        PostResponseDto postResponseDto = new PostResponseDto(postService.findPostById(postId));
+
+<span class="nc" id="L84">        return ResponseEntity.created(uriComponents.toUri()).body(postResponseDto);</span>
+    }
+
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; deletePost(@PathVariable Long id) {
+<span class="nc" id="L90">        postService.deletePostById(id);</span>
+
+<span class="nc" id="L92">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
+<span class="nc" id="L97">        postService.updatePost(id, requestDto);</span>
+
+<span class="nc" id="L99">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/{postId}/do-like&quot;)
+    public ResponseEntity&lt;?&gt; doLikePost(@PathVariable Long postId) {
+<span class="nc" id="L104">        postService.doLikePost(postId);</span>
+<span class="nc" id="L105">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/{postId}/undo-like&quot;)
+    public ResponseEntity&lt;?&gt; undoLikePost(@PathVariable Long postId) {
+<span class="nc" id="L110">        postService.undoLikePost(postId);</span>
+<span class="nc" id="L111">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @GetMapping(&quot;/total-count&quot;)
+    public Result&lt;?&gt; getTotalCount() {
+<span class="nc" id="L116">        Integer totalCount = postService.findTotalCount();</span>
+<span class="nc" id="L117">        return new Result&lt;&gt;(totalCount);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

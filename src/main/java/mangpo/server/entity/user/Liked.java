@@ -2,7 +2,6 @@ package mangpo.server.entity.user;
 
 import lombok.*;
 import mangpo.server.entity.post.Post;
-import mangpo.server.entity.user.User;
 
 import javax.persistence.*;
 
@@ -13,7 +12,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Liked {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "liked_id")
     private Long id;
 
@@ -27,12 +27,12 @@ public class Liked {
 
     private Boolean isLiked;
 
-    public void doLikeToPost(Post post){
+    public void doLikeToPost(Post post) {
         this.post = post;
         post.getLikedList().add(this);
     }
 
-    public void undoLikeToPost(Post post){
+    public void undoLikeToPost(Post post) {
         post.getLikedList().remove(this);
     }
 

@@ -12,5 +12,4 @@ import java.util.List;
 public class ToDoListCreateDto {
 
     private List<String> contents;
-
 }

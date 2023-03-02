@@ -25,7 +25,7 @@ public class CreateUserDto {
     private String profileImgLocation;
     private List<String> genres;
 
-    public User toEntityExceptId(){
+    public User toEntityExceptId() {
         User user = User.builder()
                 .email(this.email)
                 .password(this.password)

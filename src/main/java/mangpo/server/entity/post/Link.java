@@ -11,7 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Link {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "link_id")
     private Long id;
 
@@ -24,7 +25,7 @@ public class Link {
 
     private String hyperlink;
 
-    public void addPost(Post post){
+    public void addPost(Post post) {
         this.post = post;
     }
 }

@@ -24,7 +24,7 @@ public class UpdateUserDto {
     private String profileImgLocation;
     private List<String> genres;
 
-    public User toEntityExceptIdAndPw(){
+    public User toEntityExceptIdAndPw() {
         User user = User.builder()
                 .email(this.email)
                 .sex(this.sex)

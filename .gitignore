@@ -16,7 +16,10 @@ application.yml
 aws.yml
 
 /src/main/generated
+/src/jacoco
 
+/src/main/generated/
+/src/jacoco/
 
 ### STS ###
 .apt_generated

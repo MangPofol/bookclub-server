@@ -3,7 +3,10 @@ package mangpo.server.entity.club;
 import lombok.*;
 import mangpo.server.entity.common.BaseTimeEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -14,7 +17,8 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Club extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "club_name")
@@ -32,17 +36,17 @@ public class Club extends BaseTimeEntity {
     private LocalDateTime lastAddBookDate;
 
     public void update(Club request) {
-        if(request.getName() != null)
+        if (request.getName() != null)
             this.name = request.name;
-        if(request.getLevel() != null)
+        if (request.getLevel() != null)
             this.level = request.level;
-        if(request.getPresidentId() != null)
+        if (request.getPresidentId() != null)
             this.presidentId = request.presidentId;
-        if(request.getDescription() != null)
+        if (request.getDescription() != null)
             this.description = request.description;
     }
 
-    public void updateLastAddBookDate(){
+    public void updateLastAddBookDate() {
         this.lastAddBookDate = LocalDateTime.now();
     }
 
@@ -51,7 +55,12 @@ public class Club extends BaseTimeEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Club club = (Club) o;
-        return Objects.equals(id, club.id) && Objects.equals(name, club.name) && Objects.equals(level, club.level) && Objects.equals(presidentId, club.presidentId) && Objects.equals(description, club.description) && Objects.equals(lastAddBookDate, club.lastAddBookDate);
+        return Objects.equals(id, club.id) &&
+                Objects.equals(name, club.name) &&
+                Objects.equals(level, club.level) &&
+                Objects.equals(presidentId, club.presidentId) &&
+                Objects.equals(description, club.description) &&
+                Objects.equals(lastAddBookDate, club.lastAddBookDate);
     }
 
     @Override

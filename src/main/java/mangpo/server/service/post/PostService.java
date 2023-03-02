@@ -11,10 +11,10 @@ import mangpo.server.entity.user.Liked;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.post.CommentRepository;
 import mangpo.server.repository.post.PostRepository;
-import mangpo.server.service.cbu.ClubBookUserService;
-import mangpo.server.service.user.LikedService;
 import mangpo.server.service.book.BookService;
+import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.club.ClubService;
+import mangpo.server.service.user.LikedService;
 import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,18 +35,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    //    private final CommentService commentService;
     private final ClubBookUserService cbuService;
     private final ClubService clubService;
     private final PostClubScopeService pcsService;
     private final BookService bookService;
     private final UserService userService;
     private final LikedService likedService;
-
-    //TODO:
-    // 이렇게 의존성이 많은 서비스는 어떻게 테스트를 작성해야 하지?
-    // 이걸 다 mocking 할 수 있는건가?
-    // 애초에 이렇게 많이 가져다 쓰는게 틀린건가?
 
     @Transactional
     public Long createPost(PostRequestDto postRequestDto) {
@@ -125,9 +119,8 @@ public class PostService {
         addPostImageLocations(postRequestDto, post);
 
 
-
         if (ogScope == PostScope.CLUB) {
-            List<Club> clubScopeListOfDeletedPost =  pcsService.findAllByPost(post).stream()
+            List<Club> clubScopeListOfDeletedPost = pcsService.findAllByPost(post).stream()
                     .map(PostClubScope::getClub)
                     .collect(Collectors.toList());
 
@@ -135,7 +128,7 @@ public class PostService {
             deletePostAndBookFromClubIfNoPostExists(post, clubScopeListOfDeletedPost);
         }
 
-        if (postRequestDto.getScope() == PostScope.CLUB){
+        if (postRequestDto.getScope() == PostScope.CLUB) {
             addPostToClubAndBookIfNotExists(postRequestDto, post.getBook(), post, userService.findUserFromToken());
         }
 
@@ -145,22 +138,6 @@ public class PostService {
 
         post.update(postRequestDto);
     }
-
-//    private void createAndPersistPostClubScope( List<Long> clubIdListForScope, Post post) {
-//        for (Long clubId : clubIdListForScope) {
-//            Club club = clubService.findById(clubId);
-//
-//            club.updateLastAddBookDate();
-//
-//            PostClubScope pcs = PostClubScope.builder()
-//                    .post(post)
-//                    .club(club)
-//                    .clubName(club.getName())
-//                    .build();
-//
-//            pcsService.createPCS(pcs);
-//        }
-//    }
 
     @Transactional
     public void deletePostById(Long postId) {
@@ -196,7 +173,7 @@ public class PostService {
         }
 
         for (Club deletedClub : clubScopeListOfDeletedPost) {
-            if(!clubSet.contains(deletedClub)){
+            if (!clubSet.contains(deletedClub)) {
                 ClubBookUser cbu = cbuService.findByClubAndBookAndUser(deletedClub, post.getBook(), userService.findUserFromToken());
                 cbuService.deleteCbu(cbu);
             }
@@ -210,7 +187,7 @@ public class PostService {
 
     public void deleteAllWithCascade(List<Post> posts) {
         for (Post post : posts) {
-                deletePostById(post.getId());
+            deletePostById(post.getId());
         }
     }
 

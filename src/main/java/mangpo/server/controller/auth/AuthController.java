@@ -2,14 +2,14 @@ package mangpo.server.controller.auth;
 
 
 import lombok.RequiredArgsConstructor;
+import mangpo.server.common.jwt.JwtFilter;
+import mangpo.server.common.jwt.TokenProvider;
 import mangpo.server.dto.Result;
 import mangpo.server.dto.auth.LoginDto;
 import mangpo.server.dto.auth.TokenDto;
 import mangpo.server.dto.user.CreateUserDto;
 import mangpo.server.dto.user.UserResponseDto;
 import mangpo.server.entity.user.User;
-import mangpo.server.jwt.JwtFilter;
-import mangpo.server.jwt.TokenProvider;
 import mangpo.server.service.user.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

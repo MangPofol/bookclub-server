@@ -87,12 +87,10 @@ public class User extends BaseTimeEntity {
         this.email = email;
     }
 
-    //    public void changeAuthorities(Set<Authority> authorities){
-//        this.authorities = authorities;
-//    }
     public void changePw(String password) {
         this.password = password;
     }
+
     public void changeEmailValidCode(String emailValidCode) {
         this.emailValidCode = emailValidCode;
     }
@@ -102,19 +100,6 @@ public class User extends BaseTimeEntity {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", sex=" + sex +
-                ", birthdate=" + birthdate +
-                ", nickname='" + nickname + '\'' +
-                ", introduce='" + introduce + '\'' +
-                ", style='" + style + '\'' +
-                ", goal='" + goal + '\'' +
-                ", profileImgLocation='" + profileImgLocation + '\'' +
-                ", genres=" + genres +
-                ", todos=" + todos +
-                ", isDormant=" + isDormant +
-                ", emailValidCode='" + emailValidCode + '\'' +
-                ", userAuthorityList=" + userAuthorityList +
                 '}';
     }
 }

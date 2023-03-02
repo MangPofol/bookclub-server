@@ -11,9 +11,6 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByBookCategory(BookCategory bookCategory);
-//    void deleteByUserAndBook(User user, Book book);
-
-//    Optional<Book> findByIsbn(String isbn);
 
     @Override
     @EntityGraph(attributePaths = ("posts"))

@@ -19,7 +19,8 @@ import java.util.List;
 @Setter
 public class Post extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "post_id")
     private Long id;
 
@@ -62,26 +63,25 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Link> links = new ArrayList<>();
 
-    public void changeBook(Book book){
+    public void changeBook(Book book) {
         this.book = book;
     }
 
-    //==연관관계 편의 메소드==//
     public void addBook(Book book) {
-        if(this.book != null)
+        if (this.book != null)
             this.book.getPosts().remove(this);
 
         this.book = book;
         book.getPosts().add(this);
     }
 
-    public void addUser(User user){
+    public void addUser(User user) {
         this.user = user;
     }
 
 
     //book은 업데이트 하지 않음.
-    public void update(PostRequestDto p){
+    public void update(PostRequestDto p) {
         this.scope = p.getScope();
         this.isIncomplete = p.getIsIncomplete();
         this.title = p.getTitle();
@@ -90,7 +90,7 @@ public class Post extends BaseTimeEntity {
         this.readTime = p.getReadTime();
     }
 
-    public void addLink(Link link){
+    public void addLink(Link link) {
         this.links.add(link);
         link.addPost(this);
     }

@@ -2,8 +2,8 @@ package mangpo.server.service.user;
 
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.entity.user.Liked;
 import mangpo.server.entity.post.Post;
+import mangpo.server.entity.user.Liked;
 import mangpo.server.repository.user.LikedRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,31 +18,31 @@ public class LikedService {
     private final LikedRepository likedRepository;
 
     @Transactional
-    public Long createLiked(Liked liked){
+    public Long createLiked(Liked liked) {
         likedRepository.save(liked);
         return liked.getId();
     }
 
     @Transactional
-    public void deleteLiked(Liked liked){
+    public void deleteLiked(Liked liked) {
         likedRepository.delete(liked);
     }
 
     @Transactional
-    public void deleteByPost(Post post){
+    public void deleteByPost(Post post) {
         likedRepository.deleteByPost(post);
     }
 
-    public List<Liked> findAllByPost(Post post){
+    public List<Liked> findAllByPost(Post post) {
         return likedRepository.findAllByPost(post);
     }
 
     @Transactional
-    public void deleteAll(List<Liked> likedList){
+    public void deleteAll(List<Liked> likedList) {
         likedRepository.deleteAll(likedList);
     }
 
-    public Integer countByPost(Post post){
+    public Integer countByPost(Post post) {
         return likedRepository.countByPost(post);
     }
 

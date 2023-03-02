@@ -20,7 +20,7 @@ public class ToDoResponseDto {
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
 
-    public ToDoResponseDto(ToDo toDo){
+    public ToDoResponseDto(ToDo toDo) {
         this.ToDoId = toDo.getId();
         this.content = toDo.getContent();
         this.isComplete = toDo.getIsComplete();

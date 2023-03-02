@@ -18,7 +18,7 @@ public class AdminController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/users")
-    public ResponseEntity<?> deleteUserByEmail(@RequestParam String email){
+    public ResponseEntity<?> deleteUserByEmail(@RequestParam String email) {
         adminService.deleteUserByEmail(email);
         return ResponseEntity.noContent().build();
     }

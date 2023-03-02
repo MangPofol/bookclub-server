@@ -1,8 +1,8 @@
 package mangpo.server.repository.cbu;
 
-import mangpo.server.entity.club.Club;
-import mangpo.server.entity.cbu.ClubBookUser;
 import mangpo.server.entity.book.Book;
+import mangpo.server.entity.cbu.ClubBookUser;
+import mangpo.server.entity.club.Club;
 import mangpo.server.entity.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ClubBookUserRepository extends JpaRepository<ClubBookUser,Long>, ClubBookUserRepositoryCustom {
-
-//    @EntityGraph(attributePaths = ("book"))
-//    List<ClubBookUser> findListByUserExceptClub(User user);
+public interface ClubBookUserRepository extends JpaRepository<ClubBookUser, Long>, ClubBookUserRepositoryCustom {
 
     Long deleteAllByClub(Club club);
 

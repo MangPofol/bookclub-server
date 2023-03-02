@@ -10,7 +10,7 @@ public class LinkResponseDto {
     private String hyperlink;
     private String hyperlinkTitle;
 
-    public LinkResponseDto(Link link){
+    public LinkResponseDto(Link link) {
         this.linkId = link.getId();
         this.hyperlink = link.getHyperlink();
         this.hyperlinkTitle = link.getHyperlinkTitle();

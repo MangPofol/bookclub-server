@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClubController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.controller</a> &gt; <span class="el_source">ClubController.java</span></div><h1>ClubController.java</h1><pre class="source lang-java linenums">package mangpo.server.controller;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.*;
+import mangpo.server.dto.club.ClubInfoResponseDto;
+import mangpo.server.dto.club.ClubResponseDto;
+import mangpo.server.dto.club.CreateClubDto;
+import mangpo.server.dto.club.UpdateClubDto;
+import mangpo.server.entity.*;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.post.Post;
+import mangpo.server.entity.post.PostClubScope;
+import mangpo.server.entity.user.User;
+import mangpo.server.repository.ClubQueryRepository;
+import mangpo.server.service.*;
+import mangpo.server.service.book.BookService;
+import mangpo.server.service.club.ClubService;
+import mangpo.server.service.post.PostClubScopeService;
+import mangpo.server.service.user.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="nc" id="L32">@Slf4j</span>
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(&quot;/clubs&quot;)
+public class ClubController {
+
+    //리팩토링 하기
+
+    private final ClubService clubService;
+    private final ClubBookUserService cbuService;
+    private final BookService bookService;
+    private final ClubQueryRepository clubQueryRepository;
+    private final UserService userService;
+    private final PostClubScopeService pscService;
+
+    @GetMapping(&quot;/{clubId}&quot;)
+    public Result&lt;ClubInfoResponseDto&gt; getClubInfoByClubId(@PathVariable Long clubId) {
+<span class="nc" id="L49">        Club club = clubService.findClub(clubId);</span>
+<span class="nc" id="L50">        List&lt;User&gt; usersInClub = cbuService.findUsersByClub(club);</span>
+
+<span class="nc" id="L52">        int memberSize = cbuService.findUsersByClub(club).size();</span>
+<span class="nc" id="L53">        List&lt;ClubBookUser&gt; cbuByClub = cbuService.findClubBookUserByClub(club);</span>
+
+<span class="nc" id="L55">        ClubInfoResponseDto clubInfoResponseDto = new ClubInfoResponseDto();</span>
+
+<span class="nc" id="L57">        List&lt;Post&gt; trendingPostByClub = clubQueryRepository.findTrendingPostByClub(club, memberSize);</span>
+
+<span class="nc" id="L59">        clubInfoResponseDto.setTrendingPost(trendingPostByClub);</span>
+<span class="nc" id="L60">        clubInfoResponseDto.setClubInfo(club);</span>
+<span class="nc" id="L61">        clubInfoResponseDto.setUsersInClubDtoList(usersInClub);</span>
+<span class="nc" id="L62">        clubInfoResponseDto.setBookAndUserDtoList(cbuByClub);</span>
+
+<span class="nc" id="L64">        return new Result&lt;ClubInfoResponseDto&gt;(clubInfoResponseDto);</span>
+    }
+
+    @GetMapping
+    public Result&lt;List&lt;ClubResponseDto&gt;&gt; getClubsByUser(@RequestParam Long userId) {
+<span class="nc" id="L69">        User user = userService.findById(userId);</span>
+
+<span class="nc" id="L71">        List&lt;Club&gt; distinctClub = clubQueryRepository.findDistinctClub(user);</span>
+<span class="nc" id="L72">        List&lt;ClubResponseDto&gt; collect = distinctClub.stream()</span>
+<span class="nc" id="L73">                .map(ClubResponseDto::new)</span>
+<span class="nc" id="L74">                .collect(Collectors.toList());</span>
+
+<span class="nc" id="L76">        return new Result&lt;List&lt;ClubResponseDto&gt;&gt;(collect);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;ClubResponseDto&gt; createClub(@RequestBody CreateClubRequestDto createClubDto, UriComponentsBuilder builder) {
+<span class="nc" id="L81">        User user = userService.findUserFromToken();</span>
+
+<span class="nc" id="L83">        Club club = createClubDto.toEntity(user);</span>
+<span class="nc" id="L84">        Long clubId = clubService.createClub(club);</span>
+
+<span class="nc" id="L86">        ClubBookUser cbu = ClubBookUser.builder()</span>
+<span class="nc" id="L87">                .club(club)</span>
+<span class="nc" id="L88">                .user(user)</span>
+<span class="nc" id="L89">                .build();</span>
+
+<span class="nc" id="L91">        cbuService.createClubBookUser(cbu);</span>
+
+<span class="nc" id="L93">        UriComponents uriComponents =</span>
+<span class="nc" id="L94">                builder.path(&quot;/clubs/{clubId}&quot;).buildAndExpand(clubId);</span>
+
+<span class="nc" id="L96">        ClubResponseDto clubResponseDto = new ClubResponseDto(club);</span>
+
+<span class="nc" id="L98">        return ResponseEntity.created(uriComponents.toUri()).body(clubResponseDto);</span>
+    }
+
+    //컨트롤 uri
+    //클럽화면에서 클럽에 책 추가하는 기능
+    //user,book만이 존재하는 ClubBookUser 엔티티의 정보를 이용해 새로운 ClubBookUser 엔티티를 만든다
+    @PostMapping(&quot;/{clubId}/add-book&quot;)
+    public ResponseEntity&lt;?&gt; addClubToUserBook(@PathVariable Long clubId, @RequestBody addClubToUserBookRequestDto requestDto) {
+<span class="nc" id="L106">        User user = userService.findUserFromToken();</span>
+
+<span class="nc" id="L108">        Book book = bookService.findBookById(requestDto.bookId);</span>
+//        ClubBookUser byUserAndBook = cbuService.findByUserAndBookExceptClub(loginUser, book);//qdl 동적 쿼리 통한 리팩토링 고려
+<span class="nc" id="L110">        ClubBookUserSearchCondition cbuSearchCond = new ClubBookUserSearchCondition();</span>
+<span class="nc" id="L111">        cbuSearchCond.setUser(user);</span>
+<span class="nc" id="L112">        cbuSearchCond.setBook(book);</span>
+
+<span class="nc" id="L114">        ClubBookUser byUserAndBook = cbuService.findAllByCondition(cbuSearchCond).get(0);</span>
+<span class="nc" id="L115">        Club byId = clubService.findClub(clubId);</span>
+
+<span class="nc" id="L117">        ClubBookUser build = ClubBookUser.builder()</span>
+<span class="nc" id="L118">                .user(byUserAndBook.getUser())</span>
+<span class="nc" id="L119">                .book(byUserAndBook.getBook())</span>
+<span class="nc" id="L120">                .club(byId)</span>
+<span class="nc" id="L121">                .build();</span>
+
+<span class="nc" id="L123">        cbuService.createClubBookUser(build);</span>
+
+<span class="nc" id="L125">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/{clubId}/add-user&quot;)
+    public ResponseEntity&lt;?&gt; addUserToClub(@PathVariable Long clubId, @RequestBody inviteRequestDto requestDto) {
+<span class="nc" id="L130">        User user = userService.findUserFromToken();</span>
+
+<span class="nc" id="L132">        Club club = clubService.findClub(clubId);</span>
+<span class="nc" id="L133">        Long presidentId = club.getPresidentId();</span>
+
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (user.getId() != presidentId){</span>
+<span class="nc" id="L136">            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>
+        }
+
+<span class="nc" id="L139">        String email = requestDto.getEmail();</span>
+<span class="nc" id="L140">        User userByEmail = userService.findUserByEmail(email);</span>
+
+<span class="nc" id="L142">        ClubBookUser clubBookUser = ClubBookUser.builder()</span>
+<span class="nc" id="L143">                .club(club)</span>
+<span class="nc" id="L144">                .user(userByEmail)</span>
+<span class="nc" id="L145">                .build();</span>
+<span class="nc" id="L146">        cbuService.createClubBookUser(clubBookUser);</span>
+
+<span class="nc" id="L148">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PatchMapping(&quot;/{clubId}&quot;)
+    public ResponseEntity&lt;?&gt; updateClub(@PathVariable Long clubId, @RequestBody UpdateClubRequestDto updateClubDto) {
+<span class="nc" id="L153">        Club request = updateClubDto.toEntity();</span>
+<span class="nc" id="L154">        clubService.updateClub(clubId, request);</span>
+
+<span class="nc" id="L156">        Club club = clubService.findClub(clubId);</span>
+<span class="nc" id="L157">        List&lt;PostClubScope&gt; listByClub = pscService.findListByClub(club);</span>
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        for (PostClubScope pcs : listByClub) {</span>
+<span class="nc" id="L160">            pcs.changeClubName(updateClubDto.getName());</span>
+<span class="nc" id="L161">        }</span>
+
+<span class="nc" id="L163">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @DeleteMapping(&quot;/{clubId}&quot;)
+    public ResponseEntity&lt;?&gt; deleteClub(@PathVariable Long clubId) {
+<span class="nc" id="L168">        Club club = clubService.findClub(clubId);</span>
+<span class="nc" id="L169">        cbuService.deleteAllByClub(club);</span>
+<span class="nc" id="L170">        pscService.deleteAllPcsByClub(club);</span>
+
+<span class="nc" id="L172">        clubService.deleteClub(clubId);</span>
+
+<span class="nc" id="L174">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @Data
+    static class addClubToUserBookRequestDto {
+        private Long bookId;
+    }
+
+    @Data
+    static class inviteRequestDto{
+        private String email;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

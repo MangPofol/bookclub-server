@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ToDoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.controller</a> &gt; <span class="el_source">ToDoController.java</span></div><h1>ToDoController.java</h1><pre class="source lang-java linenums">package mangpo.server.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.*;
+import mangpo.server.dto.todo.ToDoListCreateDto;
+import mangpo.server.dto.todo.ToDoDeleteDto;
+import mangpo.server.dto.todo.ToDoResponseDto;
+import mangpo.server.entity.user.ToDo;
+import mangpo.server.service.user.ToDoService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+<span class="nc" id="L20">@Slf4j</span>
+@RequiredArgsConstructor
+@RequestMapping(&quot;/todos&quot;)
+public class ToDoController {
+
+    private final ToDoService toDoService;
+
+    @GetMapping
+    public Result&lt;List&lt;ToDoResponseDto&gt;&gt; getToDos() {
+<span class="nc" id="L29">        List&lt;ToDo&gt; toDos = toDoService.findToDos();</span>
+
+<span class="nc" id="L31">        List&lt;ToDoResponseDto&gt; collect = toDos.stream()</span>
+<span class="nc" id="L32">                .map(ToDoResponseDto::new)</span>
+<span class="nc" id="L33">                .collect(Collectors.toList());</span>
+
+<span class="nc" id="L35">        return new Result&lt;&gt;(collect);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;?&gt; createToDo(@RequestBody ToDoDto toDoDto, UriComponentsBuilder b){
+<span class="nc" id="L40">        Long toDoId = toDoService.createToDo(toDoDto);</span>
+
+<span class="nc" id="L42">        UriComponents uriComponents =</span>
+<span class="nc" id="L43">                b.path(&quot;/todos/{toDoId}&quot;).buildAndExpand(toDoId);</span>
+
+<span class="nc" id="L45">        ToDoResponseDto toDoResponseDto = new ToDoResponseDto(toDoService.findById(toDoId));</span>
+<span class="nc" id="L46">        return ResponseEntity.created(uriComponents.toUri()).body(toDoResponseDto);</span>
+    }
+
+    @PutMapping(&quot;/{toDoId}&quot;)
+    public ResponseEntity&lt;?&gt; updateTodo(@PathVariable Long toDoId, @RequestBody ToDoDto toDoDto){
+<span class="nc" id="L51">        toDoService.updateTodo(toDoId,toDoDto);</span>
+
+<span class="nc" id="L53">        return ResponseEntity.noContent().build();</span>
+    }
+
+    //복수의 리소스 생성
+    @PostMapping(&quot;/create-todos&quot;)
+    public ResponseEntity&lt;?&gt; createToDoList(@RequestBody ToDoListCreateDto toDoListCreateDto){
+<span class="nc" id="L59">        toDoService.createToDoList(toDoListCreateDto);</span>
+
+<span class="nc" id="L61">        return ResponseEntity.noContent().build();</span>
+    }
+
+    //복수의 리소스 삭제
+    @PostMapping(&quot;/delete-todos&quot;)
+    public ResponseEntity&lt;?&gt; deleteToDos(@RequestBody ToDoDeleteDto toDoDeleteDto){
+<span class="nc" id="L67">        toDoService.deleteToDos(toDoDeleteDto);</span>
+
+<span class="nc" id="L69">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

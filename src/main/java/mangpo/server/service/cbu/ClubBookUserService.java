@@ -1,10 +1,10 @@
 package mangpo.server.service.cbu;
 
 import lombok.RequiredArgsConstructor;
-import mangpo.server.dto.ClubBookUserSearchCondition;
-import mangpo.server.entity.club.Club;
-import mangpo.server.entity.cbu.ClubBookUser;
+import mangpo.server.dto.cbu.ClubBookUserSearchCondition;
 import mangpo.server.entity.book.Book;
+import mangpo.server.entity.cbu.ClubBookUser;
+import mangpo.server.entity.club.Club;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.cbu.ClubBookUserRepository;
 import mangpo.server.repository.club.ClubRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 public class ClubBookUserService {
 
     private final ClubBookUserRepository cbuRepository;
-    private final ClubRepository clubRepository;
 
     @Transactional
     public Long createClubBookUser(ClubBookUser clubBookUser) {
@@ -46,12 +44,8 @@ public class ClubBookUserService {
 
     public List<ClubBookUser> findListByUserAndClubIsNullAndBookIsNotNull(User user) {
         return cbuRepository.findListByUserAndClubIsNullAndBookIsNotNull(user);
-//        return cbuRepository.findListByUserExceptClub(user);
     }
 
-    //    public ClubBookUser findByUserAndBookExceptClub(User user, Book book){
-//        return cbuRepository.findByUserAndBook(user,book);
-//    }
     public List<ClubBookUser> findAllByCondition(ClubBookUserSearchCondition cbuSearchCond) {
         return cbuRepository.findAllBySearchCondition(cbuSearchCond);
     }
@@ -62,10 +56,6 @@ public class ClubBookUserService {
                 .map(ClubBookUser::getUser)
                 .collect(Collectors.toList());
     }
-
-//    public List<ClubBookUser> findClubBookUserByClub(Club club){
-//        return cbuRepository.findByClubAndBookIsNul(club);
-//    }
 
     @Transactional
     public void deleteAll(List<ClubBookUser> clubBookUsers) {

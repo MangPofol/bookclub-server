@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.service.book</a> &gt; <span class="el_source">BookService.java</span></div><h1>BookService.java</h1><pre class="source lang-java linenums">package mangpo.server.service.book;
+
+
+import lombok.RequiredArgsConstructor;
+import mangpo.server.entity.*;
+
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.book.BookCategory;
+import mangpo.server.entity.user.User;
+import mangpo.server.repository.book.BookInfoRepository;
+import mangpo.server.repository.book.BookRepository;
+import mangpo.server.repository.cbu.ClubBookUserRepository;
+import mangpo.server.repository.user.UserRepository;
+import mangpo.server.service.cbu.ClubBookUserService;
+import mangpo.server.service.user.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class BookService {
+
+    private final BookRepository bookRepository;
+
+    private final ClubBookUserService cbuService;
+    private final UserService userService;
+
+    @Transactional
+    public Long createBookWithValidation(Book book, String isbn, Long userId) {
+<span class="fc" id="L37">        User loginUser = userService.findById(userId);</span>
+<span class="fc" id="L38">        validateDuplicateBook(isbn, loginUser);</span>
+
+<span class="fc" id="L40">        bookRepository.save(book);</span>
+<span class="fc" id="L41">        return book.getId();</span>
+    }
+//
+//    @Transactional
+//    public void createBookAndCBU(CreateBookDto createBookDto, Long userId) {
+//        BookInfo bookInfo = BookInfo.builder()
+//                .name(createBookDto.getName())
+//                .isbn(createBookDto.getIsbn())
+//                .build();
+//        bookInfo = createOrFindBookInfo(bookInfo);
+//
+//        bookInfo = bookInfoService.createOrFindBookInfo(bookInfo);
+////        bookInfo = createOrFindBookInfo(bookInfo);
+//
+//        Book newBook = Book.builder()
+//                .category(createBookDto.getCategory())
+//                .bookInfo(bookInfo)
+//                .build();
+//        Long bookId = bookService.createBook(newBook,bookInfo.getIsbn(),loginUser.getId());
+//
+//        ClubBookUser cbu = ClubBookUser.builder()
+//                .book(newBook)
+//                .user(loginUser)
+//                .build();
+//        cbuService.createClubBookUser(cbu);
+//
+//
+//
+//        bookInfoRepository.save(bookInfo);
+//
+//
+//    }
+
+    private void validateDuplicateBook(String isbn, User loginUser) {
+<span class="fc" id="L75">        List&lt;ClubBookUser&gt; listByUser = cbuService.findListByUserExceptClub(loginUser);</span>
+//        List&lt;ClubBookUser&gt; listByUser = cbuRepository.findListByUserExceptClub(loginUser);
+
+<span class="fc" id="L78">        Optional&lt;ClubBookUser&gt; any = listByUser.stream()</span>
+<span class="fc" id="L79">                .filter(m -&gt; m.getUser().getId().equals(loginUser.getId()))</span>
+<span class="fc" id="L80">                .filter(m -&gt; m.getBook().getBookInfo().getIsbn().equals(isbn))</span>
+<span class="fc" id="L81">                .findAny();</span>
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (any.isPresent())</span>
+<span class="fc" id="L84">            throw new IllegalStateException(&quot;이미 유저가 등록한 책입니다.&quot;);</span>
+<span class="fc" id="L85">    }</span>
+
+    @Transactional
+    public void deleteBook(Long id) {
+<span class="nc" id="L89">        Book book = this.findBookById(id);</span>
+<span class="nc" id="L90">        bookRepository.delete(book);</span>
+<span class="nc" id="L91">    }</span>
+
+//    @Transactional
+//    public void deleteByUserAndBook(Long userId, Long bookId) {
+//        User user = userRepository.findById(userId).orElseThrow(() -&gt; new EntityNotFoundException(&quot;존재하지 않는 유저입니다.&quot;));
+//        Book book = bookRepository.findById(bookId).orElseThrow(() -&gt; new EntityNotFoundException(&quot;존재하지 않는 책입니다.&quot;));
+//        bookRepository.deleteByUserAndBook(user,book);
+//    }
+
+    @Transactional
+    public void updateBook(Long id, Book bookRequest) {
+<span class="nc" id="L102">        Book book = this.findBookById(id);</span>
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (bookRequest.getBookCategory() != null)</span>
+<span class="nc" id="L105">            book.changeCategory(bookRequest.getBookCategory());</span>
+<span class="nc" id="L106">    }</span>
+
+    public Book findBookById(Long id) {
+<span class="nc" id="L109">        return bookRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(&quot;존재하지 않는 책입니다.&quot;));</span>
+    }
+
+    public List&lt;Book&gt; findAllBooks() {
+<span class="nc" id="L113">        return bookRepository.findAll();</span>
+    }
+
+    public List&lt;Book&gt; findByCategory(BookCategory bookCategory) {
+<span class="nc" id="L117">        return bookRepository.findByBookCategory(bookCategory);</span>
+    }
+
+
+    public Set&lt;Book&gt; findBooksByCurrentUserAndBookCategory(BookCategory category) {
+<span class="fc" id="L122">        User user = userService.findUserFromToken();</span>
+
+<span class="fc" id="L124">        Set&lt;Book&gt; books = cbuService.findByUserAndClubIsNull(user).stream()</span>
+<span class="fc" id="L125">                .map(m -&gt; m.getBook())</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                .filter(m -&gt; m.getBookCategory() == category)</span>
+<span class="fc" id="L127">                .collect(Collectors.toSet());</span>
+
+<span class="fc" id="L129">       return books;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

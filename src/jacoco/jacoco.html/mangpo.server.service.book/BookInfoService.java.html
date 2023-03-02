@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookInfoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.service.book</a> &gt; <span class="el_source">BookInfoService.java</span></div><h1>BookInfoService.java</h1><pre class="source lang-java linenums">package mangpo.server.service.book;
+
+import lombok.RequiredArgsConstructor;
+import mangpo.server.entity.book.BookInfo;
+import mangpo.server.repository.book.BookInfoRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class BookInfoService {
+
+    private final BookInfoRepository bookInfoRepository;
+
+    @Transactional
+    public Long createBookInfo(BookInfo bookInfo){
+<span class="fc" id="L21">        validateDuplicateBookInfo(bookInfo.getIsbn());</span>
+<span class="fc" id="L22">        bookInfoRepository.save(bookInfo);</span>
+<span class="fc" id="L23">        return bookInfo.getId();</span>
+    }
+
+    public void validateDuplicateBookInfo(String isbn) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if(isbn == null)</span>
+<span class="fc" id="L28">            throw new IllegalStateException(&quot;isbn 정보가 없습니다.&quot;);</span>
+
+<span class="fc" id="L30">        Optional&lt;BookInfo&gt; findBookInfo = bookInfoRepository.findByIsbn(isbn);</span>
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (findBookInfo.isPresent()){</span>
+<span class="fc" id="L33">            throw new IllegalStateException(&quot;이미 등록된 책 정보입니다.&quot;);</span>
+        }
+<span class="fc" id="L35">    }</span>
+
+    @Transactional
+    public void deleteBookInfo(Long id){
+<span class="nc" id="L39">        BookInfo bookInfo = bookInfoRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(&quot;존재하지 않는 책 정보입니다.&quot;));</span>
+<span class="nc" id="L40">        bookInfoRepository.delete(bookInfo);</span>
+<span class="nc" id="L41">    }</span>
+
+    public BookInfo findById(Long id){
+<span class="nc" id="L44">        return bookInfoRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(&quot;존재하지 않는 책 정보입니다.&quot;));</span>
+    }
+    public BookInfo findByIsbn(String isbn){
+<span class="nc" id="L47">        return bookInfoRepository.findByIsbn(isbn).orElseThrow(() -&gt; new EntityNotFoundException(&quot;존재하지 않는 책 정보입니다.&quot;));</span>
+    }
+
+    public BookInfo createOrFindBookInfo(BookInfo bookInfo) {
+        try {
+<span class="nc" id="L52">            createBookInfo(bookInfo);</span>
+<span class="nc" id="L53">        }catch (IllegalStateException e){</span>
+<span class="nc" id="L54">            bookInfo = findByIsbn(bookInfo.getIsbn());</span>
+<span class="nc" id="L55">        }</span>
+<span class="nc" id="L56">        return bookInfo;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

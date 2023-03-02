@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.controller</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package mangpo.server.controller;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import mangpo.server.dto.*;
+import mangpo.server.dto.user.UserResponseDto;
+import mangpo.server.entity.user.User;
+
+import mangpo.server.service.user.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+<span class="nc" id="L15">@Slf4j</span>
+@RequiredArgsConstructor
+@RequestMapping(&quot;/users&quot;)
+public class UserController {
+
+    private final UserService userService;
+
+//    @GetMapping(&quot;/user&quot;)
+//    @PreAuthorize(&quot;hasAnyRole('USER','ADMIN')&quot;)
+//    public ResponseEntity&lt;UserDto&gt; getMyUserInfo(HttpServletRequest request) {
+//        return ResponseEntity.ok(userService.getMyUserWithAuthorities());
+//    }
+//
+//    @GetMapping(&quot;/user/{username}&quot;)
+//    @PreAuthorize(&quot;hasAnyRole('ADMIN')&quot;)
+//    public ResponseEntity&lt;UserDto&gt; getUserInfo(@PathVariable String username) {
+//        return ResponseEntity.ok(userService.getUserWithAuthorities(username));
+//    }
+
+    @GetMapping
+    public ResponseEntity&lt;Result&lt;UserResponseDto&gt;&gt; getUserInfo(@RequestParam Long userId) {
+<span class="nc" id="L36">        User user = userService.findById(userId);</span>
+<span class="nc" id="L37">        UserResponseDto userResponseDto = new UserResponseDto(user);</span>
+
+<span class="nc" id="L39">        return ResponseEntity.ok(new Result&lt;&gt;(userResponseDto));</span>
+    }
+
+    @PutMapping(&quot;/{userId}&quot;)
+    public ResponseEntity&lt;?&gt; updateUser(@PathVariable Long userId, @RequestBody UpdateUserDto updateUserDto) {
+<span class="nc" id="L44">        User user = userService.findById(userId);</span>
+<span class="nc" id="L45">        userService.updateUser(userId, updateUserDto);</span>
+
+<span class="nc" id="L47">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @GetMapping(&quot;/current&quot;)
+    public ResponseEntity&lt;Result&lt;UserResponseDto&gt;&gt; getCurrentUserInfo() {
+<span class="nc" id="L52">        User user = userService.findUserFromToken();</span>
+<span class="nc" id="L53">        UserResponseDto userResponseDto = new UserResponseDto(user);</span>
+
+<span class="nc" id="L55">        return ResponseEntity.ok(new Result&lt;&gt;(userResponseDto));</span>
+    }
+//
+//    @PostMapping
+//    public ResponseEntity&lt;Result&lt;UserResponseDto&gt;&gt; createUser(@RequestBody UserRequestDto userRequestDto, UriComponentsBuilder b) {
+//
+//        User user = userRequestDto.toEntityExceptId();
+//
+//        Long userId = userService.createUser(user);
+//
+//        UriComponents uriComponents =
+//                b.path(&quot;/users/{userId}&quot;).buildAndExpand(userId);
+//
+//        UserResponseDto userResponseDto = new UserResponseDto(user);
+//        Result&lt;UserResponseDto&gt; result = new Result&lt;&gt;(userResponseDto);
+//
+//        return ResponseEntity.created(uriComponents.toUri()).body(result);
+//    }
+
+
+    @PostMapping(&quot;/{userId}/change-dormant&quot;)
+    public ResponseEntity&lt;?&gt; changeUserDormant(@PathVariable Long userId) {
+<span class="nc" id="L77">        User user = userService.findById(userId);</span>
+<span class="nc" id="L78">        userService.changeDormant(user);</span>
+
+<span class="nc" id="L80">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/validate-duplicate&quot;)
+    public ResponseEntity&lt;?&gt; validateDuplicate(@RequestBody UserValidationDto userValidationDto) {
+<span class="nc" id="L85">        userService.validateDuplicateUser(userValidationDto.getEmail());</span>
+
+<span class="nc" id="L87">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/lost-pw&quot;)
+    public ResponseEntity&lt;?&gt; lostPassword(@RequestParam String userEmail) {
+<span class="nc" id="L92">        userService.lostPassword(userEmail);</span>
+<span class="nc" id="L93">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/change-pw&quot;)
+    public ResponseEntity&lt;?&gt; changePassword(@RequestBody ChangePwDto changePwDto) {
+<span class="nc" id="L98">        userService.changePassword(changePwDto);</span>
+<span class="nc" id="L99">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/validate-email&quot;)
+    public ResponseEntity&lt;?&gt; validateEmail() {
+<span class="nc" id="L104">        userService.validateEmail();</span>
+<span class="nc" id="L105">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/validate-email-send-code&quot;)
+    public ResponseEntity&lt;?&gt; validateEmailSendCode(@RequestParam String emailCode) {
+<span class="nc" id="L110">        userService.validateEmailSendCode(emailCode);</span>
+<span class="nc" id="L111">        return ResponseEntity.noContent().build();</span>
+    }
+
+//    @DeleteMapping(&quot;/{id}&quot;)
+//    public ResponseEntity&lt;?&gt; deleteUser(@PathVariable Long id) {
+//        User user = userService.findUser(id);
+//    }
+
+    @Data
+    static class UserValidationDto {
+        String email;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

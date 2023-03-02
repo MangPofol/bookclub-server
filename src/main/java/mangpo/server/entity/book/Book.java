@@ -13,10 +13,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//noargs accesslevel protected 로 변경하고 allargs 때서 리팩토링
 public class Book extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "book_id")
     private Long id;
 
@@ -32,7 +32,7 @@ public class Book extends BaseTimeEntity {
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 
-    public void changeCategory(BookCategory bookCategory){
+    public void changeCategory(BookCategory bookCategory) {
         this.bookCategory = bookCategory;
     }
 
@@ -40,9 +40,6 @@ public class Book extends BaseTimeEntity {
     public String toString() {
         return "Book{" +
                 "id=" + id +
-                ", bookInfo=" + bookInfo +
-                ", bookCategory=" + bookCategory +
-                ", posts=" + posts +
                 '}';
     }
 }

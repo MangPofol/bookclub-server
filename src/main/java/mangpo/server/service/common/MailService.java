@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MailService {
-    private final JavaMailSender mailSender;
     private static final String FROM_ADDRESS = "ourpageapp@gmail.com";
+    private final JavaMailSender mailSender;
 
     public void lostPw(String userEmail, String randomPw) {
         SimpleMailMessage message = new SimpleMailMessage();

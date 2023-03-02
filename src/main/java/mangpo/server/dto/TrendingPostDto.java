@@ -14,8 +14,6 @@ public class TrendingPostDto {
 
     private String nickname;
     private String profileImgLocation;
-
     private String bookName;
-
     private PostResponseDto postResponseDto;
 }

@@ -15,7 +15,8 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "notice_id")
     private Long id;
 

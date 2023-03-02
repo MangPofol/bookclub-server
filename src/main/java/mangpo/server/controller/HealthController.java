@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/health")
 public class HealthController {
     @GetMapping
-    public ResponseEntity<?> getPostsByBookIdAndClubScope() {
+    public ResponseEntity<?> healthCheck() {
 
         return ResponseEntity.ok().build();
     }

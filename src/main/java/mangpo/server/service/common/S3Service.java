@@ -37,8 +37,7 @@ public class S3Service {
         UUID uuid = UUID.randomUUID();
         StringBuffer sb = new StringBuffer();
 
-        String fileName = sb.append(dirName).append("/").append(uuid.toString()).append("_").append(uploadFile.getName()).toString();
-//        String fileName = dirName + "/" + uploadFile.getName() + "_" + uuid.toString();
+        String fileName = sb.append(dirName).append("/").append(uuid).append("_").append(uploadFile.getName()).toString();
 
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
@@ -62,6 +61,7 @@ public class S3Service {
         String fileDirAndName = buildFileDirAndName(dirName, fileName);
         amazonS3Client.deleteObject(bucket, fileDirAndName);
     }
+
     /*
         String fileNames[] = {
          "document/hello.txt",
@@ -96,7 +96,6 @@ public class S3Service {
 
         return Optional.empty();
     }
-
 
 
     public InputStream getObjectInputStream(String fileName) {

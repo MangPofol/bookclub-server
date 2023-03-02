@@ -53,7 +53,7 @@ public class AdminService {
         List<ClubBookUser> cbuList = cbuRepository.findListByUserAndClubIsNull(user);
         cbuRepository.deleteAllByUser(user);
 
-        for (ClubBookUser cbu: cbuList) {
+        for (ClubBookUser cbu : cbuList) {
             bookRepository.delete(cbu.getBook());
         }
 

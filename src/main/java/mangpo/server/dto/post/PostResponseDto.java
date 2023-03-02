@@ -32,13 +32,11 @@ public class PostResponseDto {
     private List<LinkResponseDto> linkResponseDtos = new ArrayList<>();
 
     private List<String> postImgLocations = new ArrayList<>();
-//    private HashMap<Long, String> postScopeClub = new HashMap<>();
     private List<Long> clubIdListForScope = new ArrayList<>();
 
     private List<LikedResponseDto> likedList = new ArrayList<>();
     private List<CommentResponseDto> commentsDto = new ArrayList<>();
 
-    //        @QueryProjection
     public PostResponseDto(Post post) {
         this.postId = post.getId();
         this.scope = post.getScope();

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PostClubScopeRepository extends JpaRepository<PostClubScope,Long> {
+public interface PostClubScopeRepository extends JpaRepository<PostClubScope, Long> {
 
     void deleteAllByPost(Post post);
 

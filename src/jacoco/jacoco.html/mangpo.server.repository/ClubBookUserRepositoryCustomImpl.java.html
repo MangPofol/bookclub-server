@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClubBookUserRepositoryCustomImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">mangpo.server.repository</a> &gt; <span class="el_source">ClubBookUserRepositoryCustomImpl.java</span></div><h1>ClubBookUserRepositoryCustomImpl.java</h1><pre class="source lang-java linenums">package mangpo.server.repository;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import mangpo.server.dto.cbu.ClubBookUserSearchCondition;
+import mangpo.server.entity.*;
+import mangpo.server.entity.book.Book;
+import mangpo.server.entity.user.User;
+
+import javax.persistence.EntityManager;
+import java.util.List;
+
+import static mangpo.server.entity.QClubBookUser.clubBookUser;
+import static mangpo.server.entity.book.QBook.book;
+import static mangpo.server.entity.user.QUser.user;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
+public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryCustom {
+
+    private final JPAQueryFactory queryFactory;
+
+<span class="nc" id="L22">    public ClubBookUserRepositoryCustomImpl(EntityManager em) {</span>
+<span class="nc" id="L23">        this.queryFactory = new JPAQueryFactory(em);</span>
+<span class="nc" id="L24">    }</span>
+
+
+    @Override
+    public List&lt;ClubBookUser&gt; findListByUserExceptClub(User user) {
+<span class="nc" id="L29">        return queryFactory</span>
+<span class="nc" id="L30">                .selectFrom(clubBookUser)</span>
+<span class="nc" id="L31">                .join(clubBookUser.book, book).fetchJoin()</span>
+<span class="nc" id="L32">                .where(clubBookUser.user.isNotNull(),</span>
+<span class="nc" id="L33">                        clubBookUser.club.isNull(),</span>
+<span class="nc" id="L34">                        clubBookUser.book.isNotNull())</span>
+<span class="nc" id="L35">                .fetch();</span>
+    }
+
+    //    @Query(&quot;select cbu form ClubBookUser cbu where cbu.user = :user and cbu.book =:book and cbu.club is null&quot;)
+    public ClubBookUser findByUserAndBook(User user, Book book) {
+<span class="nc" id="L40">        return queryFactory</span>
+<span class="nc" id="L41">                .selectFrom(clubBookUser)</span>
+<span class="nc" id="L42">                .where(clubBookUser.user.eq(user),</span>
+<span class="nc" id="L43">                        clubBookUser.book.eq(book),</span>
+<span class="nc" id="L44">                        clubBookUser.club.isNull())</span>
+<span class="nc" id="L45">                .fetchOne();</span>
+    }
+
+    //book 정보 없는 조회
+    public List&lt;User&gt; findUsersByClub(Club club) {
+<span class="nc" id="L50">        return queryFactory</span>
+<span class="nc" id="L51">                .selectDistinct(user)</span>
+<span class="nc" id="L52">                .from(clubBookUser)</span>
+<span class="nc" id="L53">                .join(clubBookUser.user, user)</span>
+<span class="nc" id="L54">                .where(clubBookUser.user.isNotNull(),</span>
+<span class="nc" id="L55">                        clubBookUser.book.isNull(),</span>
+<span class="nc" id="L56">                        clubBookUser.club.eq(club))</span>
+<span class="nc" id="L57">                .fetch();</span>
+    }
+
+    //club 정보 없는 조회
+    public List&lt;ClubBookUser&gt; findClubBookUserByClub(Club club) {
+<span class="nc" id="L62">        return queryFactory</span>
+<span class="nc" id="L63">                .selectFrom(clubBookUser)</span>
+<span class="nc" id="L64">                .join(clubBookUser.book, book).fetchJoin()</span>
+<span class="nc" id="L65">                .where(clubBookUser.user.isNotNull(),</span>
+<span class="nc" id="L66">                        clubBookUser.club.eq(club),</span>
+<span class="nc" id="L67">                        clubBookUser.book.isNotNull())</span>
+<span class="nc" id="L68">                .fetch();</span>
+    }
+
+    @Override
+    public Boolean isDuplicate(ClubBookUserSearchCondition cbuSearchCondition) {
+<span class="nc" id="L73">        List&lt;ClubBookUser&gt; result = queryFactory</span>
+<span class="nc" id="L74">                .selectFrom(clubBookUser)</span>
+<span class="nc" id="L75">                .where(clubEq(cbuSearchCondition.getClub()),</span>
+<span class="nc" id="L76">                        bookEq(cbuSearchCondition.getBook()),</span>
+<span class="nc" id="L77">                        userEq(cbuSearchCondition.getUser()))</span>
+<span class="nc" id="L78">                .fetch();</span>
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (result.isEmpty())</span>
+<span class="nc" id="L81">            return Boolean.FALSE;</span>
+<span class="nc" id="L82">        return Boolean.TRUE;</span>
+    }
+
+    @Override
+    public List&lt;ClubBookUser&gt; findAllBySearchCondition(ClubBookUserSearchCondition cbuSearchCondition) {
+<span class="nc" id="L87">        return queryFactory</span>
+<span class="nc" id="L88">                .selectFrom(clubBookUser)</span>
+<span class="nc" id="L89">                .where(clubEq(cbuSearchCondition.getClub()),</span>
+<span class="nc" id="L90">                        bookEq(cbuSearchCondition.getBook()),</span>
+<span class="nc" id="L91">                        userEq(cbuSearchCondition.getUser()))</span>
+<span class="nc" id="L92">                .fetch();</span>
+    }
+
+
+    private BooleanExpression clubEq(Club club) {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        return isEmpty(club) ? null : clubBookUser.club.eq(club);</span>
+    }
+
+    private BooleanExpression bookEq(Book book) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        return isEmpty(book) ? null : clubBookUser.book.eq(book);</span>
+    }
+
+    private BooleanExpression userEq(User user) {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        return isEmpty(user) ? null : clubBookUser.user.eq(user);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

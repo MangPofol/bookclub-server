@@ -2,18 +2,17 @@ package mangpo.server.service.club;
 
 
 import lombok.RequiredArgsConstructor;
-//import mangpo.server.dto.AddClubToUserBookRequestDto;
 import mangpo.server.dto.club.CreateClubDto;
 import mangpo.server.dto.club.UpdateClubDto;
-import mangpo.server.entity.club.Club;
-import mangpo.server.entity.cbu.ClubBookUser;
-import mangpo.server.entity.club.Invite;
 import mangpo.server.entity.book.Book;
+import mangpo.server.entity.cbu.ClubBookUser;
+import mangpo.server.entity.club.Club;
+import mangpo.server.entity.club.Invite;
 import mangpo.server.entity.post.PostClubScope;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.club.ClubRepository;
-import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.book.BookService;
+import mangpo.server.service.cbu.ClubBookUserService;
 import mangpo.server.service.post.PostClubScopeService;
 import mangpo.server.service.user.UserService;
 import org.springframework.stereotype.Service;
@@ -137,10 +136,10 @@ public class ClubService {
     }
 
     //클럽 가입 3개까지만 가능
-    public void validateClubMaxExceed(User user){
+    public void validateClubMaxExceed(User user) {
         Integer cnt = cbuService.countByUserAndClubIsNotNullAndBookIsNull(user);
 
-        if(cnt >= 3)
+        if (cnt >= 3)
             throw new IllegalStateException("클럽 가입은 3개까지만 가능합니다");
     }
 
@@ -179,10 +178,10 @@ public class ClubService {
     public void deleteUserFromClub(Long clubId, Long userId) {
         User user = userService.findById(userId);
         Club club = findById(clubId);
-        cbuService.deleteAllByUserAndClub(user,club);
+        cbuService.deleteAllByUserAndClub(user, club);
     }
 
     public boolean isClubContainsBook(Club club, Book book, User user) {
-        return cbuService.isClubContainsBook(club,book,user);
+        return cbuService.isClubContainsBook(club, book, user);
     }
 }

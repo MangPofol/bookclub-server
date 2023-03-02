@@ -2,9 +2,9 @@ package mangpo.server.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mangpo.server.dto.user.ToDoDto;
-import mangpo.server.dto.todo.ToDoListCreateDto;
 import mangpo.server.dto.todo.ToDoDeleteDto;
+import mangpo.server.dto.todo.ToDoListCreateDto;
+import mangpo.server.dto.user.ToDoDto;
 import mangpo.server.entity.user.ToDo;
 import mangpo.server.entity.user.User;
 import mangpo.server.repository.user.ToDoRepository;
@@ -26,7 +26,7 @@ public class ToDoService {
     private final UserService userService;
 
     @Transactional
-    public Long createToDo(ToDoDto toDoDto){
+    public Long createToDo(ToDoDto toDoDto) {
         //여기서 조립하는게 맞는듯.
         // 1.지연로딩 때문이라도 그렇고
         // 2.컨트롤러가 지저분하면 딱 봤을때 햇갈림
@@ -45,18 +45,18 @@ public class ToDoService {
     }
 
     @Transactional
-    public void updateTodo(Long toDoId,ToDoDto toDoDto){
+    public void updateTodo(Long toDoId, ToDoDto toDoDto) {
         ToDo toDo = findById(toDoId);
         toDo.update(toDoDto.getContent(), toDoDto.getIsComplete());
     }
 
     @Transactional
-    public void deleteById(Long toDoId){
+    public void deleteById(Long toDoId) {
         toDoRepository.deleteById(toDoId);
     }
 
     @Transactional
-    public void createToDoList(ToDoListCreateDto toDoListCreateDto){
+    public void createToDoList(ToDoListCreateDto toDoListCreateDto) {
         User user = userService.findUserFromToken();
         List<String> contents = toDoListCreateDto.getContents();
 
@@ -69,17 +69,17 @@ public class ToDoService {
         }
     }
 
-    public List<ToDo> findList(){
+    public List<ToDo> findList() {
         User user = userService.findUserFromToken();
         return toDoRepository.findListByUser(user);
     }
 
-    public ToDo findById(Long toDoId){
+    public ToDo findById(Long toDoId) {
         return toDoRepository.findById(toDoId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 todo 입니다."));
     }
 
     @Transactional
-    public void deleteToDos(ToDoDeleteDto toDoDeleteDto){
+    public void deleteToDos(ToDoDeleteDto toDoDeleteDto) {
         User user = userService.findUserFromToken();
         List<Long> request = toDoDeleteDto.getToDoIds();
 

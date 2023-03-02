@@ -24,7 +24,7 @@ public class CommentService {
     private final PostService postService;
 
     @Transactional
-    public Long createComment(CommentRequestDto commentRequestDto){
+    public Long createComment(CommentRequestDto commentRequestDto) {
         User user = userService.findUserFromToken();
         Post post = postService.findPostById(commentRequestDto.getPostId());
 
@@ -39,25 +39,25 @@ public class CommentService {
         return save.getId();
     }
 
-    public Comment findById(Long id){
+    public Comment findById(Long id) {
         return commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 comment입니다."));
     }
 
     @Transactional
-    public void deleteComment(Long commentId){
+    public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
 
-    public List<Comment> findListByPost(Post post){
+    public List<Comment> findListByPost(Post post) {
         return commentRepository.findListByPost(post);
     }
 
     @Transactional
-    public void deleteAll(List<Comment> comments){
+    public void deleteAll(List<Comment> comments) {
         commentRepository.deleteAll(comments);
     }
 
-    public Integer countByPost(Post post){
+    public Integer countByPost(Post post) {
         return commentRepository.countByPost(post);
     }
 }

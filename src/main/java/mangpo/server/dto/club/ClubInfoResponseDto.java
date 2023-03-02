@@ -1,9 +1,6 @@
 package mangpo.server.dto.club;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import mangpo.server.dto.TrendingPostDto;
 import mangpo.server.dto.book.BookAndUserDto;
 import mangpo.server.dto.user.UserResponseDto;
@@ -17,15 +14,10 @@ import java.util.stream.Collectors;
 public class ClubInfoResponseDto {
 
     //클럽 내부 전체 카운드
-//    @Builder.Default
     private int totalUser = 0;
-//    @Builder.Default
     private int totalPosts = 0;
-//    @Builder.Default
     private int totalBooks = 0;
-//    @Builder.Default
     private int totalComments = 0;
-//    @Builder.Default
     private int totalLikes = 0;
 
     private ClubResponseDto clubResponseDto;
@@ -46,10 +38,11 @@ public class ClubInfoResponseDto {
                 .collect(Collectors.toList());
     }
 
-    public void addLike(int cnt){
+    public void addLike(int cnt) {
         this.totalLikes += cnt;
     }
-    public void addComment(int cnt){
+
+    public void addComment(int cnt) {
         this.totalComments += cnt;
     }
 

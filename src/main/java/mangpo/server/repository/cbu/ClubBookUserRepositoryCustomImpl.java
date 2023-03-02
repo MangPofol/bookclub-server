@@ -2,7 +2,7 @@ package mangpo.server.repository.cbu;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import mangpo.server.dto.ClubBookUserSearchCondition;
+import mangpo.server.dto.cbu.ClubBookUserSearchCondition;
 import mangpo.server.entity.book.Book;
 import mangpo.server.entity.cbu.ClubBookUser;
 import mangpo.server.entity.club.Club;
@@ -18,7 +18,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class ClubBookUserRepositoryCustomImpl implements ClubBookUserRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
     public ClubBookUserRepositoryCustomImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
     }

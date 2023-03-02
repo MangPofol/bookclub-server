@@ -21,26 +21,22 @@ import java.util.stream.Collectors;
 @Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
 
-   private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-   @Override
-   @Transactional
-   public UserDetails loadUserByUsername(final String username) {
-      return userRepository.findWithAuthByEmail(username)
-         .map(user -> createUser(username, user))
-         .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
-   }
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(final String username) {
+        return userRepository.findWithAuthByEmail(username)
+                .map(user -> createUser(username, user))
+                .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
+    }
 
-   private org.springframework.security.core.userdetails.User createUser(String username, User user) {
-//      if (user.getIsDormant()) {
-//         log.info("비활성 상태 유저 : {}", username);
-//         throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
-//      }
-      List<GrantedAuthority> grantedAuthorities = user.getUserAuthorityList().stream()
-              .map(authority -> new SimpleGrantedAuthority(authority.getAuthority().getAuthorityName()))
-              .collect(Collectors.toList());
-      return new org.springframework.security.core.userdetails.User(String.valueOf(user.getId()),
-              user.getPassword(),
-              grantedAuthorities);
-   }
+    private org.springframework.security.core.userdetails.User createUser(String username, User user) {
+        List<GrantedAuthority> grantedAuthorities = user.getUserAuthorityList().stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority().getAuthorityName()))
+                .collect(Collectors.toList());
+        return new org.springframework.security.core.userdetails.User(String.valueOf(user.getId()),
+                user.getPassword(),
+                grantedAuthorities);
+    }
 }

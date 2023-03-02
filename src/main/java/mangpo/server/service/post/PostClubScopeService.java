@@ -24,55 +24,55 @@ public class PostClubScopeService {
     private final PostClubScopeRepository pcsRepository;
 
     @Transactional
-    public Long createPCS(PostClubScope pcs){
+    public Long createPCS(PostClubScope pcs) {
         pcsRepository.save(pcs);
         return pcs.getId();
     }
 
     @Transactional
-    public void deleteAllPcsByPost(Post post){
+    public void deleteAllPcsByPost(Post post) {
         pcsRepository.deleteAllByPost(post);
     }
 
     @Transactional
-    public void deleteAllPcsByClub(Club club){
+    public void deleteAllPcsByClub(Club club) {
         pcsRepository.deleteAllByClub(club);
     }
 
-    public PostClubScope findPCS(Long id){
-        return pcsRepository.findById(id).orElseThrow(()->  new EntityNotFoundException("존재하지 않는 공개범위입니다."));
+    public PostClubScope findPCS(Long id) {
+        return pcsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공개범위입니다."));
     }
 
-    public List<PostClubScope> findListWithClubByPost(Post post){
+    public List<PostClubScope> findListWithClubByPost(Post post) {
         return pcsRepository.findListWithClubByPost(post);
     }
 
-    public List<PostClubScope> findListWithPostByPost(Post post){
+    public List<PostClubScope> findListWithPostByPost(Post post) {
         return pcsRepository.findListWithPostByPost(post);
     }
 
-    public List<PostClubScope> findListByClub(Club club){
+    public List<PostClubScope> findListByClub(Club club) {
         return pcsRepository.findAllByClub(club);
     }
 
-    public List<PostClubScope> findAllByPost(Post post){
+    public List<PostClubScope> findAllByPost(Post post) {
         return pcsRepository.findListWithClubByPost(post);
     }
 
     @Transactional
-    public void deleteAll(List<PostClubScope> pcsList){
+    public void deleteAll(List<PostClubScope> pcsList) {
         pcsRepository.deleteAll(pcsList);
     }
 
 
-    public List<PostResponseDto> createPostResponseDtoList(List<Post> posts ) {
+    public List<PostResponseDto> createPostResponseDtoList(List<Post> posts) {
         List<PostResponseDto> collect = new ArrayList<>();
 
         for (Post post : posts) {
             PostResponseDto postResponseDto = new PostResponseDto(post);
             PostScope scope = post.getScope();
 
-            if (scope.equals(PostScope.CLUB)){
+            if (scope.equals(PostScope.CLUB)) {
                 List<PostClubScope> listByPost = findListWithClubByPost(post);
 
                 for (PostClubScope pcs : listByPost) {
@@ -85,15 +85,15 @@ public class PostClubScopeService {
     }
 
     public PostResponseDto createPostResponseDto(Post post) {
-            PostResponseDto postResponseDto = new PostResponseDto(post);
-            PostScope scope = post.getScope();
+        PostResponseDto postResponseDto = new PostResponseDto(post);
+        PostScope scope = post.getScope();
 
-            if (scope.equals(PostScope.CLUB)){
-                List<PostClubScope> listByPost = findListWithClubByPost(post);
-                for (PostClubScope pcs : listByPost) {
-                    postResponseDto.addClubIdListForScope(pcs.getClub().getId());
-                }
+        if (scope.equals(PostScope.CLUB)) {
+            List<PostClubScope> listByPost = findListWithClubByPost(post);
+            for (PostClubScope pcs : listByPost) {
+                postResponseDto.addClubIdListForScope(pcs.getClub().getId());
             }
+        }
 
         return postResponseDto;
     }

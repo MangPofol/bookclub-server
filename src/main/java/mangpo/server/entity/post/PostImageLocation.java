@@ -1,7 +1,6 @@
 package mangpo.server.entity.post;
 
 import lombok.*;
-import mangpo.server.entity.post.Post;
 
 import javax.persistence.*;
 
@@ -12,7 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostImageLocation {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "post_image_location_id")
     private Long id;
 

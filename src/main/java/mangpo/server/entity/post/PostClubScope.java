@@ -13,7 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostClubScope {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "post_club_scope_id")
     private Long id;
 
@@ -28,7 +29,7 @@ public class PostClubScope {
     private String clubName;
 
 
-    public void changeClubName(String newClubName){
+    public void changeClubName(String newClubName) {
         this.clubName = newClubName;
     }
 }
