@@ -32,4 +32,12 @@ public class PostClubScope {
     public void changeClubName(String newClubName) {
         this.clubName = newClubName;
     }
+
+    @Override
+    public String toString() {
+        return "PostClubScope{" +
+                "id=" + id +
+                ", clubName='" + clubName + '\'' +
+                '}';
+    }
 }

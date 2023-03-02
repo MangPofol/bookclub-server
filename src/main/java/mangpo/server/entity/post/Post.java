@@ -63,6 +63,10 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Link> links = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostClubScope> pcsList = new ArrayList<>();
+
     public void changeBook(Book book) {
         this.book = book;
     }
@@ -94,6 +98,4 @@ public class Post extends BaseTimeEntity {
         this.links.add(link);
         link.addPost(this);
     }
-
-
 }

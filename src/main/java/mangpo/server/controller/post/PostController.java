@@ -25,7 +25,7 @@ public class PostController {
     private final PostClubScopeService pcsService;
 
     @GetMapping
-    public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(defaultValue = "-1") Long clubId) {
+    public Result<List<PostResponseDto>> getPostsByBookIdAndClubScope(@RequestParam Long bookId, @RequestParam(required = false) Long clubId) {
         List<Post> posts = postService.findPostsByBookIdAndClubScope(bookId, clubId);
         List<PostResponseDto> postResponseDtoList = pcsService.createPostResponseDtoList(posts);
 

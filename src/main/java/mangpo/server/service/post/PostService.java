@@ -254,7 +254,7 @@ public class PostService {
     public List<Post> findPostsByBookIdAndClubScope(Long bookId, Long clubId) {
         List<Post> posts = findListByBookId(bookId);
 
-        if (clubId != -1)
+        if (clubId != null)
             excludePostByClubScope(clubId, posts);
 
         return posts;
@@ -264,7 +264,6 @@ public class PostService {
         Club clubRequest = clubService.findById(clubId);
 
         Iterator<Post> iter = posts.iterator();
-
         while (iter.hasNext()) {
             Post p = iter.next();
 
