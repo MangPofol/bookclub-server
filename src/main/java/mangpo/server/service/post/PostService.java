@@ -210,7 +210,7 @@ public class PostService {
 
     public void deleteAllWithCascade(List<Post> posts) {
         for (Post post : posts) {
-            deletePostById(post.getId());
+                deletePostById(post.getId());
         }
     }
 

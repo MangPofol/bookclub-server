@@ -1,5 +1,5 @@
 <p align="center">
-  <div align="center"><img src="https://avatars.githubusercontent.com/u/88327986?s=200&v=4" width="20%"/></div>
+  <img src="https://avatars.githubusercontent.com/u/88327986?s=200&v=4" width="20%"/>
   <br>  
 </p>
 
@@ -15,7 +15,7 @@
 
 ### 서버 구조도
 <p align="center">
-  <div align="center"><img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/archi.png" width="100%"/></div>
+  <img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/archi.png" width="100%"/>
   <br>  
 </p>
 <br>
@@ -37,7 +37,7 @@
 
 ### ERD
 <p align="center">
-  <div align="center"><img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/mangpoERD.png" width="100%"/></div>
+  <img src="https://raw.githubusercontent.com/CYC0227/mangpo-ERD/main/mangpoERD.png" width="100%"/>
   <br>  
 </p>
 
@@ -102,6 +102,6 @@
 
 * 2021년 정부지원 창업 동아리 선정 당시 사진
 <p align="center">
-  <div align="center"><img src="https://github.com/CYC0227/mangpo-ERD/blob/main/KakaoTalk_20211020_172331193.png?raw=true" width="70%"/></div>
+  <img src="https://github.com/CYC0227/mangpo-ERD/blob/main/KakaoTalk_20211020_172331193.png?raw=true" width="70%"/>
   <br>  
 </p>

@@ -11,8 +11,8 @@ public class ServerApplication {
 
 	public static final String APPLICATION_LOCATIONS = "spring.config.location="
 
-//			+ "classpath:application.yml,"
-//			+ "classpath:application-local.yml,"
+			+ "classpath:application.yml,"
+			+ "classpath:application-local.yml,"
 
 			+ "classpath:application-prod.yml";
 
